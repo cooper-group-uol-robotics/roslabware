@@ -7,7 +7,7 @@ import sys
 import rospy
 
 # Local
-from ....pylabware.devices.ika_ret_control_visc import RETControlViscHotplate
+from pylabware import RETControlViscHotplate
 
 # Object oriented initialization for ROS
 if __name__ == "__main__":
@@ -15,10 +15,10 @@ if __name__ == "__main__":
         serial_port = sys.argv[1]
     else:
         serial_port = '/dev/ttyACM0'
-        rospy.logwarn('No port provided. Setting ttyUSB0')
+        rospy.logwarn('No port provided. Using ttyUSB0 as default port')
 
     # Initialize rospy node
-    rospy.init_node("IKA_driver", anonymous=True)
+    rospy.init_node("RETControlViscHotplate Driver", anonymous=True)
 
     # Create instance
     IKA_ROS = RETControlViscHotplate(

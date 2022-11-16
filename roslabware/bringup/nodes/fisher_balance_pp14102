@@ -8,10 +8,10 @@ if __name__ == "__main__":
         port = sys.argv[1]
     else:
         port = '/dev/ttyUSB0'
-        rospy.logerr('No input serial port is provided. The default serial port (ttyUSB0) is used')
+        rospy.logwarn('No port provided. Using ttyUSB0 as default port')
 
     # Initialize ROS node
-    rospy.init_node("scale_driver", anonymous=True)
+    rospy.init_node("BalancePPS4102 Driver", anonymous=True)
 
     port = sys.argv[1]
 

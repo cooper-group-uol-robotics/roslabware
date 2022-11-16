@@ -11,7 +11,7 @@ from ..msgs.fisher_balance_pp14102 import (
 )
 
 
-class BalancePPS4102ROS:
+class BalancePPS4102Ros:
     """ROS Wrapper for Fisher Scientific PPS4102 Top Pan Balance Serial Driver
     Utilises ROS Topics to facilitate communication with balance using a
     serial driver."""

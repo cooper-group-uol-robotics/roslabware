@@ -1,3 +1,3 @@
 float32 temperature
 float32 stir_speed
-float32 viscosity_trend
+float32 viscostiy_trend

@@ -1,13 +1,7 @@
-#!/usr/bin/env python
-
-""" Script to use the Mettler Toledo Quantos dispensing system with ROS """
-
 # external
 import rospy
 import sys
-
-# local
-from ....pylabware.devices.quantos_solid_dispenser import Quantos
+from pylabware import QuantosQB1
 
 # Object oriented initialization for ROS
 if __name__ == "__main__":
@@ -17,13 +11,13 @@ if __name__ == "__main__":
         serial_port = sys.argv[1]
     else:
         serial_port = '/dev/ttyUSB0'
-        rospy.logwarn('No port provided. Setting ttyUSB0')
+        rospy.logwarn('No port provided. Using ttyUSB0 as default port')
 
     # Initiliaze rospy node
-    rospy.init_node("Quantos_Driver", anonymous=True)
+    rospy.init_node("QuantosQB1 Driver", anonymous=True)
 
     # Create instance of ROS Wrapper
-    Quantos_ROS = Quantos(
+    Quantos_ROS = QuantosQB1(
             device_name=None,
             connection_mode='serial',
             address=None,

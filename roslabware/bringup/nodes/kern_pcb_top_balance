@@ -1,9 +1,7 @@
 # external
 import rospy
 import sys
-
-# Core
-from ....pylabware.devices.kern_pcb_top_balance import KernTopBalance
+from pylabware import TopBalance
 
 if __name__ == "__main__":
 
@@ -11,13 +9,13 @@ if __name__ == "__main__":
         serial_port = sys.argv[1]
     else:
         serial_port = '/dev/ttyUSB0'
-        rospy.logwarn('No input serial port is provided. The default serial port (ttyUSB0) is used')
+        rospy.logwarn('No port provided. Using ttyUSB0 as default port')
 
     # Initialize ROS node
-    rospy.init_node("kern_driver", anonymous=True)
+    rospy.init_node("TopBalance Driver", anonymous=True)
 
     # Instantiate ROS Wrapper
-    kern_ROS = KernTopBalance(
+    kern_ROS = TopBalance(
         device_name=None,
         connection_mode='serial',
         address=None,
