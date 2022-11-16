@@ -1,0 +1,4 @@
+<launch>
+	<arg name="serial_port" value="/dev/ttyACM0"/>
+	<node name="ika_ret_control_visc" pkg="ika_ret_control_visc" type="ika_ret_control_visc" args="$(arg serial_port)" output="screen"/>
+</launch>

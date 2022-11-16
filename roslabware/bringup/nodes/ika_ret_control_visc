@@ -1,0 +1,33 @@
+"""
+Node to use the IKA RCT Digital plate Top Pan balance in ROS
+"""
+
+# External
+import sys
+import rospy
+
+# Local
+from ....pylabware.devices.ika_ret_control_visc import RETControlViscHotplate
+
+# Object oriented initialization for ROS
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        serial_port = sys.argv[1]
+    else:
+        serial_port = '/dev/ttyACM0'
+        rospy.logwarn('No port provided. Setting ttyUSB0')
+
+    # Initialize rospy node
+    rospy.init_node("IKA_driver", anonymous=True)
+
+    # Create instance
+    IKA_ROS = RETControlViscHotplate(
+        device_name=None,
+        connection_mode='serial',
+        address=None,
+        port=serial_port)
+
+    # Stop everything on shutdown
+    rospy.on_shutdown(IKA_ROS.stop_temperature_regulation())
+    rospy.on_shutdown(IKA_ROS.stop_stirring())
+    rospy.spin()

@@ -1,0 +1,31 @@
+# external
+import rospy
+import sys
+from pylabware import BalancePPS4102
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        port = sys.argv[1]
+    else:
+        port = '/dev/ttyUSB0'
+        rospy.logerr('No input serial port is provided. The default serial port (ttyUSB0) is used')
+
+    # Initialize ROS node
+    rospy.init_node("scale_driver", anonymous=True)
+
+    port = sys.argv[1]
+
+    # Create instance of ROS Wrapper
+    balance = BalancePPS4102(
+        device_name=None,
+        connection_mode='serial',
+        address=None,
+        port=port)
+
+    # In case is off turn it on
+    balance.turn_on()
+
+    # Turn off in shutdown
+    rospy.on_shutdown(balance.turn_off)
+    rospy.loginfo("Balance driver started")
+    rospy.spin()
