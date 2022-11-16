@@ -1,6 +1,7 @@
 # external
-from xml.dom import minidom  # noqa: DUO107
 from typing import Optional, Union
+from xml.dom import minidom  # noqa: DUO107
+
 import rospy
 from pylabware import QuantosQB1
 from std_msgs.msg import String
@@ -9,7 +10,8 @@ from std_msgs.msg import String
 from ..msgs.mettler_quantos_qb1 import (
     mettler_quantos_qb1_command,
     mettler_quantos_qb1_reading,
-    mettler_quantos_qb1_sample)
+    mettler_quantos_qb1_sample,
+)
 
 
 class QuantosQB1Ros:
@@ -23,7 +25,7 @@ class QuantosQB1Ros:
         device_name: str = None,
         connection_mode: str = "serial",
         address: Optional[str] = None,
-        port: Union[str, int] = None
+        port: Union[str, int] = None,
     ):
         self._doorPos = 0
         self._samplerPos = 0
@@ -37,25 +39,27 @@ class QuantosQB1Ros:
         self.subs = rospy.Subscriber(
             name="Quantos QB1 Commands",
             data_class=mettler_quantos_qb1_command,
-            callback=self.callback_commands)
+            callback=self.callback_commands,
+        )
 
         # Initialize ROS publisher for status
         self.pub_done = rospy.Publisher(
-            name="Quantos_Done",
-            data_class=String,
-            queue_size=1)
+            name="Quantos_Done", data_class=String, queue_size=1
+        )
 
         # Initialize ROS publisher for plataform info
         self.pub = rospy.Publisher(
             name="Quantos QB1 Info",
             data_class=mettler_quantos_qb1_reading,
-            queue_size=10)
+            queue_size=10,
+        )
 
         # Initialize ROS publisher for samples info
         self.pubSample = rospy.Publisher(
             name="Quantos QB1 Sample",
             data_class=mettler_quantos_qb1_sample,
-            queue_size=10)
+            queue_size=10,
+        )
 
         rospy.loginfo("Quantos Driver Started")
 
