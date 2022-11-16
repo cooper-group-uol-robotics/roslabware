@@ -1,0 +1,4 @@
+<launch>
+	<arg name="serial_port" default="/dev/ttyUSB0" />
+	<node name="mettler_quantos_qb1" pkg="mettler_quantos_qb1" type="mettler_quantos_qb1" args="$(arg serial_port)" output="screen"/>
+</launch>

@@ -1,28 +1,50 @@
 # external
+from typing import Optional, Union
+
 import rospy
 from pylabware import BalancePPS4102
 
 # core
-from ..msgs.fisher_balance_pp14102 import balance_command, balance_reading
+from ..msgs.fisher_balance_pp14102 import (
+    fisher_balance_pp14102_command,
+    fisher_balance_pp14102_reading,
+)
 
 
 class BalancePPS4102ROS:
     """ROS Wrapper for Fisher Scientific PPS4102 Top Pan Balance Serial Driver
-    Utilises ROS Topics to facilitate communication with balance using a serial driver
-    Made by Jakub Glowacki 27/07/2021"""
+    Utilises ROS Topics to facilitate communication with balance using a
+    serial driver."""
 
-    def __init__(self, port):
+    def __init__(
+        self,
+        device_name: str = None,
+        connection_mode: str = "serial",
+        address: Optional[str] = None,
+        port: Union[str, int] = None,
+    ):
 
-        # Create object of BalanceDriver class, for serial communication
-        self.balance = BalancePPS4102(
-            device_name=None, connection_mode="serial", address=None, port=port
+        # Instantiate balance driver
+        self.IKA = BalancePPS4102(
+            device_name=device_name,
+            connectionmode=connection_mode,
+            address=address,
+            port=port,
         )
 
         # Initialize ros subscriber of topic to which commands are published
-        rospy.Subscriber("Balance_Commands", balance_command, self.callback_commands)
+        self.sub = rospy.Subscriber(
+            name="fisher_balance_pp14102_commands",
+            data_class=fisher_balance_pp14102_command,
+            callback=self.callback_commands,
+        )
 
         # Initialize ros published for Balance responses (weights)
-        self.pub = rospy.Publisher("Balance_Weights", balance_reading, queue_size=10)
+        self.pub = rospy.Publisher(
+            name="fisher_balance_pp14102_readings",
+            data_class=fisher_balance_pp14102_reading,
+            queue_size=10,
+        )
 
     def get_stable_mass(self):
         self.pub.publish(float(self.balance.get_stable_mass()))

@@ -1,72 +1,86 @@
 # external
 from xml.dom import minidom  # noqa: DUO107
-
+from typing import Optional, Union
 import rospy
-
-# Core
-from RosLabware.msgs.quantos_solid_dispenser import (
-    QuantosCommand,
-    QuantosResponse,
-    QuantosSample,
-)
+from pylabware import QuantosQB1
 from std_msgs.msg import String
 
-from pylabware.devices.quantos_solid_dispenser import Quantos
+# Core
+from ..msgs.mettler_quantos_qb1 import (
+    mettler_quantos_qb1_command,
+    mettler_quantos_qb1_reading,
+    mettler_quantos_qb1_sample)
 
 
-class QuantosROS:
+class QuantosQB1Ros:
     """
-    ROS Wrapper for Serial Driver for Mettler Toledo Quantos dispensing system
+    ROS Wrapper for Serial Driver for Mettler Toledo Quantos
+    QB1 dispensing system.
     """
 
-    def __init__(self, port):
-
+    def __init__(
+        self,
+        device_name: str = None,
+        connection_mode: str = "serial",
+        address: Optional[str] = None,
+        port: Union[str, int] = None
+    ):
         self._doorPos = 0
         self._samplerPos = 0
 
         # Create device object
-        self.Quantos = Quantos(
+        self.quantos = QuantosQB1(
             device_name=None, connection_mode="serial", address=None, port=port
         )
 
         # Initialize ROS subscriber
-        rospy.Subscriber("Quantos_Commands", QuantosCommand, self.callback_commands)
+        self.subs = rospy.Subscriber(
+            name="Quantos QB1 Commands",
+            data_class=mettler_quantos_qb1_command,
+            callback=self.callback_commands)
 
         # Initialize ROS publisher for status
-        self.pubDone = rospy.Publisher("Quantos_Done", String, queue_size=1)
+        self.pub_done = rospy.Publisher(
+            name="Quantos_Done",
+            data_class=String,
+            queue_size=1)
 
         # Initialize ROS publisher for plataform info
-        self.pub = rospy.Publisher("Quantos_Info", QuantosResponse, queue_size=10)
+        self.pub = rospy.Publisher(
+            name="Quantos QB1 Info",
+            data_class=mettler_quantos_qb1_reading,
+            queue_size=10)
 
         # Initialize ROS publisher for samples info
         self.pubSample = rospy.Publisher(
-            "Quantos_Samples", QuantosSample, queue_size=10
-        )
+            name="Quantos QB1 Sample",
+            data_class=mettler_quantos_qb1_sample,
+            queue_size=10)
 
         rospy.loginfo("Quantos Driver Started")
 
     def start_dosing(self):
-        self.Quantos.start_dosing()
+        self.quantos.start_dosing()
         rospy.loginfo("Starting Dosing")
 
     def stop_dosing(self):
-        self.Quantos.stop_dosing
+        self.quantos.stop_dosing
         rospy.loginfo("Stopping Dosing")
 
     def get_door_position(self):
-        position = self.Quantos.get_door_position()
+        position = self.quantos.get_door_position()
         self.pub.publish(position, self._doorPos)
         rospy.loginfo("Getting Door Position")
 
     def get_sample_position(self):
-        position = self.Quantos.get_sample_position()
+        position = self.quantos.get_sample_position()
         self.pub.publish(position, self._samplerPos)
         rospy.loginfo("Getting Sampler Position")
 
     def get_head_data(self):
         # TODO check if this is the correct strcuture SMZ
-        self.Quantos.connection.connection_parameters["timeout"] = 30
-        head_data = self.Quantos.get_head_data()
+        self.quantos.connection.connection_parameters["timeout"] = 30
+        head_data = self.quantos.get_head_data()
         print(head_data)
         try:
             xmldoc = minidom.parseString(head_data)
@@ -299,12 +313,12 @@ class QuantosROS:
             rospy.loginfo("Parsing XML Data Failed")
 
         # TODO Check this structure
-        self.Quantos.connection.connection_parameters["timeout"] = 120
+        self.quantos.connection.connection_parameters["timeout"] = 120
 
     def get_sample_data(self):
 
-        self.Quantos.connection.connection_parameters["timeout"] = 30
-        sample_data = self.Quantos.get_sample_data()
+        self.quantos.connection.connection_parameters["timeout"] = 30
+        sample_data = self.quantos.get_sample_data()
         print(sample_data)
 
         # Parse the data
@@ -538,72 +552,72 @@ class QuantosROS:
         except Exception:
             rospy.loginfo("Parsing XML Data Failed")
 
-        self.Quantos.connection.connection_parameters["timeout"] = 120
+        self.quantos.connection.connection_parameters["timeout"] = 120
 
     def move_dosing_pin(self, locked):
-        self.Quantos.move_dosing_head_pin(locked=locked)
+        self.quantos.move_dosing_head_pin(locked=locked)
         rospy.loginfo("Moving Dosing Head Pin")
 
     def open_door(self):
-        self.Quantos.open_door()
+        self.quantos.open_door()
         rospy.loginfo("Opening Front Door")
 
     def close_door(self):
-        self.Quantos.close_door()
+        self.quantos.close_door()
         rospy.loginfo("Closing Front Door")
 
     def move_sampler(self, position):
-        self.Quantos.move_sampler(position)
+        self.quantos.move_sampler(position)
         rospy.loginfo("Moving Sampler")
 
     def set_tapping_before(self, activated: bool):
-        self.Quantos.set_tapping_before_dosing(activated)
+        self.quantos.set_tapping_before_dosing(activated)
         rospy.loginfo("Setting Status of Tapping Before Dosing Setting")
 
     def set_tapping_while_dosing(self, activated: bool):
-        self.Quantos.set_tapping_while_dosing(activated)
+        self.quantos.set_tapping_while_dosing(activated)
         rospy.loginfo("Setting Status of Tapping While Dosing Setting")
 
     def set_tapper_intensity(self, intensity: int):
-        self.Quantos.set_tapper_intensity(intensity)
+        self.quantos.set_tapper_intensity(intensity)
         rospy.loginfo("Setting Intensity of Tapper")
 
     def set_tapper_duration(self, duration: int):
-        self.Quantos.set_tapper_duration(duration)
+        self.quantos.set_tapper_duration(duration)
         rospy.loginfo("Setting Duration of Tapper")
 
     def set_target_mass(self, mass: float):
-        self.Quantos.set_target_mass(mass)
+        self.quantos.set_target_mass(mass)
         rospy.loginfo("Setting Target Mass Value")
 
     def set_tolerance(self, percentage: float):
-        self.Quantos.set_tolerance()
+        self.quantos.set_tolerance()
         rospy.loginfo("Setting Percentage Tolerance")
 
     def set_tolerance_mode(self, overdose: bool):
-        self.Quantos.set_tolerance_mode(overdose)
+        self.quantos.set_tolerance_mode(overdose)
         if overdose:
             rospy.loginfo("Setting Tolerance Overdose Mode")
         else:
             rospy.loginfo("Setting Tolerance Normal Mode")
 
     def set_sample_id(self, sample_id: str):
-        self.Quantos.set_sample_id(sample_id)
+        self.quantos.set_sample_id(sample_id)
         rospy.loginfo("Setting Sample ID")
 
     def set_value_pan(self):
-        self.Quantos.set_value_pan()
+        self.quantos.set_value_pan()
         rospy.loginfo("Setting weighing pan as empty")
 
     def set_algorithm(self, advanced: bool):
-        self.Quantos.set_algorithm(advanced)
+        self.quantos.set_algorithm(advanced)
         if advanced:
             rospy.loginfo("Setting dispensing advanced algorithm")
         else:
             rospy.loginfo("Setting dispensing normal algorithm?")
 
     def set_antistatic(self, activated: bool):
-        self.Quantos.set_antistatic(activated)
+        self.quantos.set_antistatic(activated)
         if activated:
             rospy.loginfo("Setting antistatic system activation")
         else:
@@ -676,4 +690,4 @@ class QuantosROS:
         else:
             rospy.loginfo("invalid command")
 
-        self.pubDone.publish("Done")
+        self.pub_done.publish("Done")

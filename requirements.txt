@@ -1,4 +1,4 @@
 pylabware==0.1.dev8+g4d12f47.d20221114
+rospy
 setuptools==59.6.0
 tox
-rospy

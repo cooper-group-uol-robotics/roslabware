@@ -1,4 +1,0 @@
-<launch>
-	<arg name="serial_port" default="/dev/ttyUSB0" />
-	<node name="quantos_q2_driver" pkg="mettler_toledo_quantos_q2_driver" type="quantos_q2_driver" args="$(arg serial_port)" output="screen"/>
-</launch>

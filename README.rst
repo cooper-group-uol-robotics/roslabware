@@ -4,7 +4,7 @@
 .. image:: images/_static/logo_with_text_600px.png
    :alt:
 
-Roslabware is a simple Python library to provide an interface between ROS and 
+Roslabware is a simple Python library to provide an interface between ROS and
 the drivers of various pieces of equiment tipically used in a chemistry laboratory.
 
 Features

@@ -1,11 +1,13 @@
 # external
+from typing import Optional, Union
+
 import rospy
 from pylabware import RETControlViscHotplate
 
 # local
 from ..msgs.ika_ret_control_visc import (
-    IKA_RET_CONTROL_VISC_Command,
-    IKA_RET_CONTROL_VISC_Reading,
+    ika_ret_control_visc_command,
+    ika_ret_control_visc_reading,
 )
 
 
@@ -14,44 +16,52 @@ class RETControlViscHotplateRos:
     Ros wrapper for the IKA RCT hotplate driver
     """
 
-    def __init__(self, serial_port):
+    def __init__(
+        self,
+        device_name: str = None,
+        connection_mode: str = "serial",
+        address: Optional[str] = None,
+        port: Union[str, int] = None,
+    ):
 
         # Instantiate IKA driver
         self.IKA = RETControlViscHotplate(
-            device_name = None,
-            connection_mode = "serial",
-            address = None,
-            port = serial_port)
+            device_name=device_name,
+            connection_mode=connection_mode,
+            address=address,
+            port=port,
+        )
 
         # Initialize ROS subscriber
-        rospy.Subscriber(
-            "IKA_Commands",
-            IKA_RET_CONTROL_VISC_Command,
-            self.callback_commands)
+        self.sub = rospy.Subscriber(
+            name="ika_ret_control_visc_commands",
+            data_class=ika_ret_control_visc_command,
+            callback=self.callback_commands,
+        )
 
         # Initialize ROS publisher
         self.pub = rospy.Publisher(
-            "IKA_Readings",
-            IKA_RET_CONTROL_VISC_Reading,
-            queue_size = 10)
-        
+            name="ika_ret_control_visc_readings",
+            data_class=ika_ret_control_visc_reading,
+            queue_size=10,
+        )
+
         # Sleeping rate
         self.rate = rospy.Rate(1)
-        
-        rospy.loginfo("IKA driver started")
+
+        rospy.loginfo("IKA RCT hotplate driver started")
 
         # Get data
         while not rospy.is_shutdown():
-            
+
             temperature = self.IKA.get_temperature()
             stir_speed = self.IKA.get_speed()
             viscosity_trend = self.IKA.get_viscosity_trend()
 
             self.pub.publish(
-                float(temperature),
-                float(stir_speed),
-                float(viscosity_trend))
-            
+                float(temperature), float(stir_speed), float(viscosity_trend)
+            )
+
             rospy.loginfo(
                 " Hotplate Temperature: "
                 + str(temperature)
@@ -60,7 +70,7 @@ class RETControlViscHotplateRos:
                 + "| Viscosity Trend: "
                 + str(viscosity_trend)
             )
-            
+
             self.rate.sleep()
 
     def start_heating(self):
@@ -118,4 +128,5 @@ class RETControlViscHotplateRos:
         else:
             rospy.loginfo("invalid command")
 
-print("working")
+
+rospy.loginfo("working")
