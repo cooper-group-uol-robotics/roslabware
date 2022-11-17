@@ -1,4 +1,4 @@
-# Available commands to use the Fisher Scientific PPS4102 Top Pan balance 
+# Available commands to use the Fisher Scientific PPS4102 Top Pan balance
 int32 HEAT_ON = 0
 int32 HEAT_OFF = 1
 int32 STIR_ON = 2

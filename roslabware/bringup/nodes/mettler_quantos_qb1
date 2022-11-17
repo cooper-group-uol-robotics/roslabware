@@ -1,7 +1,7 @@
 # external
 import rospy
 import sys
-from pylabware import QuantosQB1
+from ...devices.mettler_quantos_qb1 import QuantosQB1Ros
 
 # Object oriented initialization for ROS
 if __name__ == "__main__":
@@ -17,7 +17,7 @@ if __name__ == "__main__":
     rospy.init_node("QuantosQB1 Driver", anonymous=True)
 
     # Create instance of ROS Wrapper
-    Quantos_ROS = QuantosQB1(
+    Quantos_ROS = QuantosQB1Ros(
             device_name=None,
             connection_mode='serial',
             address=None,

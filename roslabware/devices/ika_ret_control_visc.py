@@ -6,8 +6,8 @@ from pylabware import RETControlViscHotplate
 
 # local
 from ..msg.ika_ret_control_visc import (
-    ika_ret_control_visc_command,
-    ika_ret_control_visc_reading,
+    ret_control_visc_hotplate_command,
+    ret_control_visc_hotplate_reading,
 )
 
 
@@ -35,14 +35,14 @@ class RETControlViscHotplateRos:
         # Initialize ROS subscriber
         self.sub = rospy.Subscriber(
             name="IKA Ret Control Visc Hotpalte Commands",
-            data_class=ika_ret_control_visc_command,
+            data_class=ret_control_visc_hotplate_command,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher
         self.pub = rospy.Publisher(
             name="IKA Ret Control Visc Hotpalte Readings",
-            data_class=ika_ret_control_visc_reading,
+            data_class=ret_control_visc_hotplate_reading,
             queue_size=10,
         )
 

@@ -1,7 +1,8 @@
 # external
 import rospy
 import sys
-from pylabware import TopBalance
+from ...devices.kern_pcb_top_balance import TopBalanceRos
+
 
 if __name__ == "__main__":
 
@@ -15,7 +16,7 @@ if __name__ == "__main__":
     rospy.init_node("TopBalance Driver", anonymous=True)
 
     # Instantiate ROS Wrapper
-    kern_ROS = TopBalance(
+    kern_ROS = TopBalanceRos(
         device_name=None,
         connection_mode='serial',
         address=None,
