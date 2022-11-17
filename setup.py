@@ -1,7 +1,12 @@
-import setuptools
+from setuptools import find_packages, setup
 
-if __name__ == "__main__":
-    setuptools.setup(
-        use_scm_version=True,
-        setup_requires="setuptools-scm>=6.2",
-    )
+setup(
+    name="roslabware",
+    version="0.1.0",
+    description="ROS wrapper Library to control common chemical laboratory hardware/",
+    author="Cooper Group",
+    author_email="",
+    packages=find_packages(),
+    install_requires=[],
+    include_package_data=True,
+)

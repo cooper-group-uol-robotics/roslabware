@@ -46,15 +46,15 @@ repos:
       - id: pyupgrade
         args: [--py37-plus]
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
-    hooks:
-      - id: isort
+  # - repo: https://github.com/PyCQA/isort
+  #   rev: 5.10.1
+  #   hooks:
+  #     - id: isort
 
-  - repo: https://github.com/psf/black
-    rev: 22.3.0
-    hooks:
-      - id: black # black-jupyter
+  # - repo: https://github.com/psf/black
+  #   rev: 22.3.0
+  #   hooks:
+  #     - id: black # black-jupyter
 
   # - repo: https://github.com/PyCQA/bandit
   #   rev: 1.7.4
