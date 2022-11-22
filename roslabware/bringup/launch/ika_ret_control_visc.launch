@@ -1,4 +1,5 @@
 <launch>
 	<arg name="serial_port" value="/dev/ttyACM0"/>
-	<node name="ika_ret_control_visc" pkg="ika_ret_control_visc" type="ika_ret_control_visc" args="$(arg serial_port)" output="screen"/>
+	
+	<node name="ika_plate_driver" pkg="ika_plate_rct_digital_driver" type="ika_plate_driver" args="$(arg serial_port)" output="screen"/> 	
 </launch>

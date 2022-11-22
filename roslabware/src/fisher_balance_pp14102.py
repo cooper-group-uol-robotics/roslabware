@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # external
 from typing import Optional, Union
 
@@ -5,7 +7,7 @@ import rospy
 from pylabware import BalancePPS4102
 
 # core
-from ..msgs.fisher_balance_pp14102 import (
+from ..msg.fisher_balance_pp14102 import (
     fisher_balance_pp14102_command,
     fisher_balance_pp14102_reading,
 )

@@ -6,8 +6,8 @@ from pylabware import RETControlViscHotplate
 
 # local
 from ..msg.ika_ret_control_visc import (
-    ret_control_visc_hotplate_command,
-    ret_control_visc_hotplate_reading,
+    ika_ret_control_visc_command,
+    ika_ret_control_visc_reading,
 )
 
 
@@ -22,6 +22,7 @@ class RETControlViscHotplateRos:
         connection_mode: str = "serial",
         address: Optional[str] = None,
         port: Union[str, int] = None,
+        sensor: Optional[int] = 1
     ):
 
         # Instantiate IKA driver
@@ -35,14 +36,14 @@ class RETControlViscHotplateRos:
         # Initialize ROS subscriber
         self.sub = rospy.Subscriber(
             name="IKA Ret Control Visc Hotpalte Commands",
-            data_class=ret_control_visc_hotplate_command,
+            data_class=ika_ret_control_visc_command,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher
         self.pub = rospy.Publisher(
             name="IKA Ret Control Visc Hotpalte Readings",
-            data_class=ret_control_visc_hotplate_reading,
+            data_class=ika_ret_control_visc_reading,
             queue_size=10,
         )
 
@@ -54,7 +55,8 @@ class RETControlViscHotplateRos:
         # Get data
         while not rospy.is_shutdown():
 
-            temperature = self.IKA.get_temperature()
+            # Get temperature of external sensor as default
+            temperature = self.IKA.get_temperature(sensor=sensor)
             stir_speed = self.IKA.get_speed()
             viscosity_trend = self.IKA.get_viscosity_trend()
 

@@ -7,7 +7,7 @@ from pylabware import QuantosQB1
 from std_msgs.msg import String
 
 # Core
-from ..msgs.mettler_quantos_qb1 import (
+from ..msg.mettler_quantos_qb1 import (
     mettler_quantos_qb1_command,
     mettler_quantos_qb1_reading,
     mettler_quantos_qb1_sample,
@@ -26,14 +26,25 @@ class QuantosQB1Ros:
         connection_mode: str = "serial",
         address: Optional[str] = None,
         port: Union[str, int] = None,
+        simulation: Optional[bool] = False
     ):
         self._doorPos = 0
         self._samplerPos = 0
 
         # Create device object
         self.quantos = QuantosQB1(
-            device_name=None, connection_mode="serial", address=None, port=port
+            device_name=device_name,
+            connection_mode=connection_mode,
+            address=address,
+            port=port
         )
+
+        if simulation:
+            self.quantos.simulation = True
+
+        else:
+            self.quantos.connect()
+            self.quantos.initialize_device()
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
