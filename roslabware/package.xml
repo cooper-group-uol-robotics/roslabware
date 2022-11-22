@@ -6,6 +6,7 @@
 
   <maintainer email="jglowa@liverpool.ac.uk">Jakub Glowacki</maintainer>
 
+  <license>TODO</license>
   <build_depend>message_generation</build_depend>
   <exec_depend>message_runtime</exec_depend>
   <buildtool_depend>catkin</buildtool_depend>
