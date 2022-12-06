@@ -5,9 +5,9 @@ import rospy
 from pylabware import TopBalance
 
 # Core
-from ..msg.kern_pcb_top_balance import (
-    kern_pcb_top_balance_command,
-    kern_pcb_top_balance_reading
+from roslabware_msgs.msg import (
+    KernPCBTopBalanceCmd,
+    KernPCBTopBalanceReading
 )
 
 
@@ -38,14 +38,14 @@ class TopBalanceRos:
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
             name="Kern_Commands",
-            data_class=kern_pcb_top_balance_command,
+            data_class=KernPCBTopBalanceCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ros published for balance responses (weights)
         self.pub = rospy.Publisher(
             name="Kern_Weights",
-            data_class=kern_pcb_top_balance_reading,
+            data_class=KernPCBTopBalanceReading,
             queue_size=10
         )
 

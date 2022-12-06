@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>roslabware</name>
+  <name>roslabware_drivers</name>
   <version>0.1.0</version>
-  <description>ROS wrapper for pylabware library</description>
+  <description>ROS wrappers for pylabware devices.</description>
 
   <maintainer email="h.fakhruldeen@liverpool.ac.uk">Hatem Fakhruldeen</maintainer>
   <maintainer email="s.manzano@liverpool.ac.uk">Sebastian Juan Manzano</maintainer>
 
   <license>TODO</license>
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roslabware_msgs</build_depend>
   <exec_depend>roslabware_msgs</exec_depend>
-  <exec_depend>roslabware_drivers</exec_depend>
+  <exec_depend>rospy</exec_depend>
 
   <export>
-    <metapackage/>
   </export>
 </package>

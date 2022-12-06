@@ -3,7 +3,7 @@
 # external
 import rospy
 import sys
-from ...src.mettler_quantos_qb1 import QuantosQB1Ros
+from roslabware_drivers.mettler_quantos_qb1 import QuantosQB1Ros
 
 # Object oriented initialization for ROS
 if __name__ == "__main__":

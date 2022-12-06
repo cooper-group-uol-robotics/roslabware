@@ -4,10 +4,10 @@ from typing import Optional, Union
 import rospy
 from pylabware import RETControlViscHotplate
 
-# local
-from ..msg.ika_ret_control_visc import (
-    ika_ret_control_visc_command,
-    ika_ret_control_visc_reading,
+# Core
+from roslabware_msgs.msg import (
+    IKARetControlViscCmd,
+    IKARetControlViscReading,
 )
 
 
@@ -36,14 +36,14 @@ class RETControlViscHotplateRos:
         # Initialize ROS subscriber
         self.sub = rospy.Subscriber(
             name="IKA Ret Control Visc Hotpalte Commands",
-            data_class=ika_ret_control_visc_command,
+            data_class=IKARetControlViscCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher
         self.pub = rospy.Publisher(
             name="IKA Ret Control Visc Hotpalte Readings",
-            data_class=ika_ret_control_visc_reading,
+            data_class=IKARetControlViscReading,
             queue_size=10,
         )
 

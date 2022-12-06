@@ -7,10 +7,10 @@ from pylabware import QuantosQB1
 from std_msgs.msg import String
 
 # Core
-from ..msg.mettler_quantos_qb1 import (
-    mettler_quantos_qb1_command,
-    mettler_quantos_qb1_reading,
-    mettler_quantos_qb1_sample,
+from roslabware_msgs.msg import (
+    MettlerQuantosQB1Cmd,
+    MettlerQuantosQB1Reading,
+    MettlerQuantosQB1Sample,
 )
 
 
@@ -49,7 +49,7 @@ class QuantosQB1Ros:
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
             name="Quantos QB1 Commands",
-            data_class=mettler_quantos_qb1_command,
+            data_class=MettlerQuantosQB1Cmd,
             callback=self.callback_commands,
         )
 
@@ -61,14 +61,14 @@ class QuantosQB1Ros:
         # Initialize ROS publisher for plataform info
         self.pub = rospy.Publisher(
             name="Quantos QB1 Info",
-            data_class=mettler_quantos_qb1_reading,
+            data_class=MettlerQuantosQB1Reading,
             queue_size=10,
         )
 
         # Initialize ROS publisher for samples info
         self.pubSample = rospy.Publisher(
             name="Quantos QB1 Sample",
-            data_class=mettler_quantos_qb1_sample,
+            data_class=MettlerQuantosQB1Sample,
             queue_size=10,
         )
 

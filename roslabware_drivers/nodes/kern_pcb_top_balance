@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
+
 # external
 import rospy
 import sys
-from ...devices.kern_pcb_top_balance import TopBalanceRos
+from roslabware_drivers.kern_pcb_top_balance import TopBalanceRos
 
 
 if __name__ == "__main__":

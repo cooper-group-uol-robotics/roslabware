@@ -1,18 +1,20 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>roslabware</name>
+  <name>roslabware_msgs</name>
   <version>0.1.0</version>
-  <description>ROS wrapper for pylabware library</description>
+  <description>ROS messages for laborary devices</description>
 
   <maintainer email="h.fakhruldeen@liverpool.ac.uk">Hatem Fakhruldeen</maintainer>
   <maintainer email="s.manzano@liverpool.ac.uk">Sebastian Juan Manzano</maintainer>
 
   <license>TODO</license>
   <buildtool_depend>catkin</buildtool_depend>
-  <exec_depend>roslabware_msgs</exec_depend>
-  <exec_depend>roslabware_drivers</exec_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <build_export_depend>std_msgs</build_export_depend>
 
   <export>
-    <metapackage/>
   </export>
 </package>

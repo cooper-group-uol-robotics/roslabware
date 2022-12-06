@@ -1,0 +1,44 @@
+cmake_minimum_required(VERSION 3.0.2)
+project(roslabware_msgs)
+
+
+find_package(catkin REQUIRED COMPONENTS
+  std_msgs
+  message_generation
+)
+
+add_message_files(
+DIRECTORY
+  msg/fisher_balance_pp14102
+)
+
+add_message_files(
+  DIRECTORY
+   msg/ika_ret_control_visc
+ )
+
+ add_message_files(
+  DIRECTORY
+   msg/kern_pcb_top_balance
+ )
+
+ add_message_files(
+  DIRECTORY
+   msg/mettler_quantos_qb1
+ )
+
+
+generate_messages(
+DEPENDENCIES
+std_msgs
+)
+
+
+catkin_package(
+	CATKIN_DEPENDS
+  message_runtime)
+
+
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)

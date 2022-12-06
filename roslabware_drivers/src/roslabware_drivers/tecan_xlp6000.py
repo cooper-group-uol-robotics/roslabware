@@ -5,7 +5,7 @@ import rospy
 from pylabware import XLP6000
 
 # Core
-from ..msg.tecan_xlp6000 import (
+from roslabware_msgs.msg import (
     tecan_xlp6000_command,
     tecan_xlp6000_reading,
 )

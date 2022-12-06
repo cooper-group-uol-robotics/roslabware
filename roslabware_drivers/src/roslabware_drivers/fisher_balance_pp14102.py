@@ -1,15 +1,13 @@
-#!/usr/bin/env python
-
 # external
 from typing import Optional, Union
 
 import rospy
 from pylabware import BalancePPS4102
 
-# core
-from ..msg.fisher_balance_pp14102 import (
-    fisher_balance_pp14102_command,
-    fisher_balance_pp14102_reading,
+# Core
+from roslabware_msgs.msg import (
+    FisherBalancePP14102Cmd, 
+    FisherBalancePP14102Reading
 )
 
 
@@ -37,14 +35,14 @@ class BalancePPS4102Ros:
         # Initialize ros subscriber of topic to which commands are published
         self.sub = rospy.Subscriber(
             name="fisher_balance_pp14102_commands",
-            data_class=fisher_balance_pp14102_command,
+            data_class=FisherBalancePP14102Cmd,
             callback=self.callback_commands,
         )
 
         # Initialize ros published for Balance responses (weights)
         self.pub = rospy.Publisher(
             name="fisher_balance_pp14102_readings",
-            data_class=fisher_balance_pp14102_reading,
+            data_class=FisherBalancePP14102Reading,
             queue_size=10,
         )
 

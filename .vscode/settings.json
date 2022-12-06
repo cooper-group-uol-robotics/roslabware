@@ -9,5 +9,6 @@
   "python.analysis.extraPaths": [
     "/home/group/catkin_ws/devel/lib/python3/dist-packages",
     "/opt/ros/noetic/lib/python3/dist-packages"
-  ]
+  ],
+  "ros.rosSetupScript": ""
 }

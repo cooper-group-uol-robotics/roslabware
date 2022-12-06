@@ -3,7 +3,7 @@
 # External
 import sys
 import rospy
-from ...src.ika_ret_control_visc import RETControlViscHotplateRos
+from roslabware_drivers.ika_ret_control_visc import RETControlViscHotplateRos
 
 # Object oriented initialization for ROS
 if __name__ == "__main__":
