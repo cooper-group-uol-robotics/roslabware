@@ -6,7 +6,7 @@ from pylabware import BalancePPS4102
 
 # Core
 from roslabware_msgs.msg import (
-    FisherBalancePP14102Cmd, 
+    FisherBalancePP14102Cmd,
     FisherBalancePP14102Reading
 )
 

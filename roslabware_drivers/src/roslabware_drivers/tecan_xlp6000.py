@@ -64,7 +64,7 @@ class XLP6000Ros:
         rospy.loginfo("XLP6000 Driver Started")
 
     def volume_to_step(self, volume_in_ml):
-        """Converts volume specified to number of steps 
+        """Converts volume specified to number of steps
 
         Returns:
             float -- steps

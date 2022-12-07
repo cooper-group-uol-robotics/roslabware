@@ -18,7 +18,7 @@ if __name__ == "__main__":
     rospy.init_node("TopBalance Driver", anonymous=True)
 
     # Instantiate ROS Wrapper
-    kern_ROS = TopBalanceRos(
+    kern_ros = TopBalanceRos(
         device_name=None,
         connection_mode='serial',
         address=None,
