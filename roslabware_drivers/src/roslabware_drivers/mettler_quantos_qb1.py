@@ -26,7 +26,6 @@ class QuantosQB1Ros:
         connection_mode: str = "serial",
         address: Optional[str] = None,
         port: Union[str, int] = None,
-        simulation: Optional[bool] = False
     ):
         self._doorPos = 0
         self._samplerPos = 0
