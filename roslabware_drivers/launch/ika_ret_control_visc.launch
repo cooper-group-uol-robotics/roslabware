@@ -1,5 +1,28 @@
 <launch>
-	<arg name="serial_port" value="/dev/ttyACM0"/>
-
-	<node name="ika_plate_driver" pkg="ika_plate_rct_digital_driver" type="ika_plate_driver" args="$(arg serial_port)" output="screen"/>
+	<arg 
+		name="device_name"
+		default="ika_hotplate"/>
+	<arg
+		name="connection_mode"
+		default="serial"/>
+	<arg
+		name="adress"
+		default="None"/>
+	<arg
+		name="sensor"
+		default="1"/>
+	<arg
+		name="port"
+		default="/dev/ttyACM0"/>
+	<node 
+		name="ika_plate_driver"
+		pkg="ika_plate_driver"
+		type="ika_plate_driver"
+		args="
+			$(arg device_name)
+			$(arg connection_mode)
+			$(arg address)
+			$(arg port)
+			$(arg sensor)"
+		output="screen"/>
 </launch>

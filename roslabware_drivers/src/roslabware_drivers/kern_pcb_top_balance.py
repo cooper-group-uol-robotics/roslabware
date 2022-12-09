@@ -35,6 +35,9 @@ class TopBalanceRos:
             port=port,
         )
 
+        # Connect to balance
+        self.balance.connect()
+
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
             name="Kern_Commands",

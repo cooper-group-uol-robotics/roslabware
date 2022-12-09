@@ -1,30 +1,60 @@
 #!/usr/bin/env python3
 
-# external
+# External
+import argparse
+
 import rospy
-import sys
 from roslabware_drivers.mettler_quantos_qb1 import QuantosQB1Ros
 
 # Object oriented initialization for ROS
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog="Mettler Quantos QB1 balance ROS",
+        description='ROS node for Mettler Quantos QB1 balance')
+    parser.add_argument(
+        '-d',
+        '--device_name',
+        action='store',
+        default='rct_ika_hotplate',
+        nargs='?',
+        const=1,
+        help='Device name')
+    parser.add_argument(
+        '-c',
+        '--connection_mode',
+        action='store',
+        default='serial',
+        nargs='?',
+        const=1,
+        help='Connection mode: "tcpip", "serial" or "http"')
+    parser.add_argument(
+        '-add',
+        '--address',
+        action='store',
+        default='None',
+        nargs='?',
+        const=1,
+        help='IP Address.')
+    parser.add_argument(
+        '-p',
+        '--port',
+        action='store',
+        default='/dev/ttyUSB0',
+        nargs='?',
+        const=1,
+        help='Serial or TCP/IP port')
 
-    # Set default port if not provided
-    if len(sys.argv) > 1:
-        serial_port = sys.argv[1]
-    else:
-        serial_port = '/dev/ttyUSB0'
-        rospy.logwarn('No port provided. Using ttyUSB0 as default port')
+    args = parser.parse_args()
 
     # Initiliaze rospy node
     rospy.init_node("QuantosQB1 Driver", anonymous=True)
 
     # Create instance of ROS Wrapper
-    Quantos_ROS = QuantosQB1Ros(
-            device_name=None,
-            connection_mode='serial',
-            address=None,
-            port=serial_port,
-            simulation=True)
+    quantos_ros = QuantosQB1Ros(
+            device_name=args.device_name,
+            connection_mode=args.connection_mode,
+            address=args.address,
+            port=args.port)
 
     # Keeps python from exiting until node is stopped
     rospy.spin()

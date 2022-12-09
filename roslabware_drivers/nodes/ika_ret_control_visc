@@ -1,27 +1,70 @@
 #!/usr/bin/env python3
 
 # External
-import sys
+import argparse
 import rospy
+
 from roslabware_drivers.ika_ret_control_visc import RETControlViscHotplateRos
 
-# Object oriented initialization for ROS
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        serial_port = sys.argv[1]
-    else:
-        serial_port = '/dev/ttyACM0'
-        rospy.logwarn('No port provided. Using ttyUSB0 as default port')
+    # Get arguments needed
+    parser = argparse.ArgumentParser(
+        prog="IKA hotplate ROS",
+        description='ROS node for an IKA RET hotplate device')
+    parser.add_argument(
+        '-d',
+        '--device_name',
+        action='store',
+        default='rct_ika_hotplate',
+        nargs='?',
+        const=1,
+        help='Device name')
+    parser.add_argument(
+        '-c',
+        '--connection_mode',
+        action='store',
+        default='serial',
+        nargs='?',
+        const=1,
+        help='Connection mode: "tcpip", "serial" or "http"')
+    parser.add_argument(
+        '-add',
+        '--address',
+        action='store',
+        default='None',
+        nargs='?',
+        const=1,
+        help='IP Address.')
+    parser.add_argument(
+        '-p',
+        '--port',
+        action='store',
+        default='/dev/ttyACM0',
+        nargs='?',
+        const=1,
+        help='Serial or TCP/IP port')
+    parser.add_argument(
+        '-s',
+        '--sensor',
+        action='store',
+        default='1',
+        nargs='?',
+        const=1,
+        help='Temperature sensor:\
+                0: internal, 1: external')
+
+    args = parser.parse_args()
 
     # Initialize rospy node
     rospy.init_node("RETControlViscHotplate Driver", anonymous=True)
 
-    # Create instance
+    # Object oriented initialization for ROS
     hotplate_ret_ika = RETControlViscHotplateRos(
-        device_name=None,
-        connection_mode='serial',
-        address=None,
-        port=serial_port)
+        device_name=args.device_name,
+        connection_mode=args.connection_mode,
+        address=args.address,
+        port=args.port,
+        sensor=args.sensor)
 
     # Stop everything on shutdown
     rospy.on_shutdown(hotplate_ret_ika.stop_heating())

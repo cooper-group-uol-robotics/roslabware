@@ -1,33 +1,59 @@
 #!/usr/bin/env python3
 
 # external
+import argparse
 import rospy
-import sys
-from pylabware import BalancePPS4102
+
+from roslabware_drivers.tecan_xlp6000 import BalancePPS4102Ros
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        port = sys.argv[1]
-    else:
-        port = '/dev/ttyUSB0'
-        rospy.logwarn('No port provided. Using ttyUSB0 as default port')
+    # Get arguments needed
+    parser = argparse.ArgumentParser(
+        prog="Fisher PP14102 balance ROS",
+        description='ROS node for Fisher PP14102 balance')
+    parser.add_argument(
+        '-d',
+        '--device_name',
+        action='store',
+        default='rct_ika_hotplate',
+        nargs='?',
+        const=1,
+        help='Device name')
+    parser.add_argument(
+        '-c',
+        '--connection_mode',
+        action='store',
+        default='serial',
+        nargs='?',
+        const=1,
+        help='Connection mode: "tcpip", "serial" or "http"')
+    parser.add_argument(
+        '-add',
+        '--address',
+        action='store',
+        default='None',
+        nargs='?',
+        const=1,
+        help='IP Address.')
+    parser.add_argument(
+        '-p',
+        '--port',
+        action='store',
+        default='/dev/ttyACM0',
+        nargs='?',
+        const=1,
+        help='Serial or TCP/IP port')
 
-    # Initialize ROS node
-    rospy.init_node("BalancePPS4102 Driver", anonymous=True)
-
-    port = sys.argv[1]
+    args = parser.parse_args()
 
     # Create instance of ROS Wrapper
-    balance = BalancePPS4102(
-        device_name=None,
-        connection_mode='serial',
-        address=None,
-        port=port)
-
-    # In case is off turn it on
-    balance.turn_on()
+    balance = BalancePPS4102Ros(
+        device_name=args.device_name,
+        connection_mode=args.connection_mode,
+        address=args.address,
+        sensor=args.sensor)
 
     # Turn off in shutdown
     rospy.on_shutdown(balance.turn_off)
-    rospy.loginfo("Balance driver started")
+    rospy.loginfo("Fisher balance driver started")
     rospy.spin()

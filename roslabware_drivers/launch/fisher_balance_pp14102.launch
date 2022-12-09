@@ -1,4 +1,24 @@
 <launch>
-	<arg name="serial_port" default="/dev/ttyUSB0" />
-	<node name="fisher_balance_pp14102" pkg="fisher_balance_pp14102" type="fisher_balance_pp14102" args="$(arg serial_port)" output="screen"/>
+	<arg 
+		name="device_name"
+		default="fisher_balance"/>
+	<arg
+		name="connection_mode"
+		default="serial"/>
+	<arg
+		name="adress"
+		default="None"/>
+	<arg
+		name="port"
+		default="/dev/ttyUSB0"/>
+	<node 
+		name="fisher_balance_pp14102"
+		pkg="fisher_balance_pp14102"
+		type="fisher_balance_pp14102"
+		args="
+			$(arg device_name)
+			$(arg connection_mode)
+			$(arg address)
+			$(arg port)"
+		output="screen"/>
 </launch>

@@ -39,12 +39,8 @@ class QuantosQB1Ros:
             port=port
         )
 
-        if simulation:
-            self.quantos.simulation = True
-
-        else:
-            self.quantos.connect()
-            self.quantos.initialize_device()
+        self.quantos.connect()
+        self.quantos.initialize_device()
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(

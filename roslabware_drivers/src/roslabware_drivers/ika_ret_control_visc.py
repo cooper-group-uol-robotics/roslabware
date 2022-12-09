@@ -1,6 +1,4 @@
 # external
-from typing import Optional, Union
-
 import rospy
 from pylabware import RETControlViscHotplate
 
@@ -18,20 +16,23 @@ class RETControlViscHotplateRos:
 
     def __init__(
         self,
-        device_name: str = None,
-        connection_mode: str = "serial",
-        address: Optional[str] = None,
-        port: Union[str, int] = None,
-        sensor: Optional[int] = 1
+        device_name: str,
+        connection_mode: str,
+        address: str,
+        port: str,
+        sensor: str
     ):
 
         # Instantiate IKA driver
-        self.IKA = RETControlViscHotplate(
+        self.hotplate = RETControlViscHotplate(
             device_name=device_name,
             connection_mode=connection_mode,
             address=address,
             port=port,
         )
+
+        # connect
+        self.hotplate.connect()
 
         # Initialize ROS subscriber
         self.sub = rospy.Subscriber(
@@ -56,9 +57,9 @@ class RETControlViscHotplateRos:
         while not rospy.is_shutdown():
 
             # Get temperature of external sensor as default
-            temperature = self.IKA.get_temperature(sensor=sensor)
-            stir_speed = self.IKA.get_speed()
-            viscosity_trend = self.IKA.get_viscosity_trend()
+            temperature = self.hotplate.get_temperature(sensor=sensor)
+            stir_speed = self.hotplate.get_speed()
+            viscosity_trend = self.hotplate.get_viscosity_trend()
 
             self.pub.publish(
                 float(temperature), float(stir_speed), float(viscosity_trend)
@@ -76,27 +77,27 @@ class RETControlViscHotplateRos:
             self.rate.sleep()
 
     def start_heating(self):
-        self.IKA.start_temperature_regulation()
+        self.hotplate.start_temperature_regulation()
         rospy.loginfo("Turning on Heating")
 
     def stop_heating(self):
-        self.IKA.stop_temperature_regulation()
+        self.hotplate.stop_temperature_regulation()
         rospy.loginfo("Turning off Heating")
 
     def start_stirring(self):
-        self.IKA.start_stirring()
+        self.hotplate.start_stirring()
         rospy.loginfo("Turning on Stirring")
 
     def stop_stirring(self):
-        self.IKA.stop_stirring()
+        self.hotplate.stop_stirring()
         rospy.loginfo("Turning off Stirring")
 
     def set_speed(self, speed: int):
-        self.IKA.set_speed(speed)
+        self.hotplate.set_speed(speed)
         rospy.loginfo("Setting Stirring To: " + str(speed) + "RPM")
 
     def set_temperature(self, temperature: int):
-        self.IKA.set_temperature(temperature)
+        self.hotplate.set_temperature(temperature)
         rospy.loginfo("Setting Heating To: " + str(temperature) + "ºC")
 
     def callback_commands(self, msg):

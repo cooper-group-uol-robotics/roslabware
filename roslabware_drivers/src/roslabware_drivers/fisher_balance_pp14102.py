@@ -1,6 +1,4 @@
 # external
-from typing import Optional, Union
-
 import rospy
 from pylabware import BalancePPS4102
 
@@ -18,19 +16,22 @@ class BalancePPS4102Ros:
 
     def __init__(
         self,
-        device_name: str = None,
-        connection_mode: str = "serial",
-        address: Optional[str] = None,
-        port: Union[str, int] = None,
+        device_name: str,
+        connection_mode: str,
+        address: str,
+        port: str,
     ):
 
         # Instantiate balance driver
-        self.IKA = BalancePPS4102(
+        self.balance = BalancePPS4102(
             device_name=device_name,
             connectionmode=connection_mode,
             address=address,
             port=port,
         )
+
+        self.balance.connect()
+        self.balance.turn_on()
 
         # Initialize ros subscriber of topic to which commands are published
         self.sub = rospy.Subscriber(
@@ -65,7 +66,6 @@ class BalancePPS4102Ros:
         rospy.loginfo("Balance turning on")
 
     def callback_commands(self, msg):
-
         message = msg.balance_command
 
         if message == msg.ZERO:
