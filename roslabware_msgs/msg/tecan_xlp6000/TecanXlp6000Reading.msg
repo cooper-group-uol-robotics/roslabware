@@ -1,0 +1,2 @@
+float32 valve_position
+float32 plunger_position
