@@ -4,7 +4,7 @@
 import argparse
 import rospy
 
-from roslabware_drivers.ika_ret_control_visc import TopBalanceRos
+from roslabware_drivers.kern_pcb2500 import PCB2500Ros
 
 if __name__ == "__main__":
     # Get arguments needed
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     rospy.init_node("TopBalance Driver", anonymous=True)
 
     # Objectoriented initialization of ROS
-    kern_ros = TopBalanceRos(
+    kern_ros = PCB2500Ros(
         device_name=args.device_name,
         connection_mode=args.connection_mode,
         address=args.address,

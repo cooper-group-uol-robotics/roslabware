@@ -4,7 +4,7 @@
 import argparse
 import rospy
 
-from roslabware_drivers.tecan_xlp6000 import BalancePPS4102Ros
+from roslabware_drivers.fisher_pp14102 import PP14102Ros
 
 if __name__ == "__main__":
     # Get arguments needed
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Create instance of ROS Wrapper
-    balance = BalancePPS4102Ros(
+    balance = PP14102Ros(
         device_name=args.device_name,
         connection_mode=args.connection_mode,
         address=args.address,

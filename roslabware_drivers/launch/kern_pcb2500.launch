@@ -1,20 +1,20 @@
 <launch>
 	<arg 
 		name="device_name"
-		default="kern_balance"/>
+		default="kern_pcb2500"/>
 	<arg
 		name="connection_mode"
 		default="serial"/>
 	<arg
-		name="adress"
+		name="address"
 		default="None"/>
 	<arg
 		name="port"
 		default="/dev/ttyUSB0"/>
 	<node 
-		name="kern_pcb_top_balance"
-		pkg="kern_pcb_top_balance"
-		type="kern_pcb_top_balance"
+		name="kern_pcb2500"
+		pkg="kern_pcb2500"
+		type="kern_pcb2500"
 		args="
 			$(arg device_name)
 			$(arg connection_mode)

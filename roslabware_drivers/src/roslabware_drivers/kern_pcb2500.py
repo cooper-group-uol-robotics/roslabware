@@ -2,16 +2,16 @@
 from typing import Optional, Union
 
 import rospy
-from pylabware import TopBalance
+from pylabware import PCB2500
 
 # Core
 from roslabware_msgs.msg import (
-    KernPCBTopBalanceCmd,
-    KernPCBTopBalanceReading
+    KernPCB2500Cmd,
+    KernPCB2500Reading
 )
 
 
-class TopBalanceRos:
+class PCB2500Ros:
     """
     ROS wrapper class for controlling Kern PCB Top Balance
     """
@@ -28,7 +28,7 @@ class TopBalanceRos:
         self.tared = False
 
         # Instantiate IKA driver
-        self.balance = TopBalance(
+        self.balance = PCB2500(
             device_name=device_name,
             connection_mode=connection_mode,
             address=address,
@@ -41,14 +41,14 @@ class TopBalanceRos:
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
             name="Kern_Commands",
-            data_class=KernPCBTopBalanceCmd,
+            data_class=KernPCB2500Cmd,
             callback=self.callback_commands,
         )
 
         # Initialize ros published for balance responses (weights)
         self.pub = rospy.Publisher(
             name="Kern_Weights",
-            data_class=KernPCBTopBalanceReading,
+            data_class=KernPCB2500Reading,
             queue_size=10
         )
 

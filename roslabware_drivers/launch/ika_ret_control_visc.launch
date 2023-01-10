@@ -6,7 +6,7 @@
 		name="connection_mode"
 		default="serial"/>
 	<arg
-		name="adress"
+		name="address"
 		default="None"/>
 	<arg
 		name="sensor"
