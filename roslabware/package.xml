@@ -5,7 +5,7 @@
   <description>ROS wrapper for pylabware library</description>
 
   <maintainer email="h.fakhruldeen@liverpool.ac.uk">Hatem Fakhruldeen</maintainer>
-  <maintainer email="s.manzano@liverpool.ac.uk">Sebastian Juan Manzano</maintainer>
+  <maintainer email="s.manzano@liverpool.ac.uk">Sebastian Manzano</maintainer>
 
   <license>TODO</license>
   <buildtool_depend>catkin</buildtool_depend>
