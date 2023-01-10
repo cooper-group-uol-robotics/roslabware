@@ -35,17 +35,22 @@ class PP14102Ros:
 
         # Initialize ros subscriber of topic to which commands are published
         self.sub = rospy.Subscriber(
-            name="fisher_balance_pp14102_commands",
+            name="fisher_pp14102_commands",
             data_class=FisherPP14102Cmd,
             callback=self.callback_commands,
         )
 
         # Initialize ros published for Balance responses (weights)
         self.pub = rospy.Publisher(
-            name="fisher_balance_pp14102_readings",
+            name="fisher_pp14102_readings",
             data_class=FisherPP14102Reading,
             queue_size=10,
         )
+
+        # Sleeping rate
+        self.rate = rospy.Rate(1)
+
+        rospy.loginfo("Fisher PP14102 balance driver started")
 
     def get_stable_mass(self):
         self.pub.publish(float(self.balance.get_stable_mass()))

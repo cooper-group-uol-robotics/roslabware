@@ -36,14 +36,14 @@ class RETControlViscHotplateRos:
 
         # Initialize ROS subscriber
         self.sub = rospy.Subscriber(
-            name="IKA Ret Control Visc Hotpalte Commands",
+            name="ika_ret_control_visc_commands",
             data_class=IKARetControlViscCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher
         self.pub = rospy.Publisher(
-            name="IKA Ret Control Visc Hotpalte Readings",
+            name="ika_ret_control_visc_readings",
             data_class=IKARetControlViscReading,
             queue_size=10,
         )

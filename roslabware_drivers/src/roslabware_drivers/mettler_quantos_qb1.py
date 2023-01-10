@@ -43,31 +43,33 @@ class QuantosQB1Ros:
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
-            name="Quantos QB1 Commands",
+            name="mettler_quantos_qB1_commands",
             data_class=MettlerQuantosQB1Cmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for status
         self.pub_done = rospy.Publisher(
-            name="Quantos_Done", data_class=String, queue_size=1
+            name="mettler_quantos_qB1_status",
+            data_class=String,
+            queue_size=1
         )
 
         # Initialize ROS publisher for plataform info
         self.pub = rospy.Publisher(
-            name="Quantos QB1 Info",
+            name="mettler_quantos_qB1_info",
             data_class=MettlerQuantosQB1Reading,
             queue_size=10,
         )
 
         # Initialize ROS publisher for samples info
         self.pubSample = rospy.Publisher(
-            name="Quantos QB1 Sample",
+            name="mettler_quantos_qB1_sample",
             data_class=MettlerQuantosQB1Sample,
             queue_size=10,
         )
 
-        rospy.loginfo("Quantos Driver Started")
+        rospy.loginfo("Mettler Quantos QB1 Driver Started")
 
     def start_dosing(self):
         self.quantos.start_dosing()

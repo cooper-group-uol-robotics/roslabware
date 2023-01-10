@@ -40,14 +40,14 @@ class PCB2500Ros:
 
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
-            name="Kern_Commands",
+            name="kern_PCB2500_Commands",
             data_class=KernPCB2500Cmd,
             callback=self.callback_commands,
         )
 
         # Initialize ros published for balance responses (weights)
         self.pub = rospy.Publisher(
-            name="Kern_Weights",
+            name="kern_PCB2500_Readings",
             data_class=KernPCB2500Reading,
             queue_size=10
         )
@@ -55,7 +55,7 @@ class PCB2500Ros:
         # Initialize rate object for consistent timed looping
         self.rate = rospy.Rate(10)
 
-        rospy.loginfo("Kern driver started")
+        rospy.loginfo("Kern PCB2500 driver started")
 
     def tare_balance(self):
         self.tared = True
