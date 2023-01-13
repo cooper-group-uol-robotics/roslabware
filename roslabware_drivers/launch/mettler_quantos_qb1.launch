@@ -1,5 +1,5 @@
 <launch>
-	<arg 
+	<arg
 		name="device_name"
 		default="mettler_quantos"/>
 	<arg
@@ -11,7 +11,7 @@
 	<arg
 		name="port"
 		default="/dev/ttyUSB0"/>
-	<node 
+	<node
 		name="mettler_quantos_qb1"
 		pkg="mettler_quantos_qb1"
 		type="mettler_quantos_qb1"

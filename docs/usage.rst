@@ -32,11 +32,10 @@ To trigger commands, the following fomart is followed:
 
 .. code-block:: shell
 
-   rostopic pub -1 / <manufacturer>_<device_model>_Commands <manufacturer>_<device_model>/<ManufacturerDeviceModel>Command "<manufacturer>_<device_model>: "command" 
+   rostopic pub -1 / <manufacturer>_<device_model>_Commands <manufacturer>_<device_model>/<ManufacturerDeviceModel>Command "<manufacturer>_<device_model>: "command"
 
-For example for the kern_pcb_top_balance:   
+For example for the kern_pcb_top_balance:
 
 .. code-block:: shell
 
-   rostopic pub -1 / Kern_Commands kern_pcb_balance/KernCommand "<manufacturer>_<device_model>_command: 0" 
-
+   rostopic pub -1 / Kern_Commands kern_pcb_balance/KernCommand "<manufacturer>_<device_model>_command: 0"

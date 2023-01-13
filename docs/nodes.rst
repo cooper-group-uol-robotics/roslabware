@@ -111,7 +111,7 @@ Commands
 * ``20`` : Set Anti-static
 * ``21`` : Dispense solid
 
-Tecan XLP6000 
+Tecan XLP6000
 ===============
 
 Node for the Tecan XLP 6000 syringe pump.

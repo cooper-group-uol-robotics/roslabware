@@ -37,6 +37,3 @@ Installing from pip:
 .. code-block:: shell
 
     git clone https://github.com/cooper-group-uol-robotics/roslabware
-    cd roslabware
-    pip install roslabware -e .
-
