@@ -1,0 +1,29 @@
+<launch>
+	<arg
+		name="device_name"
+		default="ika_hotplate"/>
+	<arg
+		name="connection_mode"
+		default="serial"/>
+	<arg
+		name="address"
+		default="None"/>
+	<arg
+		name="sensor"
+		default="1"/>
+	<arg
+		name="port"
+		default="/dev/ttyUSB0"/>
+	<node
+		name="ika_ret_control_visc"
+		pkg="roslabware_drivers"
+		type="ika_ret_control_visc"
+		args="
+			-d $(arg device_name)
+			-c $(arg connection_mode)
+			-add $(arg address)
+			-p $(arg port)
+			-s $(arg sensor)
+			-l $(arg simulation)"
+		output="screen"/>
+</launch>
