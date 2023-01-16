@@ -1,3 +1,6 @@
-rospy
-setuptools==59.6.0
-tox
+catkin_pkg==0.5.2
+empy==3.3.4
+pylabware==1.0.0
+rospkg==1.4.0
+rospy==1.15.15
+setuptools==65.6.3
