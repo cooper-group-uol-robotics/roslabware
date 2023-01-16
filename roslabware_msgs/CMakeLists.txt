@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
 DIRECTORY
-  msg/fisher_balance_pp14102
+  msg/fisher_pp14102
 )
 
 add_message_files(
@@ -17,12 +17,22 @@ add_message_files(
    msg/ika_ret_control_visc
  )
 
- add_message_files(
+add_message_files(
   DIRECTORY
-   msg/kern_pcb_top_balance
+   msg/ika_rct_digital
  )
 
- add_message_files(
+add_message_files(
+  DIRECTORY
+   msg/kern_pcb2500
+ )
+
+add_message_files(
+  DIRECTORY
+   msg/mettler_quantos_qb1
+ )
+
+add_message_files(
   DIRECTORY
    msg/mettler_quantos_qb1
  )
