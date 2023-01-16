@@ -26,6 +26,7 @@ class QuantosQB1Ros:
         connection_mode: str = "serial",
         address: Optional[str] = None,
         port: Union[str, int] = None,
+        simulation: bool = False
     ):
         self._doorPos = 0
         self._samplerPos = 0
@@ -37,6 +38,9 @@ class QuantosQB1Ros:
             address=address,
             port=port
         )
+
+        if simulation == "True":
+            self.quantos.simulation = True
 
         self.quantos.connect()
         self.quantos.initialize_device()

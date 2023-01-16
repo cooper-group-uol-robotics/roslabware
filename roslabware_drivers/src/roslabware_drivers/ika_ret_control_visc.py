@@ -20,7 +20,8 @@ class RETControlViscHotplateRos:
         connection_mode: str,
         address: str,
         port: str,
-        sensor: str
+        sensor: int,
+        simulation: bool
     ):
 
         # Instantiate IKA driver
@@ -31,8 +32,12 @@ class RETControlViscHotplateRos:
             port=port,
         )
 
+        if simulation == "True":
+            self.hotplate.simulation = True
+
         # connect
         self.hotplate.connect()
+        self.hotplate.initialize_device()
 
         # Initialize ROS subscriber
         self.sub = rospy.Subscriber(
@@ -57,7 +62,7 @@ class RETControlViscHotplateRos:
         while not rospy.is_shutdown():
 
             # Get temperature of external sensor as default
-            temperature = self.hotplate.get_temperature(sensor=sensor)
+            temperature = self.hotplate.get_temperature(sensor=int(sensor))
             stir_speed = self.hotplate.get_speed()
             viscosity_trend = self.hotplate.get_viscosity_trend()
 

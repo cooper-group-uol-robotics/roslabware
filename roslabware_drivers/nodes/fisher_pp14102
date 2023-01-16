@@ -44,14 +44,24 @@ if __name__ == "__main__":
         const=1,
         help='Serial or TCP/IP port')
 
-    args = parser.parse_args()
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
+
+    args, unknown = parser.parse_known_args()
 
     # Create instance of ROS Wrapper
     balance = PP14102Ros(
         device_name=args.device_name,
         connection_mode=args.connection_mode,
         address=args.address,
-        sensor=args.sensor)
+        sensor=args.sensor,
+        simulation=args.simulation)
 
     # Turn off in shutdown
     rospy.on_shutdown(balance.turn_off)

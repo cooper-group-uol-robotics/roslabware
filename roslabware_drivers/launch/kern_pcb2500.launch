@@ -13,12 +13,13 @@
 		default="/dev/ttyUSB0"/>
 	<node
 		name="kern_pcb2500"
-		pkg="kern_pcb2500"
+		pkg="roslabware_drivers"
 		type="kern_pcb2500"
 		args="
-			$(arg device_name)
-			$(arg connection_mode)
-			$(arg address)
-			$(arg port)"
+			-d $(arg device_name)
+			-c $(arg connection_mode)
+			-add $(arg address)
+			-p $(arg port)
+			-l $(arg simulation)"
 		output="screen"/>
 </launch>

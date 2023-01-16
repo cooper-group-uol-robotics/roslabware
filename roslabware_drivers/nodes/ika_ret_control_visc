@@ -47,13 +47,21 @@ if __name__ == "__main__":
         '-s',
         '--sensor',
         action='store',
-        default='1',
+        default='0',
         nargs='?',
         const=1,
         help='Temperature sensor:\
                 0: internal, 1: external')
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     # Initialize rospy node
     rospy.init_node("RETControlViscHotplate Driver", anonymous=True)
@@ -64,7 +72,8 @@ if __name__ == "__main__":
         connection_mode=args.connection_mode,
         address=args.address,
         port=args.port,
-        sensor=args.sensor)
+        sensor=int(args.sensor),
+        simulation=args.simulation)
 
     # Stop everything on shutdown
     rospy.on_shutdown(hotplate_ret_ika.stop_heating())

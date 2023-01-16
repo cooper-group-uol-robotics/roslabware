@@ -28,6 +28,7 @@ class XLP6000Ros:
         port: str,
         switch_address: str,
         syringe_size: float,
+        simulation: bool
     ):
 
         # Create device object
@@ -39,9 +40,11 @@ class XLP6000Ros:
             port=port
         )
 
+        if simulation == "True":
+            self.tecan.simulation = True
+
         # Add syringe size attribute
         self.tecan._syringe_size = syringe_size
-
         self.tecan.connect()
         self.tecan.set_resolution_mode(resolution_mode=DEFAULT_RESOLUTION)
         self.tecan.set_speed(DEFAULT_SPEED)
@@ -62,6 +65,9 @@ class XLP6000Ros:
         )
 
         rospy.loginfo("XLP6000 Driver Started")
+
+        # Sleeping rate
+        self.rate = rospy.Rate(1)
 
         # Get data
         while not rospy.is_shutdown():

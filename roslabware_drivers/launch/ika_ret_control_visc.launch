@@ -13,16 +13,20 @@
 		default="1"/>
 	<arg
 		name="port"
-		default="/dev/ttyACM0"/>
+		default="/dev/ttyUSB0"/>
+	<arg
+		name="simulation"
+		default="False"/>
 	<node
-		name="ika_plate_driver"
-		pkg="ika_plate_driver"
-		type="ika_plate_driver"
+		name="ika_ret_control_visc"
+		pkg="roslabware_drivers"
+		type="ika_ret_control_visc"
 		args="
-			$(arg device_name)
-			$(arg connection_mode)
-			$(arg address)
-			$(arg port)
-			$(arg sensor)"
+			-d $(arg device_name)
+			-c $(arg connection_mode)
+			-add $(arg address)
+			-p $(arg port)
+			-s $(arg sensor)
+			-l $(arg simulation)"
 		output="screen"/>
 </launch>

@@ -22,14 +22,15 @@
 		default="0"/>
 	<node
 		name="tecan_xlp6000"
-		pkg="tecan_xlp6000"
+		pkg="roslabware_drivers"
 		type="tecan_xlp6000"
 		args="
-			$(arg device_name)
-			$(arg connection_mode)
-			$(arg address)
-			$(arg port)
-			$(arg switch_address)
-			$(arg syringe_size)"
+			-d $(arg device_name)
+			-c $(arg connection_mode)
+			-add $(arg address)
+			-p $(arg port)
+			-l $(arg simulation)
+			-w $(arg switch_address)
+			-z $(arg syringe_size)"
 		output="screen"/>
 </launch>

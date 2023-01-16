@@ -44,7 +44,16 @@ if __name__ == "__main__":
         const=1,
         help='Serial or TCP/IP port')
 
-    args = parser.parse_args()
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
+
+    args, unknown = parser.parse_known_args()
 
     # Initiliaze rospy node
     rospy.init_node("QuantosQB1 Driver", anonymous=True)
@@ -54,7 +63,8 @@ if __name__ == "__main__":
             device_name=args.device_name,
             connection_mode=args.connection_mode,
             address=args.address,
-            port=args.port)
+            port=args.port,
+            simulation=args.simulation)
 
     # Keeps python from exiting until node is stopped
     rospy.spin()

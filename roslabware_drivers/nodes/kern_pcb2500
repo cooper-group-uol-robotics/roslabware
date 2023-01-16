@@ -44,7 +44,16 @@ if __name__ == "__main__":
         const=1,
         help='Serial or TCP/IP port')
 
-    args = parser.parse_args()
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
+
+    args, unknown = parser.parse_known_args()
 
     # Initialize ROS node
     rospy.init_node("TopBalance Driver", anonymous=True)
@@ -55,7 +64,8 @@ if __name__ == "__main__":
         connection_mode=args.connection_mode,
         address=args.address,
         port=args.port,
-        sensor=args.sensor)
+        sensor=args.sensor,
+        simulation=args.simulation)
 
     rospy.loginfo("Kern balance driver started")
     rospy.spin()
