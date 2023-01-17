@@ -6,9 +6,8 @@ from pylabware import XLP6000
 
 # Core
 from roslabware_msgs.msg import (
-    tecan_xlp6000_command,
-    tecan_xlp6000_reading,
-)
+    TecanXlp6000Cmd,
+    TecanXlp6000Reading)
 
 # Constants
 DEFAULT_SPEED = 40  # ml/min
@@ -53,14 +52,14 @@ class XLP6000Ros:
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
             name="Tecan XLP6000 Commands",
-            data_class=tecan_xlp6000_command,
+            data_class=TecanXlp6000Cmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for status
         self.pub = rospy.Publisher(
             name="Tecan XLP6000 Readings",
-            data_class=tecan_xlp6000_reading,
+            data_class=TecanXlp6000Reading,
             queue_size=10
         )
 

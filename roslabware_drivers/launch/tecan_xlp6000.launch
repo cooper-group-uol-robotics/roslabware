@@ -18,8 +18,8 @@
 		name="syringe_size"
 		default="25.0"/>
 	<arg
-		name="switch_address"
-		default="0"/>
+		name="simulation"
+		default="False"/>
 	<node
 		name="tecan_xlp6000"
 		pkg="roslabware_drivers"
