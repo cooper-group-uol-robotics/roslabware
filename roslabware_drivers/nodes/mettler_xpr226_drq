@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+
+# External
+import argparse
+
+import rospy
+from roslabware_drivers.mettler_xpr226_drq import XPR226DRQRos
+
+# Object oriented initialization for ROS
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog="Mettler XPR226 DRQ balance ROS",
+        description='ROS node for Mettler XPR226_DRQ balance')
+    parser.add_argument(
+        '-d',
+        '--device_name',
+        action='store',
+        default='mettler_xpr226',
+        nargs='?',
+        const=1,
+        help='Device name')
+    parser.add_argument(
+        '-c',
+        '--connection_mode',
+        action='store',
+        default='serial',
+        nargs='?',
+        const=1,
+        help='Connection mode: "tcpip", "serial" or "http"')
+    parser.add_argument(
+        '-add',
+        '--address',
+        action='store',
+        default='None',
+        nargs='?',
+        const=1,
+        help='IP Address.')
+    parser.add_argument(
+        '-p',
+        '--port',
+        action='store',
+        default='/dev/ttyUSB0',
+        nargs='?',
+        const=1,
+        help='Serial or TCP/IP port')
+
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
+
+    args, unknown = parser.parse_known_args()
+
+    # Initiliaze rospy node
+    rospy.init_node("XPR226_DRQ Driver", anonymous=True)
+
+    # Create instance of ROS Wrapper
+    xpr_ros = XPR226DRQRos(
+            device_name=args.device_name,
+            connection_mode=args.connection_mode,
+            address=args.address,
+            port=args.port,
+            simulation=args.simulation)
+
+    # Keeps python from exiting until node is stopped
+    rospy.spin()
