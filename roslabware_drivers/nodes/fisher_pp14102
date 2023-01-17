@@ -55,12 +55,15 @@ if __name__ == "__main__":
 
     args, unknown = parser.parse_known_args()
 
+    # Initialize rospy node
+    rospy.init_node("Fisher PP14102 balance driver", anonymous=True)
+
     # Create instance of ROS Wrapper
     balance = PP14102Ros(
         device_name=args.device_name,
         connection_mode=args.connection_mode,
         address=args.address,
-        sensor=args.sensor,
+        port=args.port,
         simulation=args.simulation)
 
     # Turn off in shutdown

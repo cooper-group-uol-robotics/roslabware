@@ -26,7 +26,7 @@ class PP14102Ros:
         # Instantiate balance driver
         self.balance = PPS4102(
             device_name=device_name,
-            connectionmode=connection_mode,
+            connection_mode=connection_mode,
             address=address,
             port=port,
         )

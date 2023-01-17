@@ -34,7 +34,12 @@ add_message_files(
 
 add_message_files(
   DIRECTORY
-   msg/mettler_quantos_qb1
+   msg/tecan_xlp6000
+ )
+
+add_message_files(
+  DIRECTORY
+   msg/mettler_xpr226_drq
  )
 
 

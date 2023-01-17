@@ -14,6 +14,9 @@
 	<arg
 		name="port"
 		default="/dev/ttyUSB0"/>
+	<arg
+		name="simulation"
+		default="False"/>
 	<node
 		name="ika_ret_control_visc"
 		pkg="roslabware_drivers"

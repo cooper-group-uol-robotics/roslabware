@@ -56,7 +56,7 @@ if __name__ == "__main__":
     args, unknown = parser.parse_known_args()
 
     # Initialize ROS node
-    rospy.init_node("TopBalance Driver", anonymous=True)
+    rospy.init_node("Kern PCB2500 Driver", anonymous=True)
 
     # Objectoriented initialization of ROS
     kern_ros = PCB2500Ros(
@@ -64,7 +64,6 @@ if __name__ == "__main__":
         connection_mode=args.connection_mode,
         address=args.address,
         port=args.port,
-        sensor=args.sensor,
         simulation=args.simulation)
 
     rospy.loginfo("Kern balance driver started")

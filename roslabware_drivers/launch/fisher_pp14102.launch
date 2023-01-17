@@ -11,6 +11,9 @@
 	<arg
 		name="port"
 		default="/dev/ttyUSB0"/>
+	<arg
+		name="simulation"
+		default="False"/>
 	<node
 		name="fisher_pp14102"
 		pkg="roslabware_drivers"

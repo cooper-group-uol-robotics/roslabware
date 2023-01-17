@@ -1,1 +1,1 @@
-float32 weight
+float32 mass
