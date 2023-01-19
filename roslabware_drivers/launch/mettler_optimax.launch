@@ -1,0 +1,29 @@
+<launch>
+	<arg
+		name="device_name"
+		default="mettler_optimax"/>
+	<arg
+		name="connection_mode"
+		default="serial"/>
+	<arg
+		name="address"
+		default="None"/>
+	<arg
+		name="port"
+		default="/dev/ttyUSB0"/>
+	<arg
+		name="experiment_name"
+		default="test"/>
+	<node
+		name="mettler_optimax"
+		pkg="roslabware_drivers"
+		type="mettler_optimax"
+		args="
+			-d $(arg device_name)
+			-c $(arg connection_mode)
+			-add $(arg address)
+			-p $(arg port)
+			-l $(arg simulation)
+			-x $(arg experiment_name)"
+		output="screen"/>
+</launch>
