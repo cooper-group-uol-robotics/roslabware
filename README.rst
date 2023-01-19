@@ -32,8 +32,21 @@ The current documentation with examples can be found `here <./docs>`_.
 Installation
 ------------
 
-Installing from pip:
+Clone the repo into your ROS workspace/src folder
 
 .. code-block:: shell
 
     git clone https://github.com/cooper-group-uol-robotics/roslabware
+
+Install requirements (mind your Python enviroment)
+
+.. code-block:: shell
+
+    pip install -r requirements.txt
+
+Build your messages from your workspace parent folder
+
+.. code-block:: shell
+
+    catkin_make
+    source ./dev/setup.sh
