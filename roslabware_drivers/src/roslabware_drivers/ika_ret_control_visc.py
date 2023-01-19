@@ -131,8 +131,7 @@ class RETControlViscHotplateRos:
             self.stop_heating()
             self.stop_stirring()
             self.set_speed(0)
-            # Not sure if this makes sense, maybe to 30ºC?
-            self.set_temperature(0)
+            self.set_temperature(21)
         else:
             rospy.loginfo("invalid command")
 
