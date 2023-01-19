@@ -1,0 +1,2 @@
+float32 time_counter
+float32 volume_counter

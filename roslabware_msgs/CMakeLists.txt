@@ -47,6 +47,11 @@ add_message_files(
    msg/mettler_optimax
  )
 
+add_message_files(
+  DIRECTORY
+   msg/knf_simdos10_rcplus
+ )
+
 generate_messages(
 DEPENDENCIES
 std_msgs

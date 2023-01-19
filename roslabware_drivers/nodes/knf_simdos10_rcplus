@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+
+# External
+import argparse
+import rospy
+
+from roslabware_drivers.knf_simdos10_rcplus import RCPlusRos
+
+if __name__ == "__main__":
+    # Get arguments needed
+    parser = argparse.ArgumentParser(
+        prog="KNF Simdos10 RCPlus ROS",
+        description='ROS node for KNF Simdos10 RCplus')
+    parser.add_argument(
+        '-d',
+        '--device_name',
+        action='store',
+        default='knf_simdos10_rcplus',
+        nargs='?',
+        const=1,
+        help='Device name')
+    parser.add_argument(
+        '-c',
+        '--connection_mode',
+        action='store',
+        default='serial',
+        nargs='?',
+        const=1,
+        help='Connection mode: "tcpip", "serial" or "http"')
+    parser.add_argument(
+        '-add',
+        '--address',
+        action='store',
+        default='None',
+        nargs='?',
+        const=1,
+        help='IP Address.')
+    parser.add_argument(
+        '-p',
+        '--port',
+        action='store',
+        default='/dev/ttyACM0',
+        nargs='?',
+        const=1,
+        help='Serial or TCP/IP port')
+    parser.add_argument(
+        '-w',
+        '--switch_address',
+        action='store',
+        default='0',
+        nargs='?',
+        const=1,
+        help='Switch address on the back of the pump')
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
+
+    args, unknown = parser.parse_known_args()
+
+    # Initialize rospy node
+    rospy.init_node("KNF Simdos RCplus pump driver", anonymous=True)
+
+    # Object oriented initialization for ROS
+    pump = RCPlusRos(
+        device_name=args.device_name,
+        connection_mode=args.connection_mode,
+        address=args.address,
+        port=args.port,
+        switch_address=args.switch_address,
+        simulation=args.simulation)
+
+    # Stop everything on shutdown
+    rospy.on_shutdown(pump.stop())
+    rospy.spin()
