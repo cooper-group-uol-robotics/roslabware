@@ -35,6 +35,7 @@ class XPR226DRQRos:
 
         # self.balance.connect()
         # self.balance.initialize_device()
+        self.balance.wake_up()
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -52,8 +53,18 @@ class XPR226DRQRos:
 
         rospy.loginfo("Mettler XPR226 DRQ Driver Started")
 
-    def start_dosing(self):
-        self.balance.start_dosing()
+    def start_dosing(
+            self,
+            method: str,
+            substance: str,
+            amount: float,
+            tolerance: float):
+
+        self.balance.start_dosing(
+                method,
+                substance,
+                amount,
+                tolerance)
         rospy.loginfo("Starting Dosing")
 
     def open_door(self):
@@ -68,6 +79,10 @@ class XPR226DRQRos:
         self.balance.tare()
         rospy.loginfo("Taring balance")
 
+    def zero(self):
+        self.balance.zero()
+        rospy.loginfo("Zeroing balance")
+
     def get_mass(self):
         self.balance.get_mass()
         rospy.loginfo("Get balance")
@@ -78,7 +93,11 @@ class XPR226DRQRos:
         message = msg.xpr_command
 
         if message == msg.START_DOSE:
-            self.start_dosing()
+            self.start_dosing(
+                    msg.xpr_method,
+                    msg.xpr_name,
+                    msg.xpr_amount,
+                    msg.xpr_tolerance)
         elif message == msg.OPEN_DOOR:
             self.open_door()
         elif message == msg.CLOSE_DOOR:
