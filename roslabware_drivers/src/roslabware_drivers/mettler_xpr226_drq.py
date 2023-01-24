@@ -9,7 +9,7 @@ from roslabware_msgs.msg import (
     MettlerXPR226Cmd,
     MettlerXPR226Reading,
 )
-
+from std_msgs.msg import Bool
 
 class XPR226DRQRos:
     """
@@ -52,6 +52,11 @@ class XPR226DRQRos:
         )
 
         rospy.loginfo("Mettler XPR226 DRQ Driver Started")
+
+        self._task_complete_pub = rospy.Publisher(
+            '/mettler_xpr226_drq/task_complete',
+            Bool,
+            queue_size=1)
 
     def dispense(
             self,
@@ -109,4 +114,5 @@ class XPR226DRQRos:
         else:
             rospy.loginfo("invalid command")
 
-        self.pub_done.publish("Done")
+        self._task_complete_pub.publish(bool(True))
+        # self.pub_done.publish("Done")
