@@ -6,5 +6,6 @@ int32 START_DOSE = 4
 
 int32 xpr_command
 string xpr_method
+string xpr_name
 float32 xpr_amount
 float32 xpr_tolerance

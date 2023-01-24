@@ -53,14 +53,14 @@ class XPR226DRQRos:
 
         rospy.loginfo("Mettler XPR226 DRQ Driver Started")
 
-    def start_dosing(
+    def dispense(
             self,
             method: str,
             substance: str,
             amount: float,
             tolerance: float):
 
-        self.balance.start_dosing(
+        self.balance.dispense(
                 method,
                 substance,
                 amount,
@@ -93,7 +93,7 @@ class XPR226DRQRos:
         message = msg.xpr_command
 
         if message == msg.START_DOSE:
-            self.start_dosing(
+            self.dispense(
                     msg.xpr_method,
                     msg.xpr_name,
                     msg.xpr_amount,
