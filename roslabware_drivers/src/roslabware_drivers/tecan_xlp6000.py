@@ -1,8 +1,8 @@
 # external
 from typing import Optional
-
-import rospy
 from pylabware import XLP6000
+import rospy
+
 
 # Core
 from roslabware_msgs.msg import (
