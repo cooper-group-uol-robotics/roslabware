@@ -52,6 +52,11 @@ add_message_files(
    msg/knf_simdos10_rcplus
  )
 
+ add_message_files(
+  DIRECTORY
+   msg/tecan_xcalibur
+ )
+
 generate_messages(
 DEPENDENCIES
 std_msgs

@@ -38,7 +38,7 @@ Commands
 * ``7`` : Set temperature and start heating
 * ``8`` : Stop everything
 
-IKA RCT Digital 
+IKA RCT Digital
 ================
 
 Node for the IKA RET Visc hotpalte

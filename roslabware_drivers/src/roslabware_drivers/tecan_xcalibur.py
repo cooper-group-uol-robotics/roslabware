@@ -2,21 +2,22 @@
 from typing import Optional
 
 import rospy
-from pylabware import XLP6000
+from pylabware import XCalibur
 
 # Core
 from roslabware_msgs.msg import (
-    TecanXlp6000Cmd,
-    TecanXlp6000Reading)
+    TecanXCaliburCmd,
+    TecanXCaliburReading)
+from std_msgs.msg import Bool
 
 # Constants
 DEFAULT_SPEED = 40  # ml/min
-DEFAULT_RESOLUTION = "N2"
+DEFAULT_RESOLUTION = "N1"
 
 
-class XLP6000Ros:
+class XCaliburRos:
     """
-    ROS Wrapper for Driver for Tecan XLP6000 syringe pump.
+    ROS Wrapper for Driver for Tecan Xcalibur syringe pump.
     """
 
     def __init__(
@@ -31,7 +32,7 @@ class XLP6000Ros:
     ):
 
         # Create device object
-        self.tecan = XLP6000(
+        self.tecan = XCalibur(
             device_name=device_name,
             connection_mode=connection_mode,
             switch_address=switch_address,
@@ -43,7 +44,7 @@ class XLP6000Ros:
             self.tecan.simulation = True
 
         # Add syringe size attribute
-        self._syringe_size = syringe_size
+        self._syringe_size = float(syringe_size)
         self.tecan.connect()
         self.tecan.set_resolution_mode(resolution_mode=DEFAULT_RESOLUTION)
         self.tecan.set_speed(DEFAULT_SPEED)
@@ -51,22 +52,27 @@ class XLP6000Ros:
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
-            name="Tecan XLP6000 Commands",
-            data_class=TecanXlp6000Cmd,
+            name="Tecan_XCalibur_Commands",
+            data_class=TecanXCaliburCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for status
         self.pub = rospy.Publisher(
-            name="Tecan XLP6000 Readings",
-            data_class=TecanXlp6000Reading,
+            name="Tecan_XCalibur_Readings",
+            data_class=TecanXCaliburReading,
             queue_size=10
         )
 
-        rospy.loginfo("XLP6000 Driver Started")
+        rospy.loginfo("XCalibur Driver Started")
 
         # Sleeping rate
         self.rate = rospy.Rate(1)
+
+        self._task_complete_pub = rospy.Publisher(
+            '/tecan_xcalibur/task_complete',
+            Bool,
+            queue_size=1)
 
         # Get data
         while not rospy.is_shutdown():
@@ -93,7 +99,7 @@ class XLP6000Ros:
         Returns:
             increments (float): steps increments
         """
-        self.steps_per_ml = int(self.tecan.number_of_steps / self._syringe_size)
+        self.steps_per_ml = float(self.tecan.number_of_steps / self._syringe_size)
         increments = int(round(volume * self.steps_per_ml))
 
         return increments
@@ -122,11 +128,14 @@ class XLP6000Ros:
                 port(int): port number
                 volume (float): volume to dispense in mL
                 spped (float): speed in mL/min"""
+
+        # Add Input for ports
+        _port = "I" + str(port)
         # Convert to increments and increments/s
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
         # Actions
-        self.tecan.set_valve_position(port)
+        self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
         self.tecan.dispense(increments, velocity)
 
@@ -142,11 +151,14 @@ class XLP6000Ros:
                 port(int): port number
                 volume (float): volume to dispense in mL
                 spped (float): speed in mL/min"""
+
+        # Add inputs for ports
+        _port = "I" + str(port)
         # Convert to increments and increments/s
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
         # Actions
-        self.tecan.set_valve_position(port)
+        self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
         self.tecan.withdraw(increments, velocity)
 
@@ -171,8 +183,16 @@ class XLP6000Ros:
         message = msg.tecan_command
 
         if message == msg.DISPENSE:
-            self.dispense(msg.tecan_param)
+            self.dispense(
+                msg.tecan_port,
+                msg.tecan_volume,
+                msg.tecan_speed)
         elif message == msg.WITHDRAW:
-            self.withdraw(msg.tecan_param)
+            self.withdraw(
+                msg.tecan_port,
+                msg.tecan_volume,
+                msg.tecan_speed)
         else:
             rospy.loginfo("invalid command")
+
+        self._task_complete_pub.publish(bool(True))

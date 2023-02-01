@@ -1,0 +1,36 @@
+<launch>
+	<arg
+		name="device_name"
+		default="tecan_xcalibur"/>
+	<arg
+		name="connection_mode"
+		default="serial"/>
+	<arg
+		name="address"
+		default="None"/>
+	<arg
+		name="port"
+		default="/dev/ttyUSB0"/>
+	<arg
+		name="switch_address"
+		default="0"/>
+	<arg
+		name="syringe_size"
+		default="1.0"/>
+	<arg
+		name="simulation"
+		default="False"/>
+	<node
+		name="tecan_xcalibur"
+		pkg="roslabware_drivers"
+		type="tecan_xcalibur"
+		args="
+			-d $(arg device_name)
+			-c $(arg connection_mode)
+			-add $(arg address)
+			-p $(arg port)
+			-l $(arg simulation)
+			-w $(arg switch_address)
+			-z $(arg syringe_size)"
+		output="screen"/>
+</launch>

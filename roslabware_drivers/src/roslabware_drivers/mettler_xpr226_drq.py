@@ -11,6 +11,7 @@ from roslabware_msgs.msg import (
 )
 from std_msgs.msg import Bool
 
+
 class XPR226DRQRos:
     """
     ROS Wrapper for Serial Driver for Mettler Toledo XPR226
@@ -115,4 +116,3 @@ class XPR226DRQRos:
             rospy.loginfo("invalid command")
 
         self._task_complete_pub.publish(bool(True))
-        # self.pub_done.publish("Done")
