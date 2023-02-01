@@ -4,18 +4,18 @@
 import argparse
 import rospy
 
-from roslabware_drivers.tecan_xlp6000 import XLP6000Ros
+from roslabware_drivers.knf_simdos10_rcplus import RCPlusRos
 
 if __name__ == "__main__":
     # Get arguments needed
     parser = argparse.ArgumentParser(
-        prog="XLP syringe pump ROS",
-        description='ROS node for XLP6000 syringe pump')
+        prog="KNF RC-Plus diaphragm pump ROS",
+        description='ROS node for RC-Plus diaphragm pump')
     parser.add_argument(
         '-d',
         '--device_name',
         action='store',
-        default='tecan_xlp6000_syringe_pump',
+        default='knf_rcplus_diaphragm_pump',
         nargs='?',
         const=1,
         help='Device name')
@@ -51,28 +51,20 @@ if __name__ == "__main__":
         nargs='?',
         const=1,
         help='Switch address on the back of the pump')
-    parser.add_argument(
-        '-size',
-        '--syringe_size',
-        action='store',
-        nargs='?',
-        const=1,
-        help='Syringe size in mL')
 
     args = parser.parse_args()
 
     # Initialize rospy node
-    rospy.init_node("Tecan XLP600 syringe pump driver", anonymous=True)
+    rospy.init_node("KNF RC-Plus syringe pump driver", anonymous=True)
 
     # Object oriented initialization for ROS
-    syringe_pump = XLP6000Ros(
+    diaphragm_pump = RCPlusRos(
         device_name=args.device_name,
         connection_mode=args.connection_mode,
         address=args.address,
         port=args.port,
-        syringe_size=args.syringe_size,
         switch_address=args.switch_address)
 
     # Stop everything on shutdown
-    rospy.on_shutdown(syringe_pump.stop())
+    rospy.on_shutdown(diaphragm_pump.stop())
     rospy.spin()

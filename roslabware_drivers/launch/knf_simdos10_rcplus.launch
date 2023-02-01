@@ -1,7 +1,7 @@
 <launch>
 	<arg 
 		name="device_name"
-		default="tecan_xlp6000"/>
+		default="knf_rcplus"/>
 	<arg
 		name="connection_mode"
 		default="serial"/>
@@ -15,18 +15,17 @@
 		name="switch_address"
 		default="0"/>
 	<arg
-		name="syringe_size"
-		default="25.0"/>
+		name="switch_address"
+		default="0"/>
 	<node 
-		name="tecan_xlp6000"
-		pkg="tecan_xlp6000"
-		type="tecan_xlp6000"
+		name="knf_rcplus"
+		pkg="knf_rcplus"
+		type="knf_rcplus"
 		args="
 			$(arg device_name)
 			$(arg connection_mode)
 			$(arg address)
 			$(arg port)
 			$(arg switch_address)
-			$(arg syringe_size)"
 		output="screen"/>
 </launch>
