@@ -8,6 +8,7 @@ from pylabware import XLP6000
 from roslabware_msgs.msg import (
     TecanXlp6000Cmd,
     TecanXlp6000Reading)
+from std_msgs.msg import Bool
 
 # Constants
 DEFAULT_SPEED = 40  # ml/min
@@ -27,7 +28,7 @@ class XLP6000Ros:
         port: str,
         switch_address: str,
         syringe_size: float,
-        simulation: bool
+        simulation: bool,
     ):
 
         # Create device object
@@ -51,19 +52,24 @@ class XLP6000Ros:
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
-            name="Tecan XLP6000 Commands",
+            name="Tecan_XLP6000_Commands",
             data_class=TecanXlp6000Cmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for status
         self.pub = rospy.Publisher(
-            name="Tecan XLP6000 Readings",
+            name="Tecan_XLP6000_Readings",
             data_class=TecanXlp6000Reading,
             queue_size=10
         )
 
         rospy.loginfo("XLP6000 Driver Started")
+
+        self._task_complete_pub = rospy.Publisher(
+            '/tecan_xlp/task_complete',
+            Bool,
+            queue_size=1)
 
         # Sleeping rate
         self.rate = rospy.Rate(1)
@@ -110,6 +116,16 @@ class XLP6000Ros:
 
         return speed
 
+    def _convert_port(self, port: int):
+        """Converts port for I-O notation for pumps"""
+
+        if self.clockwise:
+            position = "I" + str(port)
+        else:
+            position = "O" + str(port)
+
+        return position
+
     def dispense(
         self,
         port: int,
@@ -122,11 +138,13 @@ class XLP6000Ros:
                 port(int): port number
                 volume (float): volume to dispense in mL
                 spped (float): speed in mL/min"""
+        # Add inputs for ports
+        _port = "I" + str(port)
         # Convert to increments and increments/s
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
         # Actions
-        self.tecan.set_valve_position(port)
+        self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
         self.tecan.dispense(increments, velocity)
 
@@ -142,11 +160,13 @@ class XLP6000Ros:
                 port(int): port number
                 volume (float): volume to dispense in mL
                 spped (float): speed in mL/min"""
+        # Add inputs for ports
+        _port = "I" + str(port)
         # Convert to increments and increments/s
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
         # Actions
-        self.tecan.set_valve_position(port)
+        self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
         self.tecan.withdraw(increments, velocity)
 
@@ -168,11 +188,19 @@ class XLP6000Ros:
 
     def callback_commands(self, msg):
         """Callback commands for susbcriber"""
-        message = msg.tecan_command
+        message = msg.tecan_xlp_command
 
         if message == msg.DISPENSE:
-            self.dispense(msg.tecan_param)
+            self.dispense(
+                msg.xlp_port,
+                msg.xlp_volume,
+                msg.xlp_speed)
         elif message == msg.WITHDRAW:
-            self.withdraw(msg.tecan_param)
+            self.withdraw(
+                msg.xlp_port,
+                msg.xlp_volume,
+                msg.xlp_speed)
         else:
             rospy.loginfo("invalid command")
+
+        self._task_complete_pub.publish(bool(True))

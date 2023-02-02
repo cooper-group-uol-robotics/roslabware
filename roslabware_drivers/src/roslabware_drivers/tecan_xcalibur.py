@@ -28,7 +28,7 @@ class XCaliburRos:
         port: str,
         switch_address: str,
         syringe_size: float,
-        simulation: bool
+        simulation: bool,
     ):
 
         # Create device object
@@ -116,6 +116,16 @@ class XCaliburRos:
 
         return speed
 
+    def _convert_port(self, port: int):
+        """Converts port for I-O notation for pumps"""
+
+        if self.clockwise:
+            position = "I" + str(port)
+        else:
+            position = "O" + str(port)
+
+        return position
+
     def dispense(
         self,
         port: int,
@@ -130,7 +140,7 @@ class XCaliburRos:
                 spped (float): speed in mL/min"""
 
         # Add Input for ports
-        _port = "I" + str(port)
+        _port = self._convert_port(port)
         # Convert to increments and increments/s
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
@@ -153,7 +163,7 @@ class XCaliburRos:
                 spped (float): speed in mL/min"""
 
         # Add inputs for ports
-        _port = "I" + str(port)
+        _port = self._convert_port(port)
         # Convert to increments and increments/s
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
@@ -180,18 +190,18 @@ class XCaliburRos:
 
     def callback_commands(self, msg):
         """Callback commands for susbcriber"""
-        message = msg.tecan_command
+        message = msg.tecan_xcalibur_command
 
         if message == msg.DISPENSE:
             self.dispense(
-                msg.tecan_port,
-                msg.tecan_volume,
-                msg.tecan_speed)
+                msg.xcalibur_port,
+                msg.xcalibur_volume,
+                msg.xcalibur_speed)
         elif message == msg.WITHDRAW:
             self.withdraw(
-                msg.tecan_port,
-                msg.tecan_volume,
-                msg.tecan_speed)
+                msg.xcalibur_port,
+                msg.xcalibur_volume,
+                msg.xcalibur_speed)
         else:
             rospy.loginfo("invalid command")
 
