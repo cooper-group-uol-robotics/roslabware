@@ -7,6 +7,7 @@ from roslabware_msgs.msg import (
     IKARctDigitalCmd,
     IKARctDigitalReading,
 )
+from std_msgs.msg import Bool
 
 
 class RCTDigitalHotplateRos:
@@ -55,6 +56,11 @@ class RCTDigitalHotplateRos:
 
         # Sleeping rate
         self.rate = rospy.Rate(1)
+
+        self._task_complete_pub = rospy.Publisher(
+            '/tecan_xcalibur/task_complete',
+            Bool,
+            queue_size=1)
 
         rospy.loginfo("IKA RCT digital hotplate driver started")
 
@@ -134,6 +140,9 @@ class RCTDigitalHotplateRos:
             self.set_temperature(21)
         else:
             rospy.loginfo("invalid command")
+        
+        self._task_complete_pub.publish(bool(True))
 
 
-rospy.loginfo("working")
+
+
