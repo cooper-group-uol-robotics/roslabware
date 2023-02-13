@@ -44,7 +44,7 @@ if __name__ == "__main__":
         const=1,
         help='Serial or TCP/IP port')
     parser.add_argument(
-        '-swa',
+        '-w',
         '--switch_address',
         action='store',
         default='0',
@@ -52,14 +52,23 @@ if __name__ == "__main__":
         const=1,
         help='Switch address on the back of the pump')
     parser.add_argument(
-        '-size',
+        '-z',
         '--syringe_size',
         action='store',
         nargs='?',
         const=1,
         help='Syringe size in mL')
 
-    args = parser.parse_args()
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
+
+    args, unknown = parser.parse_known_args()
 
     # Initialize rospy node
     rospy.init_node("Tecan XLP600 syringe pump driver", anonymous=True)
@@ -71,7 +80,8 @@ if __name__ == "__main__":
         address=args.address,
         port=args.port,
         syringe_size=args.syringe_size,
-        switch_address=args.switch_address)
+        switch_address=args.switch_address,
+        simulation=args.simulation)
 
     # Stop everything on shutdown
     rospy.on_shutdown(syringe_pump.stop())

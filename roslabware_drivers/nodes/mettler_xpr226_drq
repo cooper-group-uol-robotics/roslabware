@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 
-# external
+# External
 import argparse
+
 import rospy
+from roslabware_drivers.mettler_xpr226_drq import XPR226DRQRos
 
-from roslabware_drivers.fisher_pp14102 import PP14102Ros
-
+# Object oriented initialization for ROS
 if __name__ == "__main__":
-    # Get arguments needed
     parser = argparse.ArgumentParser(
-        prog="Fisher PP14102 balance ROS",
-        description='ROS node for Fisher PP14102 balance')
+        prog="Mettler XPR226 DRQ balance ROS",
+        description='ROS node for Mettler XPR226_DRQ balance')
     parser.add_argument(
         '-d',
         '--device_name',
         action='store',
-        default='rct_ika_hotplate',
+        default='mettler_xpr226',
         nargs='?',
         const=1,
         help='Device name')
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-p',
         '--port',
         action='store',
-        default='/dev/ttyACM0',
+        default='/dev/ttyUSB0',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
@@ -55,18 +55,16 @@ if __name__ == "__main__":
 
     args, unknown = parser.parse_known_args()
 
-    # Initialize rospy node
-    rospy.init_node("Fisher PP14102 balance driver", anonymous=True)
+    # Initiliaze rospy node
+    rospy.init_node("XPR226_DRQ Driver", anonymous=True)
 
     # Create instance of ROS Wrapper
-    balance = PP14102Ros(
-        device_name=args.device_name,
-        connection_mode=args.connection_mode,
-        address=args.address,
-        port=args.port,
-        simulation=args.simulation)
+    xpr_ros = XPR226DRQRos(
+            device_name=args.device_name,
+            connection_mode=args.connection_mode,
+            address=args.address,
+            port=args.port,
+            simulation=args.simulation)
 
-    # Turn off in shutdown
-    rospy.on_shutdown(balance.turn_off)
-    rospy.loginfo("Fisher balance driver started")
+    # Keeps python from exiting until node is stopped
     rospy.spin()

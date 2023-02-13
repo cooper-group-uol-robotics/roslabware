@@ -20,18 +20,23 @@ class PP14102Ros:
         connection_mode: str,
         address: str,
         port: str,
+        simulation: bool
     ):
 
         # Instantiate balance driver
         self.balance = PPS4102(
             device_name=device_name,
-            connectionmode=connection_mode,
+            connection_mode=connection_mode,
             address=address,
             port=port,
         )
 
+        if simulation == "True":
+            self.balance.simulation = True
+
+        # connect
         self.balance.connect()
-        self.balance.turn_on()
+        self.balance.initialize_device()
 
         # Initialize ros subscriber of topic to which commands are published
         self.sub = rospy.Subscriber(

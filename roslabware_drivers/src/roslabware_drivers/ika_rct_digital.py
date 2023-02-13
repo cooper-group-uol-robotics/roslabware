@@ -1,15 +1,16 @@
 # external
 import rospy
-from pylabware import RETControlViscHotplate
+from pylabware import RCTDigitalHotplate
 
 # Core
 from roslabware_msgs.msg import (
-    IKARetControlViscCmd,
-    IKARetControlViscReading,
+    IKARctDigitalCmd,
+    IKARctDigitalReading,
 )
+from std_msgs.msg import Bool
 
 
-class RETControlViscHotplateRos:
+class RCTDigitalHotplateRos:
     """
     Ros wrapper for the IKA RCT hotplate driver
     """
@@ -25,7 +26,7 @@ class RETControlViscHotplateRos:
     ):
 
         # Instantiate IKA driver
-        self.hotplate = RETControlViscHotplate(
+        self.hotplate = RCTDigitalHotplate(
             device_name=device_name,
             connection_mode=connection_mode,
             address=address,
@@ -41,22 +42,27 @@ class RETControlViscHotplateRos:
 
         # Initialize ROS subscriber
         self.sub = rospy.Subscriber(
-            name="ika_ret_control_visc_commands",
-            data_class=IKARetControlViscCmd,
+            name="ika_rct_digital_commands",
+            data_class=IKARctDigitalCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher
         self.pub = rospy.Publisher(
-            name="ika_ret_control_visc_readings",
-            data_class=IKARetControlViscReading,
+            name="ika_rct_digital_readings",
+            data_class=IKARctDigitalReading,
             queue_size=10,
         )
 
         # Sleeping rate
         self.rate = rospy.Rate(1)
 
-        rospy.loginfo("IKA RCT hotplate driver started")
+        self._task_complete_pub = rospy.Publisher(
+            '/tecan_xcalibur/task_complete',
+            Bool,
+            queue_size=1)
+
+        rospy.loginfo("IKA RCT digital hotplate driver started")
 
         # Get data
         while not rospy.is_shutdown():
@@ -134,6 +140,9 @@ class RETControlViscHotplateRos:
             self.set_temperature(21)
         else:
             rospy.loginfo("invalid command")
+        
+        self._task_complete_pub.publish(bool(True))
 
 
-rospy.loginfo("working")
+
+

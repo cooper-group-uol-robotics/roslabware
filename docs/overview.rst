@@ -20,7 +20,7 @@ Minimal requirements
 Platforms
 ---------
 
-The library has been developed and tested on Windows and Linux. 
+The library has been developed and tested on Windows and Linux.
 
 Documentation
 -------------
@@ -44,12 +44,12 @@ A list and description of susbcribed and public topics is `here </nodes.rst>`_. 
 Launchers
 ---------
 
-The launch files contain all the **default** arguments for a serial connection in the port ``/dev/ttyUSB0``. 
+The launch files contain all the **default** arguments for a serial connection in the port ``/dev/ttyUSB0``.
 
 .. code-block:: html
 
    <launch>
-      <arg 
+      <arg
          name="device_name"
          default="fisher_pp14102"/>
       <arg
@@ -61,7 +61,7 @@ The launch files contain all the **default** arguments for a serial connection i
       <arg
          name="port"
          default="/dev/ttyUSB0"/>
-      <node 
+      <node
          name="fisher_pp14102"
          pkg="fisher_pp14102"
          type="fisher_pp14102"
@@ -72,5 +72,3 @@ The launch files contain all the **default** arguments for a serial connection i
             $(arg port)"
          output="screen"/>
    </launch>
-
-

@@ -1,7 +1,7 @@
 <launch>
 	<arg
 		name="device_name"
-		default="tecan_xlp6000"/>
+		default="mettler_optimax"/>
 	<arg
 		name="connection_mode"
 		default="serial"/>
@@ -10,27 +10,20 @@
 		default="None"/>
 	<arg
 		name="port"
-		default="/dev/ttyACM0"/>
+		default="/dev/ttyUSB0"/>
 	<arg
-		name="switch_address"
-		default="0"/>
-	<arg
-		name="syringe_size"
-		default="25.0"/>
-	<arg
-		name="simulation"
-		default="False"/>
+		name="experiment_name"
+		default="test"/>
 	<node
-		name="tecan_xlp6000"
+		name="mettler_optimax"
 		pkg="roslabware_drivers"
-		type="tecan_xlp6000"
+		type="mettler_optimax"
 		args="
 			-d $(arg device_name)
 			-c $(arg connection_mode)
 			-add $(arg address)
 			-p $(arg port)
 			-l $(arg simulation)
-			-w $(arg switch_address)
-			-z $(arg syringe_size)"
+			-x $(arg experiment_name)"
 		output="screen"/>
 </launch>

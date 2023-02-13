@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
-# external
+# External
 import argparse
 import rospy
 
-from roslabware_drivers.fisher_pp14102 import PP14102Ros
+from roslabware_drivers.tecan_xcalibur import XCaliburRos
 
 if __name__ == "__main__":
     # Get arguments needed
     parser = argparse.ArgumentParser(
-        prog="Fisher PP14102 balance ROS",
-        description='ROS node for Fisher PP14102 balance')
+        prog="XCalibur syrnge pump ROS",
+        description='ROS node for XCalibur syringe pump')
     parser.add_argument(
         '-d',
         '--device_name',
@@ -43,6 +43,21 @@ if __name__ == "__main__":
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
+    parser.add_argument(
+        '-w',
+        '--switch_address',
+        action='store',
+        default='0',
+        nargs='?',
+        const=1,
+        help='Switch address on the back of the pump')
+    parser.add_argument(
+        '-z',
+        '--syringe_size',
+        action='store',
+        nargs='?',
+        const=1,
+        help='Syringe size in mL')
 
     parser.add_argument(
         '-l',
@@ -56,17 +71,18 @@ if __name__ == "__main__":
     args, unknown = parser.parse_known_args()
 
     # Initialize rospy node
-    rospy.init_node("Fisher PP14102 balance driver", anonymous=True)
+    rospy.init_node("Tecan Xcalibur syringe pymp driver", anonymous=True)
 
-    # Create instance of ROS Wrapper
-    balance = PP14102Ros(
+    # Object oriented initialization for ROS
+    syringe_pump = XCaliburRos(
         device_name=args.device_name,
         connection_mode=args.connection_mode,
         address=args.address,
         port=args.port,
+        syringe_size=args.syringe_size,
+        switch_address=args.switch_address,
         simulation=args.simulation)
 
-    # Turn off in shutdown
-    rospy.on_shutdown(balance.turn_off)
-    rospy.loginfo("Fisher balance driver started")
+    # Stop everything on shutdown
+    rospy.on_shutdown(syringe_pump.stop())
     rospy.spin()

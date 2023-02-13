@@ -1,7 +1,7 @@
 <launch>
 	<arg
 		name="device_name"
-		default="mettler_quantos"/>
+		default="mettler_xpr226"/>
 	<arg
 		name="connection_mode"
 		default="serial"/>
@@ -12,9 +12,9 @@
 		name="port"
 		default="/dev/ttyUSB0"/>
 	<node
-		name="mettler_quantos_qb1"
+		name="mettler_xpr226_drq"
 		pkg="roslabware_drivers"
-		type="mettler_quantos_qb1"
+		type="mettler_xpr226_drq"
 		args="
 			-d $(arg device_name)
 			-c $(arg connection_mode)

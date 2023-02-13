@@ -22,6 +22,7 @@ class PCB2500Ros:
         connection_mode: str = "serial",
         address: Optional[str] = None,
         port: Union[str, int] = None,
+        simulation: bool = False,
     ):
 
         self.pub = None
@@ -35,8 +36,12 @@ class PCB2500Ros:
             port=port,
         )
 
+        if simulation == "True":
+            self.balance.simulation = True
+
         # Connect to balance
         self.balance.connect()
+        self.balance.initialize_device()
 
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(

@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
 DIRECTORY
-  msg/fisher_balance_pp14102
+  msg/fisher_pp14102
 )
 
 add_message_files(
@@ -17,27 +17,54 @@ add_message_files(
    msg/ika_ret_control_visc
  )
 
- add_message_files(
+add_message_files(
   DIRECTORY
-   msg/kern_pcb_top_balance
+   msg/ika_rct_digital
  )
 
- add_message_files(
+add_message_files(
+  DIRECTORY
+   msg/kern_pcb2500
+ )
+
+add_message_files(
   DIRECTORY
    msg/mettler_quantos_qb1
  )
 
+add_message_files(
+  DIRECTORY
+   msg/tecan_xlp6000
+ )
+
+add_message_files(
+  DIRECTORY
+   msg/mettler_xpr226_drq
+ )
+
+add_message_files(
+  DIRECTORY
+   msg/mettler_optimax
+ )
+
+add_message_files(
+  DIRECTORY
+   msg/knf_simdos10_rcplus
+ )
+
+ add_message_files(
+  DIRECTORY
+   msg/tecan_xcalibur
+ )
 
 generate_messages(
 DEPENDENCIES
 std_msgs
 )
 
-
 catkin_package(
 	CATKIN_DEPENDS
   message_runtime)
-
 
 include_directories(
   ${catkin_INCLUDE_DIRS}

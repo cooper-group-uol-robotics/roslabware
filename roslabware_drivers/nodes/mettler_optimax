@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 
-# external
+# External
 import argparse
+
 import rospy
+from roslabware_drivers.mettler_optimax import OptimaxRos
 
-from roslabware_drivers.fisher_pp14102 import PP14102Ros
-
+# Object oriented initialization for ROS
 if __name__ == "__main__":
-    # Get arguments needed
     parser = argparse.ArgumentParser(
-        prog="Fisher PP14102 balance ROS",
-        description='ROS node for Fisher PP14102 balance')
+        prog="Mettler Optimax ROS",
+        description='ROS node for Mettler Optimax')
     parser.add_argument(
         '-d',
         '--device_name',
         action='store',
-        default='rct_ika_hotplate',
+        default='mettler_optimax',
         nargs='?',
         const=1,
         help='Device name')
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-p',
         '--port',
         action='store',
-        default='/dev/ttyACM0',
+        default='/dev/ttyUSB0',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
@@ -53,20 +53,28 @@ if __name__ == "__main__":
         default='False',
         help='Simulation mode or not (bool)')
 
+    parser.add_argument(
+        '-x',
+        '--exname',
+        action='store',
+        nargs='?',
+        const=1,
+        default='test',
+        help='Experiment name')
+
     args, unknown = parser.parse_known_args()
 
-    # Initialize rospy node
-    rospy.init_node("Fisher PP14102 balance driver", anonymous=True)
+    # Initiliaze rospy node
+    rospy.init_node("Optimax Driver", anonymous=True)
 
     # Create instance of ROS Wrapper
-    balance = PP14102Ros(
-        device_name=args.device_name,
-        connection_mode=args.connection_mode,
-        address=args.address,
-        port=args.port,
-        simulation=args.simulation)
+    optimax_ros = OptimaxRos(
+            device_name=args.device_name,
+            connection_mode=args.connection_mode,
+            address=args.address,
+            port=args.port,
+            simulation=args.simulation,
+            experiment_name=args.exname)
 
-    # Turn off in shutdown
-    rospy.on_shutdown(balance.turn_off)
-    rospy.loginfo("Fisher balance driver started")
+    # Keeps python from exiting until node is stopped
     rospy.spin()

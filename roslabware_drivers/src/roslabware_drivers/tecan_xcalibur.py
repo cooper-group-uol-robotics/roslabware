@@ -1,23 +1,23 @@
 # external
 from typing import Optional
-from pylabware import XLP6000
-import rospy
 
+import rospy
+from pylabware import XCalibur
 
 # Core
 from roslabware_msgs.msg import (
-    TecanXlp6000Cmd,
-    TecanXlp6000Reading)
+    TecanXCaliburCmd,
+    TecanXCaliburReading)
 from std_msgs.msg import Bool
 
 # Constants
 DEFAULT_SPEED = 40  # ml/min
-DEFAULT_RESOLUTION = "N2"
+DEFAULT_RESOLUTION = "N1"
 
 
-class XLP6000Ros:
+class XCaliburRos:
     """
-    ROS Wrapper for Driver for Tecan XLP6000 syringe pump.
+    ROS Wrapper for Driver for Tecan Xcalibur syringe pump.
     """
 
     def __init__(
@@ -32,7 +32,7 @@ class XLP6000Ros:
     ):
 
         # Create device object
-        self.tecan = XLP6000(
+        self.tecan = XCalibur(
             device_name=device_name,
             connection_mode=connection_mode,
             switch_address=switch_address,
@@ -44,7 +44,7 @@ class XLP6000Ros:
             self.tecan.simulation = True
 
         # Add syringe size attribute
-        self._syringe_size = syringe_size
+        self._syringe_size = float(syringe_size)
         self.tecan.connect()
         self.tecan.set_resolution_mode(resolution_mode=DEFAULT_RESOLUTION)
         self.tecan.set_speed(DEFAULT_SPEED)
@@ -52,27 +52,27 @@ class XLP6000Ros:
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
-            name="Tecan_XLP6000_Commands",
-            data_class=TecanXlp6000Cmd,
+            name="Tecan_XCalibur_Commands",
+            data_class=TecanXCaliburCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for status
         self.pub = rospy.Publisher(
-            name="Tecan_XLP6000_Readings",
-            data_class=TecanXlp6000Reading,
+            name="Tecan_XCalibur_Readings",
+            data_class=TecanXCaliburReading,
             queue_size=10
         )
 
-        rospy.loginfo("XLP6000 Driver Started")
-
-        self._task_complete_pub = rospy.Publisher(
-            '/tecan_xlp/task_complete',
-            Bool,
-            queue_size=1)
+        rospy.loginfo("XCalibur Driver Started")
 
         # Sleeping rate
         self.rate = rospy.Rate(1)
+
+        self._task_complete_pub = rospy.Publisher(
+            '/tecan_xcalibur/task_complete',
+            Bool,
+            queue_size=1)
 
         # Get data
         while not rospy.is_shutdown():
@@ -99,7 +99,7 @@ class XLP6000Ros:
         Returns:
             increments (float): steps increments
         """
-        self.steps_per_ml = int(self.tecan.number_of_steps / self._syringe_size)
+        self.steps_per_ml = float(self.tecan.number_of_steps / self._syringe_size)
         increments = int(round(volume * self.steps_per_ml))
 
         return increments
@@ -137,10 +137,10 @@ class XLP6000Ros:
             Args:
                 port(int): port number
                 volume (float): volume to dispense in mL
-                speed (float): speed in mL/min"""
-        # Add inputs for ports
-        _port = "I" + str(port)
+                spped (float): speed in mL/min"""
 
+        # Add Input for ports
+        _port = self._convert_port(port)
         # Convert to increments and increments/s
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
@@ -160,10 +160,10 @@ class XLP6000Ros:
             Args:
                 port(int): port number
                 volume (float): volume to dispense in mL
-                speed (float): speed in mL/min"""
-        # Add inputs for ports
-        _port = "I" + str(port)
+                spped (float): speed in mL/min"""
 
+        # Add inputs for ports
+        _port = self._convert_port(port)
         # Convert to increments and increments/s
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
@@ -190,18 +190,18 @@ class XLP6000Ros:
 
     def callback_commands(self, msg):
         """Callback commands for susbcriber"""
-        message = msg.tecan_xlp_command
+        message = msg.tecan_xcalibur_command
 
         if message == msg.DISPENSE:
             self.dispense(
-                msg.xlp_port,
-                msg.xlp_volume,
-                msg.xlp_speed)
+                msg.xcalibur_port,
+                msg.xcalibur_volume,
+                msg.xcalibur_speed)
         elif message == msg.WITHDRAW:
             self.withdraw(
-                msg.xlp_port,
-                msg.xlp_volume,
-                msg.xlp_speed)
+                msg.xcalibur_port,
+                msg.xcalibur_volume,
+                msg.xcalibur_speed)
         else:
             rospy.loginfo("invalid command")
 
