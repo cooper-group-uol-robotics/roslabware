@@ -1,0 +1,31 @@
+<launch>
+	<arg 
+		name="device_name"
+		default="knf_rcplus"/>
+	<arg
+		name="connection_mode"
+		default="serial"/>
+	<arg
+		name="address"
+		default="None"/>
+	<arg
+		name="port"
+		default="/dev/ttyACM0"/>
+	<arg
+		name="switch_address"
+		default="0"/>
+	<arg
+		name="switch_address"
+		default="0"/>
+	<node 
+		name="knf_rcplus"
+		pkg="knf_rcplus"
+		type="knf_rcplus"
+		args="
+			$(arg device_name)
+			$(arg connection_mode)
+			$(arg address)
+			$(arg port)
+			$(arg switch_address)
+		output="screen"/>
+</launch>

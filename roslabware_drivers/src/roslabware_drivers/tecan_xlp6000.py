@@ -1,8 +1,8 @@
 # external
 from typing import Optional
-
-import rospy
 from pylabware import XLP6000
+import rospy
+
 
 # Core
 from roslabware_msgs.msg import (
@@ -137,9 +137,10 @@ class XLP6000Ros:
             Args:
                 port(int): port number
                 volume (float): volume to dispense in mL
-                spped (float): speed in mL/min"""
+                speed (float): speed in mL/min"""
         # Add inputs for ports
         _port = "I" + str(port)
+
         # Convert to increments and increments/s
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
@@ -159,9 +160,10 @@ class XLP6000Ros:
             Args:
                 port(int): port number
                 volume (float): volume to dispense in mL
-                spped (float): speed in mL/min"""
+                speed (float): speed in mL/min"""
         # Add inputs for ports
         _port = "I" + str(port)
+
         # Convert to increments and increments/s
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
