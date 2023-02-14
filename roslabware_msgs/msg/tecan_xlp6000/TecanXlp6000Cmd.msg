@@ -2,5 +2,7 @@
 int32 DISPENSE = 0
 int32 WITHDRAW = 1
 
-int32 tecan_command
-int32 tecan_param
+int32 tecan_xlp_command
+int32 xlp_port
+int32 xlp_volume
+int32 xlp_speed

@@ -44,7 +44,7 @@ class XLP6000Ros:
             self.tecan.simulation = True
 
         # Add syringe size attribute
-        self._syringe_size = syringe_size
+        self._syringe_size = float(syringe_size)
         self.tecan.connect()
         self.tecan.set_resolution_mode(resolution_mode=DEFAULT_RESOLUTION)
         self.tecan.set_speed(DEFAULT_SPEED)
@@ -99,7 +99,7 @@ class XLP6000Ros:
         Returns:
             increments (float): steps increments
         """
-        self.steps_per_ml = int(self.tecan.number_of_steps / self._syringe_size)
+        self.steps_per_ml = float(self.tecan.number_of_steps / self._syringe_size)
         increments = int(round(volume * self.steps_per_ml))
 
         return increments
