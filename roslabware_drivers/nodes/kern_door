@@ -4,7 +4,7 @@
 import argparse
 import rospy
 
-from roslabware_drivers.kern_pcb2500 import PCB2500Ros
+from roslabware_drivers.kern_door import KernDoorRos
 
 if __name__ == "__main__":
     # Get arguments needed
@@ -15,7 +15,7 @@ if __name__ == "__main__":
         '-d',
         '--device_name',
         action='store',
-        default='rct_ika_hotplate',
+        default='kern_door',
         nargs='?',
         const=1,
         help='Device name')
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-p',
         '--port',
         action='store',
-        default='/dev/ttyUSB0',
+        default='/dev/ttyACM0',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
@@ -56,15 +56,15 @@ if __name__ == "__main__":
     args, unknown = parser.parse_known_args()
 
     # Initialize ROS node
-    rospy.init_node("Kern_PCB2500_Driver", anonymous=True)
+    rospy.init_node("Kern_door_driver", anonymous=True)
 
     # Objectoriented initialization of ROS
-    kern_ros = PCB2500Ros(
+    kern_ros = KernDoorRos(
         device_name=args.device_name,
         connection_mode=args.connection_mode,
         address=args.address,
         port=args.port,
         simulation=args.simulation)
 
-    rospy.loginfo("Kern balance driver started")
+    rospy.loginfo("Kern door driver started")
     rospy.spin()

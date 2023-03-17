@@ -1,7 +1,7 @@
 <launch>
 	<arg
 		name="device_name"
-		default="kern_pcb2500"/>
+		default="kern_Door"/>
 	<arg
 		name="connection_mode"
 		default="serial"/>
@@ -10,14 +10,14 @@
 		default="None"/>
 	<arg
 		name="port"
-		default="/dev/ttyUSB0"/>
+		default="/dev/ttyACM2"/>
 	<arg
 		name="simulation"
 		default = 'False'/>
 	<node
-		name="Kern_PCB2500_Driver"
+		name="Kern_door_driver"
 		pkg="roslabware_drivers"
-		type="kern_pcb2500"
+		type="kern_door"
 		args="
 			-d $(arg device_name)
 			-c $(arg connection_mode)

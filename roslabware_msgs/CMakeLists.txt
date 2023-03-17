@@ -27,6 +27,11 @@ add_message_files(
    msg/kern_pcb2500
  )
 
+ add_message_files(
+  DIRECTORY
+   msg/kern_door
+ )
+
 add_message_files(
   DIRECTORY
    msg/mettler_quantos_qb1
@@ -47,10 +52,10 @@ add_message_files(
    msg/mettler_optimax
  )
 
-add_message_files(
-  DIRECTORY
-   msg/knf_simdos10_rcplus
- )
+# add_message_files(
+#   DIRECTORY
+#    msg/knf_simdos10_rcplus
+#  )
 
  add_message_files(
   DIRECTORY

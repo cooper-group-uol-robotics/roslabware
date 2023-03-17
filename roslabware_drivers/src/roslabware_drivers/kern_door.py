@@ -2,16 +2,16 @@
 from typing import Optional, Union
 
 import rospy
-from pylabware import PCB2500
+from pylabware import Kern_Door
 
 # Core
 from roslabware_msgs.msg import (
-    KernPCB2500Cmd,
-    KernPCB2500Reading
+    KernDoorCmd,
+    KernDoorStatus
 )
 
 
-class PCB2500Ros:
+class KernDoorRos:
     """
     ROS wrapper class for controlling Kern PCB Top Balance
     """
@@ -29,7 +29,7 @@ class PCB2500Ros:
         self.tared = False
 
         # Instantiate IKA driver
-        self.balance = PCB2500(
+        self.door = Kern_Door(
             device_name=device_name,
             connection_mode=connection_mode,
             address=address,
@@ -37,55 +37,47 @@ class PCB2500Ros:
         )
 
         if simulation == "True":
-            self.balance.simulation = True
+            self.door.simulation = True
 
         # Connect to balance
-        self.balance.connect()
-        self.balance.initialize_device()
+        self.door.connect()
 
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
-            name="kern_PCB2500_Commands",
-            data_class=KernPCB2500Cmd,
+            name="kern_door_Commands",
+            data_class=KernDoorCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ros published for balance responses (weights)
         self.pub = rospy.Publisher(
-            name="kern_PCB2500_Readings",
-            data_class=KernPCB2500Reading,
+            name="kern_Door_Readings",
+            data_class=KernDoorStatus,
             queue_size=10
         )
 
         # Initialize rate object for consistent timed looping
         self.rate = rospy.Rate(10)
 
-        rospy.loginfo("Kern PCB2500 driver started")
+        rospy.loginfo("Kern door driver started")
+        self.door.initialize_device()
 
-    def tare_balance(self):
-        self.tared = True
-        rospy.sleep(2)
+    def open_door(self):
+        self.door.open_door()
+        #if serial msg received:
+        self.pub.publish('Door_Opened')
 
-        self.balance.tare_balance()
-        rospy.loginfo("Zeroing Balance")
-
-        rospy.sleep(2)
-        self.tared = False
-
-    def get_stable_mass(self):
-        self.pub.publish(float(self.balance.get_stable_mass()[0]))
-
-    def get_mass(self):
-        self.pub.publish(float(self.balance.get_mass()[0]))
+    def close_door(self):
+        self.door.close_door()
+        #if serial msg received:
+        self.pub.publish('Door_Closed')
 
     def callback_commands(self, msg):
-        message = msg.kern_command
+        message = msg.kern_door_command
 
-        if message == msg.TARE_BALANCE:
-            self.tare_balance()
-        elif message == msg.GET_MASS:
-            self.get_mass()
-        elif message == msg.GET_MASS_STABLE:
-            self.get_stable_mass()
+        if message == msg.OPEN_DOOR:
+            self.open_door()
+        elif message == msg.CLOSE_DOOR:
+            self.close_door()
         else:
             rospy.loginfo("Invalid command")
