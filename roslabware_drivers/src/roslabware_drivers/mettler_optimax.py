@@ -53,58 +53,43 @@ class OptimaxRos:
 
         rospy.loginfo("Mettler Optimax Driver Started")
 
-    def start_heating(self):
-        self.optimax.start_temperature_regulation()
-        rospy.loginfo("Turning on Heating")
+    def add_temp_step(self, temperature):
+        self.optimax._add_heating_step(temperature)
+        rospy.loginfo(f"Added temperature step with temperature {temperature} ºC")
 
-    def stop_heating(self):
-        self.optimax.stop_temperature_regulation()
-        rospy.loginfo("Turning off Heating")
 
-    def start_stirring(self):
-        self.optimax.start_stirring()
-        rospy.loginfo("Turning on Stirring")
+    def add_stir_step(self, speed):
+        self.optimax._add_stirring_step(speed)
+        rospy.loginfo(f"Added stirring step with speed {speed} RPM")
 
-    def stop_stirring(self):
-        self.optimax.stop_stirring()
-        rospy.loginfo("Turning off Stirring")
+    def add_wait_step(self, time):
+        self.optimax._add_waiting_step(time)
+        rospy.loginfo(f"Added waiting step with duration {time} Minutes")
 
-    def set_speed(self, speed: int):
-        self.optimax.set_speed(speed)
-        rospy.loginfo("Setting Stirring To: " + str(speed) + "RPM")
+    def start_experiment(self):
+        self.optimax.start()
+        rospy.loginfo("Experiment Started")
 
-    def set_temperature(self, temperature: int):
-        self.optimax.set_temperature(temperature)
-        rospy.loginfo("Setting Heating To: " + str(temperature) + "ºC")
+    def stop_experiment(self):
+        self.optimax.stop()
+        rospy.loginfo("Experiment Stopped")
 
     # Callback for subscriber.
     def callback_commands(self, msg):
 
         message = msg.optimax_command
+        param = msg.optimax_param
 
-        if message == msg.HEAT_ON:
-            self.start_heating()
-        elif message == msg.HEAT_OFF:
-            self.stop_heating()
-        elif message == msg.STIR_ON:
-            self.start_stirring()
-        elif message == msg.STIR_OFF:
-            self.stop_stirring()
-        elif message == msg.SET_STIR:
-            self.set_speed(msg.optimax_param)
-        elif message == msg.SET_HEAT:
-            self.set_temperature(msg.optimax_param)
-        elif message == msg.STIR_AT:
-            self.set_speed(msg.optimax_param)
-            self.start_stirring()
-        elif message == msg.HEAT_AT:
-            self.set_temperature(msg.optimax_param)
-            self.start_heating()
-        elif message == msg.ALL_OFF:
-            self.stop_heating()
-            self.stop_stirring()
-            self.set_speed(0)
-            self.set_temperature(21)
+        if message == msg.ADD_TEMP:
+            self.add_temp_step(param)
+        elif message == msg.ADD_STIR:
+            self.add_stir_step(param)
+        elif message == msg.ADD_WAIT:
+            self.add_wait_step(param)
+        elif message == msg.START:
+            self.start_experiment()
+        elif message == msg.STOP:
+            self.stop_experiment()
         else:
             rospy.loginfo("invalid command")
 
