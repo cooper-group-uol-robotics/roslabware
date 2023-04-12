@@ -140,9 +140,5 @@ class RCTDigitalHotplateRos:
             self.set_temperature(21)
         else:
             rospy.loginfo("invalid command")
-        
+
         self._task_complete_pub.publish(bool(True))
-
-
-
-

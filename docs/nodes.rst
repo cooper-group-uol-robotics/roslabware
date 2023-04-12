@@ -110,16 +110,6 @@ Commands
 * ``0`` : Dispense liquid
 * ``1`` : Withdraw liquid
 
-KNF Simdos10 RCPlus
-====================
-
-Node for the KNF Simdos10 RCPlus pump.
-
-Commands
----------
-
-* ``0`` : Dispense liquid
-* ``1`` : Get positions
 
 Mettler Toledo Optimax
 ==============================

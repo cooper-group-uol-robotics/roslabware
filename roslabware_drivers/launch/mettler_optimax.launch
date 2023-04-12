@@ -14,6 +14,9 @@
 	<arg
 		name="experiment_name"
 		default="test"/>
+	<arg
+		name="simulation"
+		default="False"/>
 	<node
 		name="mettler_optimax"
 		pkg="roslabware_drivers"

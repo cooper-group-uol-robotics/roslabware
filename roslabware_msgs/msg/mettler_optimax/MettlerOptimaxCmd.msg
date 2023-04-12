@@ -1,12 +1,8 @@
-int32 HEAT_ON = 0
-int32 HEAT_OFF = 1
-int32 STIR_ON = 2
-int32 STIR_OFF = 3
-int32 SET_STIR = 4
-int32 SET_HEAT = 5
-int32 STIR_AT = 6
-int32 HEAT_AT = 7
-int32 ALL_OFF = 8
+int32 ADD_TEMP = 0
+int32 ADD_STIR = 1
+int32 ADD_WAIT = 2
+int32 START = 3
+int32 STOP = 4
 
 int32 optimax_command
 int32 optimax_param
