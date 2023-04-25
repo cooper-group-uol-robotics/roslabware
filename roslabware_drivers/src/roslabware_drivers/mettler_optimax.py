@@ -1,8 +1,9 @@
+
 # external
 from typing import Optional, Union
 
 import rospy
-from pylabware import Optimax
+#from pylabware import Optimax
 
 # Core
 from roslabware_msgs.msg import (
@@ -24,18 +25,18 @@ class OptimaxRos:
         address: Optional[str] = None,
         port: Union[str, int] = None,
         simulation: bool = False,
-        experiment_name: str = "test"
+        experiment_name: str = "test1"
     ):
 
         # Create device object
-        self.optimax = Optimax(experiment_name=experiment_name)
+        #self.optimax = Optimax(experiment_name=experiment_name, device_name=device_name, connection_mode=connection_mode, address=address, port=port)
 
         # TODO after (IF) API implementation
         # if simulation == "True":
         #     self.optimax.simulation = True
         # self.optimax.connect()
 
-        self.optimax.initialize_device()
+        #self.optimax.initialize_device()
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -53,13 +54,13 @@ class OptimaxRos:
 
         rospy.loginfo("Mettler Optimax Driver Started")
 
-    def add_temp_step(self, temperature):
-        self.optimax._add_heating_step(temperature)
+    def add_temp_step(self, temperature, duration):
+        #self.optimax._add_temperature_step(temperature, duration)
         rospy.loginfo(f"Added temperature step with temperature {temperature} ºC")
 
 
-    def add_stir_step(self, speed):
-        self.optimax._add_stirring_step(speed)
+    def add_stir_step(self, speed, duration):
+        self.optimax._add_stirring_step(speed, duration)
         rospy.loginfo(f"Added stirring step with speed {speed} RPM")
 
     def add_wait_step(self, time):
@@ -79,11 +80,13 @@ class OptimaxRos:
 
         message = msg.optimax_command
         param = msg.optimax_param
+        if msg.duration:
+            duration = msg.duration
 
         if message == msg.ADD_TEMP:
-            self.add_temp_step(param)
+            self.add_temp_step(param, duration)
         elif message == msg.ADD_STIR:
-            self.add_stir_step(param)
+            self.add_stir_step(param, duration)
         elif message == msg.ADD_WAIT:
             self.add_wait_step(param)
         elif message == msg.START:

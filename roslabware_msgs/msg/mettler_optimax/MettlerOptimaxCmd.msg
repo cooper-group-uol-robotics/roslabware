@@ -6,3 +6,4 @@ int32 STOP = 4
 
 int32 optimax_command
 int32 optimax_param
+int32 duration
