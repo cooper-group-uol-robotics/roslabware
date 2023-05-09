@@ -47,10 +47,10 @@ add_message_files(
    msg/mettler_optimax
  )
 
-add_message_files(
-  DIRECTORY
-   msg/knf_simdos10_rcplus
- )
+# add_message_files(
+#   DIRECTORY
+#    msg/knf_simdos10_rcplus
+#  )
 
  add_message_files(
   DIRECTORY

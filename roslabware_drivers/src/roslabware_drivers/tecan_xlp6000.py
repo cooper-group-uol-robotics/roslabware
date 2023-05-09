@@ -76,13 +76,17 @@ class XLP6000Ros:
 
         # Get data
         while not rospy.is_shutdown():
-            plunger, valve = self.get_positions()
-            self.pub.publish(plunger, valve)
-            rospy.loginfo(
-                " Plunger position: "
-                + str(plunger)
-                + "| Valve position: "
-                + str(valve))
+            #plunger, valve = self.get_positions()
+            if self.tecan.is_idle():
+                self._task_complete_pub.publish(bool(True))
+            else:
+                self._task_complete_pub.publish(bool(False))
+            # self.pub.publish(plunger, valve)
+            # rospy.loginfo(
+            #     " Plunger position: "
+            #     + str(plunger)
+            #     + "| Valve position: "
+            #     + str(valve))
 
             self.rate.sleep()
 
@@ -147,7 +151,9 @@ class XLP6000Ros:
         # Actions
         self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
-        self.tecan.dispense(increments, velocity)
+        self.tecan.dispense(increments)
+
+        rospy.loginfo("dispense command received")
 
     def withdraw(
         self,
@@ -170,7 +176,9 @@ class XLP6000Ros:
         # Actions
         self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
-        self.tecan.withdraw(increments, velocity)
+        self.tecan.withdraw(increments)
+
+        rospy.loginfo("withdraw command received")
 
     def move_plunger_relative(self, position: int, set_busy: bool = True):
         """Makes relative plunger move. This is a wrapper for
@@ -197,6 +205,7 @@ class XLP6000Ros:
                 msg.xlp_port,
                 msg.xlp_volume,
                 msg.xlp_speed)
+            
         elif message == msg.WITHDRAW:
             self.withdraw(
                 msg.xlp_port,
@@ -204,5 +213,10 @@ class XLP6000Ros:
                 msg.xlp_speed)
         else:
             rospy.loginfo("invalid command")
+        
+        
+        
 
-        self._task_complete_pub.publish(bool(True))
+        
+
+        
