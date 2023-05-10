@@ -49,6 +49,7 @@ class XLP6000Ros:
         self.tecan.set_resolution_mode(resolution_mode=DEFAULT_RESOLUTION)
         self.tecan.set_speed(DEFAULT_SPEED)
         self.tecan.initialize_device()
+        self.prev_message = None
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -87,8 +88,7 @@ class XLP6000Ros:
             #     + str(plunger)
             #     + "| Valve position: "
             #     + str(valve))
-
-            self.rate.sleep()
+            rospy.sleep(5)
 
     def stop(self):
         """Stops executing any program/action immediately"""
@@ -149,11 +149,13 @@ class XLP6000Ros:
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
         # Actions
+        rospy.loginfo("dispense command received")
         self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
         self.tecan.dispense(increments)
+        rospy.sleep(3)
 
-        rospy.loginfo("dispense command received")
+        
 
     def withdraw(
         self,
@@ -174,11 +176,13 @@ class XLP6000Ros:
         increments = self._volume_to_step(volume)
         velocity = self._convert_velocity(speed)
         # Actions
+        rospy.loginfo("withdraw command received")
         self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
         self.tecan.withdraw(increments)
+        rospy.sleep(3)
 
-        rospy.loginfo("withdraw command received")
+        
 
     def move_plunger_relative(self, position: int, set_busy: bool = True):
         """Makes relative plunger move. This is a wrapper for
@@ -199,21 +203,23 @@ class XLP6000Ros:
     def callback_commands(self, msg):
         """Callback commands for susbcriber"""
         message = msg.tecan_xlp_command
-
-        if message == msg.DISPENSE:
-            self.dispense(
-                msg.xlp_port,
-                msg.xlp_volume,
-                msg.xlp_speed)
+        if not message == self.prev_message:
+            if message == msg.DISPENSE:
+                self.dispense(
+                    msg.xlp_port,
+                    msg.xlp_volume,
+                    msg.xlp_speed)
+                self.prev_message = message
+                
+            elif message == msg.WITHDRAW:
+                self.withdraw(
+                    msg.xlp_port,
+                    msg.xlp_volume,
+                    msg.xlp_speed)
+                self.prev_message = message
+            else:
+                rospy.loginfo("invalid command")
             
-        elif message == msg.WITHDRAW:
-            self.withdraw(
-                msg.xlp_port,
-                msg.xlp_volume,
-                msg.xlp_speed)
-        else:
-            rospy.loginfo("invalid command")
-        
         
         
 
