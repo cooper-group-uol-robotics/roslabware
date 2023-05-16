@@ -1,7 +1,7 @@
 <launch>
 	<arg
 		name="device_name"
-		default="kern_Door"/>
+		default="Balance_Door"/>
 	<arg
 		name="connection_mode"
 		default="serial"/>

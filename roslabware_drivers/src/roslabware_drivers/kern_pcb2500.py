@@ -60,7 +60,7 @@ class PCB2500Ros:
         # Initialize rate object for consistent timed looping
         self.rate = rospy.Rate(10)
 
-        rospy.loginfo("Kern PCB2500 driver started")
+        rospy.loginfo("Kern PCB2500 pylabware driver started")
 
     def tare_balance(self):
         self.tared = True

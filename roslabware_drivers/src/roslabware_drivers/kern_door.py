@@ -2,7 +2,8 @@
 from typing import Optional, Union
 
 import rospy
-from pylabware import Kern_Door
+#from pylabware import Kern_Door
+from miscware import BalanceDoor
 
 # Core
 from roslabware_msgs.msg import (
@@ -29,7 +30,7 @@ class KernDoorRos:
         self.tared = False
 
         # Instantiate IKA driver
-        self.door = Kern_Door(
+        self.door = BalanceDoor(
             device_name=device_name,
             connection_mode=connection_mode,
             address=address,
@@ -51,7 +52,7 @@ class KernDoorRos:
 
         # Initialize ros published for balance responses (weights)
         self.pub = rospy.Publisher(
-            name="kern_Door_Readings",
+            name="kern_Door_Status",
             data_class=KernDoorStatus,
             queue_size=10
         )
@@ -59,7 +60,7 @@ class KernDoorRos:
         # Initialize rate object for consistent timed looping
         self.rate = rospy.Rate(10)
 
-        rospy.loginfo("Kern door driver started")
+        rospy.loginfo("Kern door Miscware driver started")
         self.door.initialize_device()
 
     def open_door(self):

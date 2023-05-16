@@ -1,4 +1,6 @@
 <launch>
+ <!-- Weighing_Balance_Details -->
+
 	<arg
 		name="device_name"
 		default="kern_pcb2500"/>
@@ -24,5 +26,35 @@
 			-add $(arg address)
 			-p $(arg port)
 			-l $(arg simulation)"
+		output="screen"/>
+
+
+ <!-- Door_Details -->
+
+	<arg
+		name="Door_name"
+		default="Balance_Door"/>
+	<arg
+		name="Door_connection_mode"
+		default="serial"/>
+	<arg
+		name="Door_address"
+		default="None"/>
+	<arg
+		name="Door_port"
+		default="/dev/ttyACM0"/>
+	<arg
+		name="Door_simulation"
+		default = 'False'/>
+	<node
+		name="Kern_door_driver"
+		pkg="roslabware_drivers"
+		type="kern_door"
+		args="
+			-d $(arg Door_name)
+			-c $(arg Door_connection_mode)
+			-add $(arg Door_address)
+			-p $(arg Door_port)
+			-l $(arg Door_simulation)"
 		output="screen"/>
 </launch>

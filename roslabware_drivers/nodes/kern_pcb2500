@@ -66,5 +66,5 @@ if __name__ == "__main__":
         port=args.port,
         simulation=args.simulation)
 
-    rospy.loginfo("Kern balance driver started")
+    rospy.loginfo("Kern balance roslabware driver started")
     rospy.spin()
