@@ -51,10 +51,10 @@
 		pkg="roslabware_drivers"
 		type="kern_door"
 		args="
-			-d $(arg Door_name)
-			-c $(arg Door_connection_mode)
-			-add $(arg Door_address)
-			-p $(arg Door_port)
-			-l $(arg Door_simulation)"
+			-de $(arg Door_name)
+			-co $(arg Door_connection_mode)
+			-addr $(arg Door_address)
+			-po $(arg Door_port)
+			-s $(arg Door_simulation)"
 		output="screen"/>
 </launch>

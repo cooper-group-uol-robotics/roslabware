@@ -13,32 +13,32 @@ if __name__ == "__main__":
         prog="Kern Top balance ROS",
         description='ROS node for a Kern Top balance')
     parser.add_argument(
-        '-d',
-        '--device_name',
+        '-de',
+        '--Door_name',
         action='store',
         default='kern_door',
         nargs='?',
         const=1,
         help='Device name')
     parser.add_argument(
-        '-c',
-        '--connection_mode',
+        '-co',
+        '--Door_connection_mode',
         action='store',
         default='serial',
         nargs='?',
         const=1,
         help='Connection mode: "tcpip", "serial" or "http"')
     parser.add_argument(
-        '-add',
-        '--address',
+        '-addr',
+        '--Door_address',
         action='store',
         default='None',
         nargs='?',
         const=1,
         help='IP Address.')
     parser.add_argument(
-        '-p',
-        '--port',
+        '-po',
+        '--Door_port',
         action='store',
         default='/dev/ttyACM0',
         nargs='?',
@@ -46,8 +46,8 @@ if __name__ == "__main__":
         help='Serial or TCP/IP port')
 
     parser.add_argument(
-        '-l',
-        '--simulation',
+        '-s',
+        '--Door_simulation',
         action='store',
         nargs='?',
         const=1,
@@ -61,11 +61,11 @@ if __name__ == "__main__":
 
     # Objectoriented initialization of ROS
     kern_ros = KernDoorRos(
-        device_name=args.device_name,
-        connection_mode=args.connection_mode,
-        address=args.address,
-        port=args.port,
-        simulation=args.simulation)
+        device_name=args.Door_name,
+        connection_mode=args.Door_connection_mode,
+        address=args.Door_address,
+        port=args.Door_port,
+        simulation=args.Door_simulation)
 
     rospy.loginfo("Kern door roslabware driver started")
     rospy.spin()

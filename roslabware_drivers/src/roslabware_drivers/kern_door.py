@@ -26,8 +26,7 @@ class KernDoorRos:
         simulation: bool = False,
     ):
 
-        self.pub = None
-        self.tared = False
+        self._prev_msg = None
 
         # Instantiate IKA driver
         self.door = BalanceDoor(
@@ -62,23 +61,37 @@ class KernDoorRos:
 
         rospy.loginfo("Kern door Miscware driver started")
         self.door.initialize_device()
+        #initialize device
+        #self.close_door()
 
     def open_door(self):
+        self.door.connect()
         self.door.open_door()
+
         #if serial msg received:
-        self.pub.publish('Door_Opened')
+        rospy.loginfo("open_door_message_sent_to_miscware")
+        self.pub.publish( status = 'Door_Opened')
+        rospy.sleep(5)
 
     def close_door(self):
+        self.door.connect()
         self.door.close_door()
+        rospy.loginfo("close_door_message_sent_to_miscware")
         #if serial msg received:
-        self.pub.publish('Door_Closed')
+        self.pub.publish(status = 'Door_Closed')
+        rospy.sleep(5)
 
     def callback_commands(self, msg):
         message = msg.kern_door_command
-
-        if message == msg.OPEN_DOOR:
-            self.open_door()
-        elif message == msg.CLOSE_DOOR:
-            self.close_door()
-        else:
-            rospy.loginfo("Invalid command")
+        rospy.loginfo("message_received")
+        if not message == self._prev_msg:
+            if message == msg.OPEN_DOOR:
+                rospy.loginfo("open_door_message")
+                self.open_door()
+                self._prev_msg = message
+            elif message == msg.CLOSE_DOOR:
+                rospy.loginfo("close_door_message")
+                self.close_door()
+                self._prev_msg = message
+            else:
+                rospy.loginfo("Invalid command")
