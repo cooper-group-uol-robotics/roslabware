@@ -3,7 +3,7 @@
 from typing import Optional, Union
 
 import rospy
-#from pylabware import Optimax
+from pylabware import Optimax
 
 # Core
 from roslabware_msgs.msg import (
@@ -25,18 +25,18 @@ class OptimaxRos:
         address: Optional[str] = None,
         port: Union[str, int] = None,
         simulation: bool = False,
-        experiment_name: str = "test1"
+        experiment_name: str = None
     ):
-
+        #
         # Create device object
-        #self.optimax = Optimax(experiment_name=experiment_name, device_name=device_name, connection_mode=connection_mode, address=address, port=port)
+        self.optimax = Optimax(experiment_name=experiment_name, device_name=device_name, connection_mode=connection_mode, address=address, port=port)
 
         # TODO after (IF) API implementation
         # if simulation == "True":
         #     self.optimax.simulation = True
-        # self.optimax.connect()
+        self.optimax.connect()
 
-        #self.optimax.initialize_device()
+        self.optimax.initialize_device()
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -55,7 +55,7 @@ class OptimaxRos:
         rospy.loginfo("Mettler Optimax Driver Started")
 
     def add_temp_step(self, temperature, duration):
-        #self.optimax._add_temperature_step(temperature, duration)
+        self.optimax._add_temperature_step(temperature, duration)
         rospy.loginfo(f"Added temperature step with temperature {temperature} ºC")
 
 
@@ -67,6 +67,10 @@ class OptimaxRos:
         self.optimax._add_waiting_step(time)
         rospy.loginfo(f"Added waiting step with duration {time} Minutes")
 
+    def add_sampling_step(self, dilution):
+        self.optimax._add_sampling_step(dilution)
+        rospy.loginfo(f"Added sampling step with dilution {dilution}")
+
     def start_experiment(self):
         self.optimax.start()
         rospy.loginfo("Experiment Started")
@@ -74,6 +78,7 @@ class OptimaxRos:
     def stop_experiment(self):
         self.optimax.stop()
         rospy.loginfo("Experiment Stopped")
+    
 
     # Callback for subscriber.
     def callback_commands(self, msg):
@@ -89,10 +94,13 @@ class OptimaxRos:
             self.add_stir_step(param, duration)
         elif message == msg.ADD_WAIT:
             self.add_wait_step(param)
+        elif message == msg.ADD_SAMPLE:
+            self.add_sampling_step(param)
         elif message == msg.START:
             self.start_experiment()
         elif message == msg.STOP:
             self.stop_experiment()
+
         else:
             rospy.loginfo("invalid command")
 
