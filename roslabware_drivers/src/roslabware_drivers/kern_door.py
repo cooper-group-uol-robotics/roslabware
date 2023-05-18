@@ -40,7 +40,9 @@ class KernDoorRos:
             self.door.simulation = True
 
         # Connect to balance
+
         self.door.connect()
+        
 
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
@@ -62,15 +64,15 @@ class KernDoorRos:
         rospy.loginfo("Kern door Miscware driver started")
         self.door.initialize_device()
         #initialize device
-        #self.close_door()
 
     def open_door(self):
         self.door.connect()
         self.door.open_door()
-
+        
         #if serial msg received:
         rospy.loginfo("open_door_message_sent_to_miscware")
         self.pub.publish( status = 'Door_Opened')
+        self.door.disconnect()
         rospy.sleep(5)
 
     def close_door(self):
@@ -79,6 +81,7 @@ class KernDoorRos:
         rospy.loginfo("close_door_message_sent_to_miscware")
         #if serial msg received:
         self.pub.publish(status = 'Door_Closed')
+        self.door.disconnect()
         rospy.sleep(5)
 
     def callback_commands(self, msg):
