@@ -84,18 +84,30 @@ class OptimaxRos:
     def callback_commands(self, msg):
 
         message = msg.optimax_command
-        param = msg.optimax_param
-        if msg.duration:
-            duration = msg.duration
+        if msg.temperature:
+            temp = msg.temperature
+        if msg.stir_speed:
+            stir_speed = msg.stir_speed
+        if msg.temp_duration:
+            temp_duration = msg.temp_duration
+        if msg.stir_duration:
+            stir_duration = msg.stir_duration
+        if msg.wait_duration:
+            wait_duration = msg.wait_duration
+        if msg.dilution:
+            dilution = msg.dilution
 
         if message == msg.ADD_TEMP:
-            self.add_temp_step(param, duration)
+            self.add_temp_step(temp, temp_duration)
         elif message == msg.ADD_STIR:
-            self.add_stir_step(param, duration)
+            self.add_stir_step(stir_speed, stir_duration)
         elif message == msg.ADD_WAIT:
-            self.add_wait_step(param)
+            self.add_wait_step(wait_duration)
         elif message == msg.ADD_SAMPLE:
-            self.add_sampling_step(param)
+            self.add_sampling_step(dilution)
+        elif message == msg.ADD_TEMP_STIR:
+            self.add_temp_step(temp, temp_duration)
+            self.add_stir_step(stir_speed, stir_duration)
         elif message == msg.START:
             self.start_experiment()
         elif message == msg.STOP:
@@ -103,6 +115,5 @@ class OptimaxRos:
 
         else:
             rospy.loginfo("invalid command")
-
 
 rospy.loginfo("working")
