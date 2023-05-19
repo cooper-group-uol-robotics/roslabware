@@ -1,0 +1,4 @@
+
+
+roslaunch roslabware_drivers mettler_quantos_qB1.launch port:="COM3"
+rostopic pub -1 /mettler_quantos_qB1_commands roslabware_msgs/MettlerQuantosQB1Cmd "{quantos_command: 8}"

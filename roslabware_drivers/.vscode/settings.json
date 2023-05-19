@@ -1,0 +1,10 @@
+{
+    "python.autoComplete.extraPaths": [
+        "C:/Users/Louis_Work/Documents/catkin_ws/devel\\lib/site-packages",
+        "C:/Users/Louis_Work/miniconda3/envs/robostackenv/Library\\lib/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "C:/Users/Louis_Work/Documents/catkin_ws/devel\\lib/site-packages",
+        "C:/Users/Louis_Work/miniconda3/envs/robostackenv/Library\\lib/site-packages"
+    ]
+}

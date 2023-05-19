@@ -18,8 +18,10 @@ add_message_files(
  )
 
 add_message_files(
+
   DIRECTORY
-   msg/ika_rct_digital
+msg/ika_rct_digital
+
  )
 
 add_message_files(

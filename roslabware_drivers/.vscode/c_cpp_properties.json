@@ -1,0 +1,16 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "C:\\Users\\Louis_Work\\Documents\\catkin_ws\\devel\\include\\**",
+        "C:\\Users\\Louis_Work\\miniconda3\\envs\\robostackenv\\Library\\include\\**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}
