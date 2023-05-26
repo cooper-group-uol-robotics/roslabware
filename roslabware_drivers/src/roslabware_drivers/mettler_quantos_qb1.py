@@ -65,8 +65,8 @@ class QuantosQB1Ros:
         rospy.loginfo("Sending tare command")
         reply = self.quantos.tare()
         self.pub.publish( command_running = "Tare",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
     def get_stable_weight(self):
         rospy.loginfo("Sending get stable weight command")
@@ -74,134 +74,145 @@ class QuantosQB1Ros:
         
         rospy.loginfo(reply)
 
-        for entry in reply["outcomes"]:
-            rospy.loginfo(entry)
-            rospy.loginfo(type(entry))
-
         self.pub.publish(command_running = "Get stable weight",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
   
         
     def get_door_position(self):
         rospy.loginfo("Sending get door position")
         reply = self.quantos.get_door_position()
         self.pub.publish(command_running = "Get door position",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
         
 
     def get_head_data(self):
         rospy.loginfo("Sending get head data")
         reply = self.quantos.get_head_data()
 
-        output_list = self._flatten_dict(reply["outcomes"])
+        #output_list = self._flatten_dict(reply["outcomes"])
         self.pub.publish(command_running = "Get head data",
-                        success = reply["success"], output = output_list,
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
     
     def get_sample_data(self):
         rospy.loginfo("Sending get sample data")
         reply = self.quantos.get_sample_data()
 
-        output_list = self._flatten_dict(reply["outcomes"])
+        #output_list = self._flatten_dict(reply["outcomes"])
         self.pub.publish(command_running = "Get sample data",
-                        success = reply["success"], output = output_list,
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
 
     def set_tapping_before_dosing(self):
         rospy.loginfo("Setting tapping before dosing")
         reply = self.quantos.set_tapping_before_dosing()
         self.pub.publish(command_running = "Set tapping",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
         
     def unset_tapping_before_dosing(self):
         rospy.loginfo("Unsetting tapping before dosing")
         reply = self.quantos.unset_tapping_before_dosing()
         self.pub.publish(command_running = "Unset tapping",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
     def set_tapper_intensity(self, intensity: int):
         rospy.loginfo("Setting intensity of before dosing tapping")
         reply = self.quantos.set_tapper_intensity(intensity)
         self.pub.publish(command_running = "Setting tapping intensity",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
     
     def set_tapper_duration(self, duration: int):
         rospy.loginfo("Setting duration of before dosing tapping")
         reply = self.quantos.set_tapper_duration(duration)
         self.pub.publish(command_running = "Setting tapping duration",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
     
     def lock_dosing_head_pin(self):
         rospy.loginfo("Sending lock dosing head pin")
         reply = self.quantos.lock_dosing_head_pin()
         self.pub.publish(command_running = "Locking dose head",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
     
     def unlock_dosing_head_pin(self):
         rospy.loginfo("Sending unlock dosing head pin")
         reply = self.quantos.unlock_dosing_head_pin()
         self.pub.publish(command_running = "Unlocking dose head",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
     def open_front_door(self):
         rospy.loginfo("Sending open front door")
-        reply = self.quantos.open_door()
+        reply = self.quantos.open_front_door()
         self.pub.publish(command_running = "Opening front door",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
     def close_front_door(self):
         rospy.loginfo("Sending close front door")
-        reply = self.quantos.close_door()
+        reply = self.quantos.close_front_door()
         self.pub.publish(command_running = "Closing front door",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+        
+    def open_side_doors(self):
+        rospy.loginfo("Sending open side doors")
+        reply = self.quantos.open_side_door()
+        self.pub.publish(command_running = "Opening side doors",
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+
+    def close_side_doors(self):
+        rospy.loginfo("Sending close side doors")
+        reply = self.quantos.close_side_door()
+        self.pub.publish(command_running = "Closing side doors",
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+
     
     def set_tolerance_standard(self):
         rospy.loginfo("Setting Tolerance mode to +/- standard")
         reply = self.quantos.set_tolerance_overdose()
         self.pub.publish(command_running = "Setting tolerance mode to +/- standard",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
     def set_tolerance_overdose(self):
         rospy.loginfo("Setting Tolerance mode to +/0 overdose")
         reply = self.quantos.set_tolerance_overdose()
         self.pub.publish(command_running = "Setting tolerance mode to +/0 standard",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
     def set_algorithm_standard(self):
         rospy.loginfo("Setting dosing algorithm to standard")
         reply = self.quantos.set_algorithm_standard()
         self.pub.publish(command_running = "Setting dosing algorithm to standard",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
     def set_algorithm_advanced(self):
         rospy.loginfo("Setting dosing algorithm to advanced")
         reply = self.quantos.set_algorithm_advanced()
         self.pub.publish(command_running = "Setting dosing algorithm to advanced",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
     def _move_sampler(self, position:int) -> dict:
         rospy.loginfo(f"Moving sampler to postion {position}")
         reply = self.quantos.move_sampler(position)
 
         self.pub.publish(command_running = f"Moving sampler to postion {position}",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
         return reply
 
     def get_sampler_position(self):
@@ -209,46 +220,46 @@ class QuantosQB1Ros:
         reply = self.quantos.get_sampler_position()
 
         self.pub.publish(command_running = "Getting current sampler position",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
        
     def get_sampler_status(self):
        rospy.loginfo("Getting autosampler status")
        reply = self.quantos.get_sampler_position()
        self.pub.publish(command_running = "Getting autosampler status",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
        
 
     def set_value_pan(self):
         rospy.loginfo("Setting value pan")
         reply = self.quantos.set_value_pan()
         self.pub.publish(command_running = "Setting value pan",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
        
 
     def set_antistatic_on(self):
         rospy.loginfo("Setting antistatic on")
         reply = self.quantos.set_antistatic_on()
         self.pub.publish(command_running = "Setting antistatic on",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
        
 
     def set_antistatinc_off(self):
         rospy.loginfo("Sending set antistatic off")
         reply = self.quantos.set_antistatic_off()
         self.pub.publish(command_running = "Setting antistatic off",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
         
     def _set_target_mass(self, mass: float) -> dict: 
         rospy.loginfo(f"Setting target mass to {mass} mg")
         reply = self.quantos.set_target_mass(mass)
         self.pub.publish(command_running = f"Setting target mass to {mass} mg",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
         
         return reply
         
@@ -257,8 +268,8 @@ class QuantosQB1Ros:
         rospy.loginfo(f"setting tolerance of {percentage} %")
         reply = self.quantos.set_tolerance_value(percentage)
         self.pub.publish(command_running = f"Setting tolerance of {percentage} %",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
         return reply
 
 
@@ -266,29 +277,8 @@ class QuantosQB1Ros:
         rospy.loginfo("Starting dosing")
         reply = self.quantos.start_dosing()
         self.pub.publish(command_running = "Starting dosing",
-                        success = reply["success"], output = reply["outcomes"],
-                        door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
-
-
-    def _flatten_dict(self, dict_input:dict) -> list:
-        """
-        'Flattens dictionaries before they are published 
-        dict = {key : value, key2 : value 2} -> [key : value, key2: value2]
-        
-        
-        """
-        if type(dict_input) is not dict:
-            return dict_input
-        
-        else:
-            output_list = []
-            for key in dict_input:
-                combined_entry = f"{key} : {dict_input[key]}"
-                output_list.append(combined_entry)
-        
-            return output_list
-
-
+                        success = reply["success"], output = reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
 
 
     def _dispense_solid_at_position(self, percentage: float, amount: float):
@@ -361,9 +351,9 @@ class QuantosQB1Ros:
             self.lock_dosing_head_pin()
         elif message == msg.UNLOCK_PIN:
             self.unlock_dosing_head_pin()
-        elif message == msg.OPEN_DOOR:
+        elif message == msg.OPEN_FRONT_DOOR:
             self.open_front_door()
-        elif message == msg.CLOSE_DOOR:
+        elif message == msg.CLOSE_FRONT_DOOR:
             self.close_front_door()
         elif message == msg.SET_TOLERANCE_STANDARD:
             self.set_tolerance_standard()
@@ -399,6 +389,10 @@ class QuantosQB1Ros:
             self.get_sampler_position()
         elif message == msg.GET_SAMPLER_STATUS:
             self.get_sampler_status()
+        elif message == msg.OPEN_SIDE_DOORS:
+            self.open_side_doors()
+        elif message == msg.CLOSE_SIDE_DOORS:
+            self.close_side_doors()
 
         else:
             rospy.loginfo("invalid command")
