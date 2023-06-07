@@ -2,6 +2,7 @@
 from typing import Optional
 from pylabware import XLP6000
 import rospy
+import time
 
 
 # Core
@@ -50,6 +51,7 @@ class XLP6000Ros:
         self.tecan.set_speed(DEFAULT_SPEED)
         self.tecan.initialize_device()
         self.prev_message = None
+        self.operation_complete = False
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -78,10 +80,8 @@ class XLP6000Ros:
         # Get data
         while not rospy.is_shutdown():
             #plunger, valve = self.get_positions()
-            if self.tecan.is_idle():
-                self._task_complete_pub.publish(bool(True))
-            else:
-                self._task_complete_pub.publish(bool(False))
+
+            self._task_complete_pub.publish(self.operation_complete)
             # self.pub.publish(plunger, valve)
             # rospy.loginfo(
             #     " Plunger position: "
@@ -130,12 +130,7 @@ class XLP6000Ros:
 
         return position
 
-    def dispense(
-        self,
-        port: int,
-        volume: float,
-        speed: Optional[float] = DEFAULT_SPEED
-    ):
+    def dispense(self, split_volume):
         """Dispense the specified volume with the defined speed
         at the specified port
             Args:
@@ -143,26 +138,20 @@ class XLP6000Ros:
                 volume (float): volume to dispense in mL
                 speed (float): speed in mL/min"""
         # Add inputs for ports
-        _port = "I" + str(port)
+        _port = "I" + str(self._dispense_port)
 
         # Convert to increments and increments/s
-        increments = self._volume_to_step(volume)
-        velocity = self._convert_velocity(speed)
+        increments = self._volume_to_step(split_volume)
+        velocity = self._convert_velocity(self._speed)
         # Actions
-        rospy.loginfo("dispense command received")
+        rospy.loginfo(f"dispense command received for volume:{split_volume} ml")
         self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
         self.tecan.dispense(increments)
         rospy.sleep(3)
 
         
-
-    def withdraw(
-        self,
-        port: int,
-        volume: float,
-        speed: Optional[float] = DEFAULT_SPEED
-    ):
+    def withdraw(self, split_volume):
         """Withdraw the specified volume with the defined speed
         at the specified port
             Args:
@@ -170,19 +159,18 @@ class XLP6000Ros:
                 volume (float): volume to dispense in mL
                 speed (float): speed in mL/min"""
         # Add inputs for ports
-        _port = "I" + str(port)
+        _port = "I" + str(self._withdraw_port)
 
         # Convert to increments and increments/s
-        increments = self._volume_to_step(volume)
-        velocity = self._convert_velocity(speed)
+        increments = self._volume_to_step(split_volume)
+        velocity = self._convert_velocity(self._speed)
         # Actions
-        rospy.loginfo("withdraw command received")
+        rospy.loginfo(f"withdraw command received for volume:{split_volume} ml")
         self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
         self.tecan.withdraw(increments)
         rospy.sleep(3)
 
-        
 
     def move_plunger_relative(self, position: int, set_busy: bool = True):
         """Makes relative plunger move. This is a wrapper for
@@ -199,27 +187,46 @@ class XLP6000Ros:
         valve = self.tecan.get_valve_position()
 
         return plunger, valve
+    
+    def request_pumping(self,
+        withdraw_port: int,
+        dispense_port: int,
+        volume: float,
+        speed: Optional[float] = DEFAULT_SPEED):
+
+        split_volume = []
+        self._withdraw_port = withdraw_port
+        self._dispense_port = dispense_port
+        self._speed = speed
+        self._volume = volume
+        iterations, last_iteration_volume = divmod(self._volume, int(self._syringe_size))
+        for i in range(iterations):
+            split_volume.append(self._syringe_size)
+        if last_iteration_volume != 0:
+            split_volume.append(last_iteration_volume)
+        for iter in range(len(split_volume)):            
+            self.withdraw(split_volume[iter])
+            while not self.tecan.is_idle():
+                time.sleep(0.1)
+            self.dispense(split_volume[iter])
+            while not self.tecan.is_idle():
+                time.sleep(0.1)
+        self.operation_complete = True
+
+
 
     def callback_commands(self, msg):
         """Callback commands for susbcriber"""
         message = msg.tecan_xlp_command
-        if not message == self.prev_message:
-            if message == msg.DISPENSE:
-                self.dispense(
-                    msg.xlp_port,
-                    msg.xlp_volume,
-                    msg.xlp_speed)
-                self.prev_message = message
-                
-            elif message == msg.WITHDRAW:
-                self.withdraw(
-                    msg.xlp_port,
-                    msg.xlp_volume,
-                    msg.xlp_speed)
-                self.prev_message = message
-            else:
-                rospy.loginfo("invalid command")
-            
+        if message == msg.DISPENSE:
+            self.request_pumping(
+                msg.xlp_withdraw_port,
+                msg.xlp_dispense_port,
+                msg.xlp_volume,
+                msg.xlp_speed)
+        else:
+            rospy.loginfo("invalid command")
+        
         
         
 
