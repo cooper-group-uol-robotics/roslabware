@@ -5,9 +5,7 @@ import rospy
 
 
 # Core
-from roslabware_msgs.msg import (
-    TecanXlp6000Cmd,
-    TecanXlp6000Reading)
+from roslabware_msgs.msg import TecanXlp6000Cmd, TecanXlp6000Reading
 from std_msgs.msg import Bool
 
 # Constants
@@ -16,9 +14,7 @@ DEFAULT_RESOLUTION = "N2"
 
 
 class XLP6000Ros:
-    """
-    ROS Wrapper for Driver for Tecan XLP6000 syringe pump.
-    """
+    """ROS Wrapper for Driver for Tecan XLP6000 syringe pump."""
 
     def __init__(
         self,
@@ -30,14 +26,13 @@ class XLP6000Ros:
         syringe_size: float,
         simulation: bool,
     ):
-
         # Create device object
         self.tecan = XLP6000(
             device_name=device_name,
             connection_mode=connection_mode,
             switch_address=switch_address,
             address=address,
-            port=port
+            port=port,
         )
 
         if simulation == "True":
@@ -59,17 +54,14 @@ class XLP6000Ros:
 
         # Initialize ROS publisher for status
         self.pub = rospy.Publisher(
-            name="Tecan_XLP6000_Readings",
-            data_class=TecanXlp6000Reading,
-            queue_size=10
+            name="Tecan_XLP6000_Readings", data_class=TecanXlp6000Reading, queue_size=10
         )
 
         rospy.loginfo("XLP6000 Driver Started")
 
         self._task_complete_pub = rospy.Publisher(
-            '/tecan_xlp/task_complete',
-            Bool,
-            queue_size=1)
+            "/tecan_xlp/task_complete", Bool, queue_size=1
+        )
 
         # Sleeping rate
         self.rate = rospy.Rate(1)
@@ -79,20 +71,18 @@ class XLP6000Ros:
             plunger, valve = self.get_positions()
             self.pub.publish(plunger, valve)
             rospy.loginfo(
-                " Plunger position: "
-                + str(plunger)
-                + "| Valve position: "
-                + str(valve))
+                " Plunger position: " + str(plunger) + "| Valve position: " + str(valve)
+            )
 
             self.rate.sleep()
 
     def stop(self):
-        """Stops executing any program/action immediately"""
+        """Stops executing any program/action immediately."""
         self.tecan.stop()
 
     def _volume_to_step(self, volume: float):
-        """Converts volume in mL to number of increments based
-        on the resolution set in the syringe pump
+        """Converts volume in mL to number of increments based on the
+        resolution set in the syringe pump.
 
         Args:
             volume(float): volume in mL
@@ -105,7 +95,7 @@ class XLP6000Ros:
         return increments
 
     def _convert_velocity(self, speed: float):
-        """Converts ml/min to increments/s
+        """Converts ml/min to increments/s.
 
         Args:
             speed(float): speed in mL/min
@@ -117,7 +107,7 @@ class XLP6000Ros:
         return speed
 
     def _convert_port(self, port: int):
-        """Converts port for I-O notation for pumps"""
+        """Converts port for I-O notation for pumps."""
 
         if self.clockwise:
             position = "I" + str(port)
@@ -127,10 +117,7 @@ class XLP6000Ros:
         return position
 
     def dispense(
-        self,
-        port: int,
-        volume: float,
-        speed: Optional[float] = DEFAULT_SPEED
+        self, port: int, volume: float, speed: Optional[float] = DEFAULT_SPEED
     ):
         """Dispense the specified volume with the defined speed
         at the specified port
@@ -150,10 +137,7 @@ class XLP6000Ros:
         self.tecan.dispense(increments, velocity)
 
     def withdraw(
-        self,
-        port: int,
-        volume: float,
-        speed: Optional[float] = DEFAULT_SPEED
+        self, port: int, volume: float, speed: Optional[float] = DEFAULT_SPEED
     ):
         """Withdraw the specified volume with the defined speed
         at the specified port
@@ -173,8 +157,9 @@ class XLP6000Ros:
         self.tecan.withdraw(increments, velocity)
 
     def move_plunger_relative(self, position: int, set_busy: bool = True):
-        """Makes relative plunger move. This is a wrapper for
-        dispense()/withdraw().
+        """Makes relative plunger move.
+
+        This is a wrapper for dispense()/withdraw().
         """
         position = int(position)
         if position > 0:
@@ -182,26 +167,20 @@ class XLP6000Ros:
         return self.dispense(abs(position), set_busy)
 
     def get_positions(self):
-        """Gets plunger and valve positions"""
+        """Gets plunger and valve positions."""
         plunger = self.tecan.get_plunger_position()
         valve = self.tecan.get_valve_position()
 
         return plunger, valve
 
     def callback_commands(self, msg):
-        """Callback commands for susbcriber"""
+        """Callback commands for susbcriber."""
         message = msg.tecan_xlp_command
 
         if message == msg.DISPENSE:
-            self.dispense(
-                msg.xlp_port,
-                msg.xlp_volume,
-                msg.xlp_speed)
+            self.dispense(msg.xlp_port, msg.xlp_volume, msg.xlp_speed)
         elif message == msg.WITHDRAW:
-            self.withdraw(
-                msg.xlp_port,
-                msg.xlp_volume,
-                msg.xlp_speed)
+            self.withdraw(msg.xlp_port, msg.xlp_volume, msg.xlp_speed)
         else:
             rospy.loginfo("invalid command")
 

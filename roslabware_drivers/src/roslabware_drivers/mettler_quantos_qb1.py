@@ -1,6 +1,5 @@
 # external
 from typing import Optional, Union
-from xml.dom import minidom  # noqa: DUO107
 
 import rospy
 from pylabware import QuantosQB1
@@ -15,10 +14,8 @@ from roslabware_msgs.msg import (
 
 
 class QuantosQB1Ros:
-    """
-    ROS Wrapper for Serial Driver for Mettler Toledo Quantos
-    QB1 dispensing system.
-    """
+    """ROS Wrapper for Serial Driver for Mettler Toledo Quantos QB1
+    dispensing system."""
 
     def __init__(
         self,
@@ -26,7 +23,7 @@ class QuantosQB1Ros:
         connection_mode: str = "serial",
         address: Optional[str] = None,
         port: Union[str, int] = None,
-        simulation: bool = False
+        simulation: bool = False,
     ):
         self._doorPos = 0
         self._samplerPos = 0
@@ -36,7 +33,7 @@ class QuantosQB1Ros:
             device_name=device_name,
             connection_mode=connection_mode,
             address=address,
-            port=port
+            port=port,
         )
 
         if simulation == "True":
@@ -56,9 +53,7 @@ class QuantosQB1Ros:
 
         # Initialize ROS publisher for status
         self.pub_done = rospy.Publisher(
-            name="mettler_quantos_qB1_status",
-            data_class=String,
-            queue_size=1
+            name="mettler_quantos_qB1_status", data_class=String, queue_size=1
         )
 
         # Initialize ROS publisher for plataform info
@@ -88,11 +83,9 @@ class QuantosQB1Ros:
         rospy.loginfo(reply)
         rospy.loginfo("Got stable weight")
 
-
     def start_dosing(self):
         self.quantos.start_dosing()
         rospy.loginfo("Starting Dosing")
-
 
     def stop_dosing(self):
         self.quantos.stop_dosing
@@ -105,11 +98,10 @@ class QuantosQB1Ros:
 
     def get_head_data(self):
         # TODO check if this is the correct strcuture SMZ
-        #self.quantos.connection.connection_parameters["timeout"] = 30
+        # self.quantos.connection.connection_parameters["timeout"] = 30
         head_data = self.quantos.get_head_data()
-        
+
         try:
-           
             # Publish all info
             rospy.loginfo(head_data)
             rospy.loginfo("Published Head Data")
@@ -119,11 +111,10 @@ class QuantosQB1Ros:
         # TODO Check this structure
         self.quantos.connection.connection_parameters["timeout"] = 120
 
-  
     def lock_dosing_head_pin(self):
         reply = self.quantos.lock_dosing_head_pin()
         rospy.loginfo(reply)
-    
+
     def unlock_dosing_head_pin(self):
         reply = self.quantos.unlock_dosing_head_pin()
         rospy.loginfo(reply)
@@ -162,7 +153,6 @@ class QuantosQB1Ros:
         rospy.loginfo(reply)
         rospy.loginfo("Setting weighing pan as empty")
 
-
     def set_antistatic_on(self):
         reply = self.quantos.set_antistatic_on()
         rospy.loginfo(reply)
@@ -174,9 +164,8 @@ class QuantosQB1Ros:
         rospy.loginfo("Setting antistatic system off")
 
     def dispense_solid(self, percentage: float, amount: float):
-
         self.set_target_mass(amount)
-        
+
         self.set_tolerance(percentage)
 
         self.start_dosing()
@@ -185,7 +174,7 @@ class QuantosQB1Ros:
 
     # Callback for subscriber.
     def callback_commands(self, msg):
-        """Callback commands for susbcriber"""
+        """Callback commands for susbcriber."""
         message = msg.quantos_command
 
         if message == msg.DISPENSE_SOLID:

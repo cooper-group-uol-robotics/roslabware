@@ -5,16 +5,11 @@ import rospy
 from pylabware import PCB2500
 
 # Core
-from roslabware_msgs.msg import (
-    KernPCB2500Cmd,
-    KernPCB2500Reading
-)
+from roslabware_msgs.msg import KernPCB2500Cmd, KernPCB2500Reading
 
 
 class PCB2500Ros:
-    """
-    ROS wrapper class for controlling Kern PCB Top Balance
-    """
+    """ROS wrapper class for controlling Kern PCB Top Balance."""
 
     def __init__(
         self,
@@ -24,7 +19,6 @@ class PCB2500Ros:
         port: Union[str, int] = None,
         simulation: bool = False,
     ):
-
         self.pub = None
         self.tared = False
 
@@ -52,9 +46,7 @@ class PCB2500Ros:
 
         # Initialize ros published for balance responses (weights)
         self.pub = rospy.Publisher(
-            name="kern_PCB2500_Readings",
-            data_class=KernPCB2500Reading,
-            queue_size=10
+            name="kern_PCB2500_Readings", data_class=KernPCB2500Reading, queue_size=10
         )
 
         # Initialize rate object for consistent timed looping

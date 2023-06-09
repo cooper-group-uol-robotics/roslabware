@@ -13,10 +13,8 @@ from std_msgs.msg import Bool
 
 
 class XPR226DRQRos:
-    """
-    ROS Wrapper for Serial Driver for Mettler Toledo XPR226
-    DRQ dispensing system.
-    """
+    """ROS Wrapper for Serial Driver for Mettler Toledo XPR226 DRQ
+    dispensing system."""
 
     def __init__(
         self,
@@ -24,9 +22,8 @@ class XPR226DRQRos:
         connection_mode: str = "serial",
         address: Optional[str] = None,
         port: Union[str, int] = None,
-        simulation: bool = False
+        simulation: bool = False,
     ):
-
         # Create device object
         self.balance = XPR226DRQ()
 
@@ -55,22 +52,11 @@ class XPR226DRQRos:
         rospy.loginfo("Mettler XPR226 DRQ Driver Started")
 
         self._task_complete_pub = rospy.Publisher(
-            '/mettler_xpr226_drq/task_complete',
-            Bool,
-            queue_size=1)
+            "/mettler_xpr226_drq/task_complete", Bool, queue_size=1
+        )
 
-    def dispense(
-            self,
-            method: str,
-            substance: str,
-            amount: float,
-            tolerance: float):
-
-        self.balance.dispense(
-                method,
-                substance,
-                amount,
-                tolerance)
+    def dispense(self, method: str, substance: str, amount: float, tolerance: float):
+        self.balance.dispense(method, substance, amount, tolerance)
         rospy.loginfo("Starting Dosing")
 
     def open_door(self):
@@ -95,15 +81,13 @@ class XPR226DRQRos:
 
     # Callback for subscriber.
     def callback_commands(self, msg):
-        """Callback commands for susbcriber"""
+        """Callback commands for susbcriber."""
         message = msg.xpr_command
 
         if message == msg.START_DOSE:
             self.dispense(
-                    msg.xpr_method,
-                    msg.xpr_name,
-                    msg.xpr_amount,
-                    msg.xpr_tolerance)
+                msg.xpr_method, msg.xpr_name, msg.xpr_amount, msg.xpr_tolerance
+            )
         elif message == msg.OPEN_DOOR:
             self.open_door()
         elif message == msg.CLOSE_DOOR:

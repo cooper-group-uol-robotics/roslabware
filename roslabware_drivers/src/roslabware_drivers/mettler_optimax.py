@@ -12,10 +12,8 @@ from roslabware_msgs.msg import (
 
 
 class OptimaxRos:
-    """
-    ROS Wrapper for Serial Driver for Mettler Toledo XPR226
-    DRQ dispensing system.
-    """
+    """ROS Wrapper for Serial Driver for Mettler Toledo XPR226 DRQ
+    dispensing system."""
 
     def __init__(
         self,
@@ -56,7 +54,6 @@ class OptimaxRos:
     def add_temp_step(self, temperature):
         self.optimax._add_heating_step(temperature)
         rospy.loginfo(f"Added temperature step with temperature {temperature} ºC")
-
 
     def add_stir_step(self, speed):
         self.optimax._add_stirring_step(speed)

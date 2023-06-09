@@ -11,9 +11,7 @@ from std_msgs.msg import Bool
 
 
 class RCTDigitalHotplateRos:
-    """
-    Ros wrapper for the IKA RCT hotplate driver
-    """
+    """Ros wrapper for the IKA RCT hotplate driver."""
 
     def __init__(
         self,
@@ -22,9 +20,8 @@ class RCTDigitalHotplateRos:
         address: str,
         port: str,
         sensor: int,
-        simulation: bool
+        simulation: bool,
     ):
-
         # Instantiate IKA driver
         self.hotplate = RCTDigitalHotplate(
             device_name=device_name,
@@ -58,15 +55,13 @@ class RCTDigitalHotplateRos:
         self.rate = rospy.Rate(1)
 
         self._task_complete_pub = rospy.Publisher(
-            '/tecan_xcalibur/task_complete',
-            Bool,
-            queue_size=1)
+            "/tecan_xcalibur/task_complete", Bool, queue_size=1
+        )
 
         rospy.loginfo("IKA RCT digital hotplate driver started")
 
         # Get data
         while not rospy.is_shutdown():
-
             # Get temperature of external sensor as default
             temperature = self.hotplate.get_temperature(sensor=int(sensor))
             stir_speed = self.hotplate.get_speed()
@@ -112,7 +107,6 @@ class RCTDigitalHotplateRos:
         rospy.loginfo("Setting Heating To: " + str(temperature) + "ºC")
 
     def callback_commands(self, msg):
-
         message = msg.ika_command
 
         if message == msg.HEAT_ON:

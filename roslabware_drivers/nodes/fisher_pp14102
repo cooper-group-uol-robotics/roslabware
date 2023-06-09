@@ -10,48 +10,54 @@ if __name__ == "__main__":
     # Get arguments needed
     parser = argparse.ArgumentParser(
         prog="Fisher PP14102 balance ROS",
-        description='ROS node for Fisher PP14102 balance')
+        description="ROS node for Fisher PP14102 balance",
+    )
     parser.add_argument(
-        '-d',
-        '--device_name',
-        action='store',
-        default='rct_ika_hotplate',
-        nargs='?',
+        "-d",
+        "--device_name",
+        action="store",
+        default="rct_ika_hotplate",
+        nargs="?",
         const=1,
-        help='Device name')
+        help="Device name",
+    )
     parser.add_argument(
-        '-c',
-        '--connection_mode',
-        action='store',
-        default='serial',
-        nargs='?',
+        "-c",
+        "--connection_mode",
+        action="store",
+        default="serial",
+        nargs="?",
         const=1,
-        help='Connection mode: "tcpip", "serial" or "http"')
+        help='Connection mode: "tcpip", "serial" or "http"',
+    )
     parser.add_argument(
-        '-add',
-        '--address',
-        action='store',
-        default='None',
-        nargs='?',
+        "-add",
+        "--address",
+        action="store",
+        default="None",
+        nargs="?",
         const=1,
-        help='IP Address.')
+        help="IP Address.",
+    )
     parser.add_argument(
-        '-p',
-        '--port',
-        action='store',
-        default='/dev/ttyACM0',
-        nargs='?',
+        "-p",
+        "--port",
+        action="store",
+        default="/dev/ttyACM0",
+        nargs="?",
         const=1,
-        help='Serial or TCP/IP port')
+        help="Serial or TCP/IP port",
+    )
 
     parser.add_argument(
-        '-l',
-        '--simulation',
-        action='store',
-        nargs='?',
+        "-l",
+        "--simulation",
+        action="store",
+        nargs="?",
         const=1,
-        default='False',
-        help='Simulation mode or not (bool)')
+        default="False",
+        help="Simulation mode or not (bool)",
+    )
 
     args, unknown = parser.parse_known_args()
 
@@ -64,7 +70,8 @@ if __name__ == "__main__":
         connection_mode=args.connection_mode,
         address=args.address,
         port=args.port,
-        simulation=args.simulation)
+        simulation=args.simulation,
+    )
 
     # Turn off in shutdown
     rospy.on_shutdown(balance.turn_off)
