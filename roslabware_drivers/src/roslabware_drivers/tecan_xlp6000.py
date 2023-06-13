@@ -52,6 +52,7 @@ class XLP6000Ros:
         self.tecan.initialize_device()
         self.prev_message = None
         self.operation_complete = False
+        self.prev_msg = None
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -207,10 +208,10 @@ class XLP6000Ros:
         for iter in range(len(split_volume)):            
             self.withdraw(split_volume[iter])
             while not self.tecan.is_idle():
-                time.sleep(0.1)
+                time.sleep(3)
             self.dispense(split_volume[iter])
             while not self.tecan.is_idle():
-                time.sleep(0.1)
+                time.sleep(3)
         self.operation_complete = True
 
 
@@ -218,14 +219,16 @@ class XLP6000Ros:
     def callback_commands(self, msg):
         """Callback commands for susbcriber"""
         message = msg.tecan_xlp_command
-        if message == msg.DISPENSE:
-            self.request_pumping(
-                msg.xlp_withdraw_port,
-                msg.xlp_dispense_port,
-                msg.xlp_volume,
-                msg.xlp_speed)
-        else:
-            rospy.loginfo("invalid command")
+        if not message == self.prev_message:
+            if message == msg.DISPENSE:
+                self.request_pumping(
+                    msg.xlp_withdraw_port,
+                    msg.xlp_dispense_port,
+                    msg.xlp_volume,
+                    msg.xlp_speed)
+                self.prev_msg = message
+            else:
+                rospy.loginfo("invalid command")
         
         
         
