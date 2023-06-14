@@ -10,7 +10,7 @@ from roslabware_msgs.msg import (
     MettlerOptimaxCmd,
     MettlerOptimaxReading,
 )
-
+from std_msgs.msg import Bool
 
 class OptimaxRos:
     """
@@ -37,6 +37,7 @@ class OptimaxRos:
         self.optimax.connect()
 
         self.optimax.initialize_device()
+        self.process_complete = False
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -52,7 +53,18 @@ class OptimaxRos:
             queue_size=10,
         )
 
+        self._task_complete_pub = rospy.Publisher(
+            '/mettler_optimax/task_complete',
+            Bool,
+            queue_size=1)
+
         rospy.loginfo("Mettler Optimax Driver Started")
+
+        while not rospy.is_shutdown():
+            #plunger, valve = self.get_positions()
+
+            self._task_complete_pub.publish(self.process_complete)
+            rospy.sleep(5)
 
     def add_temp_step(self, temperature, duration):
         self.optimax._add_temperature_step(temperature, duration)
@@ -74,6 +86,13 @@ class OptimaxRos:
     def start_experiment(self):
         self.optimax.start()
         rospy.loginfo("Experiment Started")
+        self.start_timer()
+
+
+    def start_timer(self):
+        rospy.sleep(60)
+        self.process_complete = True
+        return self.process_complete
 
     def stop_experiment(self):
         self.optimax.stop()
@@ -99,15 +118,18 @@ class OptimaxRos:
 
         if message == msg.ADD_TEMP:
             self.add_temp_step(temp, temp_duration)
+            self.start_experiment() #TODO remove this and find apt way to start the experiment
         elif message == msg.ADD_STIR:
             self.add_stir_step(stir_speed, stir_duration)
         elif message == msg.ADD_WAIT:
             self.add_wait_step(wait_duration)
         elif message == msg.ADD_SAMPLE:
             self.add_sampling_step(dilution)
+            self.start_experiment() #TODO remove this and find apt way to start the experiment
         elif message == msg.ADD_TEMP_STIR:
             self.add_temp_step(temp, temp_duration)
             self.add_stir_step(stir_speed, stir_duration)
+            self.start_experiment() #TODO remove this and find apt way to start the experiment
         elif message == msg.START:
             self.start_experiment()
         elif message == msg.STOP:
