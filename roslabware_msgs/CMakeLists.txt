@@ -7,6 +7,16 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
+ add_message_files(
+  DIRECTORY
+   msg/base_valve
+ )
+
+ add_message_files(
+  DIRECTORY
+   msg/filtration_system
+ )
+
 add_message_files(
 DIRECTORY
   msg/fisher_pp14102
