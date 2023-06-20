@@ -1,4 +1,4 @@
 int32 OPEN = 0
 int32 CLOSE = 1
 
-int32 base_valve_command
+int32 valve_command

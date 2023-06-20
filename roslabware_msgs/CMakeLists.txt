@@ -7,18 +7,8 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
- add_message_files(
-  DIRECTORY
-   msg/base_valve
- )
-
- add_message_files(
-  DIRECTORY
-   msg/filtration_system
- )
-
 add_message_files(
-DIRECTORY
+  DIRECTORY
   msg/fisher_pp14102
 )
 
@@ -59,13 +49,18 @@ add_message_files(
 
 add_message_files(
   DIRECTORY
-   msg/knf_simdos10_rcplus
+   msg/tecan_xcalibur
  )
 
 add_message_files(
   DIRECTORY
-   msg/tecan_xcalibur
- )
+   msg/base_valve
+)
+
+add_message_files(
+  DIRECTORY
+   msg/filtration_system 
+)
 
 generate_messages(
 DEPENDENCIES

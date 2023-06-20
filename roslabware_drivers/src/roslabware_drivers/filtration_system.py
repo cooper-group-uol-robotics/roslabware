@@ -2,6 +2,7 @@
 from typing import Optional
 from miscware import FiltrationSystem
 import rospy
+import serial
 
 
 # Core
@@ -27,12 +28,14 @@ class FiltrationRos:
     ):
 
         # Create device object
-        self.filtration_system = FiltrationSystem(
-            device_name=device_name,
-            connection_mode=connection_mode,
-            address=address,
-            port=port
-        )
+        # self.filtration_system = FiltrationSystem(
+        #     device_name=device_name,
+        #     connection_mode=connection_mode,
+        #     address=address,
+        #     port=port
+        # )
+
+        self.filtration_system  = serial.Serial(port=port, baudrate=9600, timeout=None)
 
         self.process_complete = False
 
@@ -40,8 +43,8 @@ class FiltrationRos:
             self.filtration_system.simulation = True
 
         # initialize base valve
-        self.filtration_system.connect()
-        self.filtration_system.initialize_device()
+        # self.filtration_system.connect()
+        # self.filtration_system.initialize_device()
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -73,19 +76,19 @@ class FiltrationRos:
             rospy.sleep(5)
 
     def drain(self):
-        self.filtration_system.start_drain_system()
+        self.filtration_system.write((bytes("drain", 'utf-8')))
         rospy.loginfo("Draining")
         rospy.sleep(5)
         self.process_complete = True
 
     def vacuum(self):
-        self.filtration_system.start_vacuum_system()
+        self.filtration_system.write((bytes("vac", 'utf-8')))
         rospy.loginfo("Vacuuming")
         rospy.sleep(5)
         self.process_complete = True
     
     def stop(self):
-        self.filtration_system.stop_all()
+        self.filtration_system.write((bytes("stop", 'utf-8')))
         rospy.loginfo("Stopping all process")
         rospy.sleep(5)
         self.process_complete = True
@@ -94,14 +97,16 @@ class FiltrationRos:
     # Callback for subscriber.
     def callback_commands(self, msg):
         message = msg.filtration_system_command
-        self.process_complete = False
 
         if message == msg.DRAIN:
-            self.open_valve()
+            self.process_complete = False
+            self.drain()
         elif message == msg.VACUUM:
-            self.close_valve()
+            self.process_complete = False
+            self.vacuum()
         elif message == msg.STOP:
-            self.close_valve()
+            self.process_complete = False
+            self.stop()
         else:
             rospy.loginfo("invalid command")
 
