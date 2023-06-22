@@ -4,7 +4,6 @@ from miscware import FiltrationSystem
 import rospy
 import serial
 
-
 # Core
 from roslabware_msgs.msg import (
     FiltrationCmd,
@@ -27,24 +26,12 @@ class FiltrationRos:
         simulation: bool,
     ):
 
-        # Create device object
-        # self.filtration_system = FiltrationSystem(
-        #     device_name=device_name,
-        #     connection_mode=connection_mode,
-        #     address=address,
-        #     port=port
-        # )
-
         self.filtration_system  = serial.Serial(port=port, baudrate=9600, timeout=None)
 
         self.process_complete = False
 
         if simulation == "True":
             self.filtration_system.simulation = True
-
-        # initialize base valve
-        # self.filtration_system.connect()
-        # self.filtration_system.initialize_device()
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
