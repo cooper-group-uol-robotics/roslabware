@@ -52,7 +52,6 @@ class XLP6000Ros:
         self.tecan.initialize_device()
         self.prev_message = None
         self.operation_complete = False
-        self.prev_msg = None
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -226,7 +225,7 @@ class XLP6000Ros:
                     msg.xlp_dispense_port,
                     msg.xlp_volume,
                     msg.xlp_speed)
-                self.prev_msg = message
+                self.prev_message = message
             else:
                 rospy.loginfo("invalid command")
         
