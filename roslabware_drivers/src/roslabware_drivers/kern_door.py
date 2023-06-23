@@ -3,14 +3,14 @@ from typing import Optional, Union
 
 import rospy
 #from pylabware import Kern_Door
-from miscware import BalanceDoor
+import serial
 
 # Core
 from roslabware_msgs.msg import (
     KernDoorCmd,
     KernDoorStatus
 )
-
+from std_msgs.msg import Bool
 
 class KernDoorRos:
     """
@@ -26,22 +26,13 @@ class KernDoorRos:
         simulation: bool = False,
     ):
 
-        self._prev_msg = None
+
 
         # Instantiate IKA driver
-        self.door = BalanceDoor(
-            device_name=device_name,
-            connection_mode=connection_mode,
-            address=address,
-            port=port,
-        )
+        self.door = serial.Serial(port=port, baudrate=9600, timeout=None)
 
-        if simulation == "True":
-            self.door.simulation = True
-
-        # Connect to balance
-
-        self.door.connect()
+        self.process_complete = False
+        self._prev_msg = None
         
 
         # Initialize ros subscriber of topic to which commands are published
@@ -58,43 +49,50 @@ class KernDoorRos:
             queue_size=10
         )
 
+        self._task_complete_pub = rospy.Publisher(
+            '/kern_door/task_complete',
+            Bool,
+            queue_size=1)
+
+
         # Initialize rate object for consistent timed looping
         self.rate = rospy.Rate(10)
 
-        rospy.loginfo("Kern door Miscware driver started")
-        self.door.initialize_device()
+
+
+        rospy.loginfo("Kern door driver started")
+        while not rospy.is_shutdown():
+            self._task_complete_pub.publish(True)
+            rospy.sleep(5)
         #initialize device
 
     def open_door(self):
-        self.door.connect()
-        self.door.open_door()
-        
-        #if serial msg received:
+        self.door.write((bytes("open", 'utf-8')))
         rospy.loginfo("open_door_message_sent_to_miscware")
         self.pub.publish( status = 'Door_Opened')
-        self.door.disconnect()
         rospy.sleep(5)
+        self.process_complete = True
 
     def close_door(self):
-        self.door.connect()
-        self.door.close_door()
+        self.door.write((bytes("close", 'utf-8')))
         rospy.loginfo("close_door_message_sent_to_miscware")
         #if serial msg received:
         self.pub.publish(status = 'Door_Closed')
-        self.door.disconnect()
         rospy.sleep(5)
+        self.process_complete = True
 
     def callback_commands(self, msg):
         message = msg.kern_door_command
         rospy.loginfo("message_received")
         if not message == self._prev_msg:
             if message == msg.OPEN_DOOR:
-                rospy.loginfo("open_door_message")
+                self.process_complete = False
+                rospy.loginfo("open_door_message received")
                 self.open_door()
-                self._prev_msg = message
             elif message == msg.CLOSE_DOOR:
-                rospy.loginfo("close_door_message")
+                self.process_complete = False
+                rospy.loginfo("close_door_message received")
                 self.close_door()
-                self._prev_msg = message
             else:
                 rospy.loginfo("Invalid command")
+            self._prev_msg = message
