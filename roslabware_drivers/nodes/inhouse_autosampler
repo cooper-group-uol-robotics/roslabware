@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+
+# External
+import argparse
+
+import rospy
+from roslabware_drivers.inhouse_autosampler import AutosamplerRos
+
+# Object oriented initialization for ROS
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog="In-house built autosampler ROS",
+        description='ROS node for autosampler built in-house')
+    parser.add_argument(
+        '-d',
+        '--device_name',
+        action='store',
+        default='inhouse_autosampler',
+        nargs='?',
+        const=1,
+        help='Device name')
+    parser.add_argument(
+        '-c',
+        '--connection_mode',
+        action='store',
+        default='serial',
+        nargs='?',
+        const=1,
+        help='Connection mode: "serial" only')
+    parser.add_argument(
+        '-add',
+        '--address',
+        action='store',
+        default='None',
+        nargs='?',
+        const=1,
+        help='IP Address.')
+    parser.add_argument(
+        '-p',
+        '--port',
+        action='store',
+        default='/dev/ttyUSB0',
+        nargs='?',
+        const=1,
+        help='Serial or TCP/IP port')
+
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
+
+    args, unknown = parser.parse_known_args()
+
+    # Initiliaze rospy node
+    rospy.init_node("Autosampler Driver", anonymous=True)
+
+    # Create instance of ROS Wrapper
+    autosampler_ros = AutosamplerRos(
+            device_name=args.device_name,
+            connection_mode=args.connection_mode,
+            address=args.address,
+            port=args.port,
+            simulation=args.simulation)
+
+    # Keeps python from exiting until node is stopped
+    rospy.spin()
