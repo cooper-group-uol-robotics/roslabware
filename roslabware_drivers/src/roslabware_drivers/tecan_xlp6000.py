@@ -218,14 +218,16 @@ class XLP6000Ros:
     def callback_commands(self, msg):
         """Callback commands for susbcriber"""
         message = msg.tecan_xlp_command
-        if not message == self.prev_message:
+        _vol = msg.xlp_volume
+        if not _vol == self.prev_message:
+            self.operation_complete = False
             if message == msg.DISPENSE:
                 self.request_pumping(
                     msg.xlp_withdraw_port,
                     msg.xlp_dispense_port,
                     msg.xlp_volume,
                     msg.xlp_speed)
-                self.prev_message = message
+                self.prev_message = _vol
             else:
                 rospy.loginfo("invalid command")
         
