@@ -38,6 +38,7 @@ class OptimaxRos:
 
         self.optimax.initialize_device()
         self.process_complete = False
+        self._prev_message = None
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -82,6 +83,11 @@ class OptimaxRos:
     def add_sampling_step(self, dilution):
         self.optimax._add_sampling_step(dilution)
         rospy.loginfo(f"Added sampling step with dilution {dilution}")
+    
+    def add_end_experiment_step(self):
+        self.optimax._add_end_experiment_step()
+        rospy.loginfo("Added end experiment step")
+
 
     def start_experiment(self):
         self.optimax.start()
@@ -97,6 +103,19 @@ class OptimaxRos:
     def stop_experiment(self):
         self.optimax.stop()
         rospy.loginfo("Experiment Stopped")
+
+
+    def paracitamol_synthesis(self): # temporary method for paracetamol synthesis
+        self.add_stir_step(300, 20)
+        self.add_temp_step(120,10)
+        self.add_wait_step(60)
+        self.add_stir_step(300,20)
+        self.add_temp_step(5,30)
+        self.add_wait_step(240)
+        self.add_end_experiment_step()
+        self.start_experiment()
+        rospy.loginfo("Paracetamol Synthesis Started")
+                
     
 
     # Callback for subscriber.
@@ -115,27 +134,30 @@ class OptimaxRos:
             wait_duration = msg.wait_duration
         if msg.dilution:
             dilution = msg.dilution
-
-        if message == msg.ADD_TEMP:
-            self.add_temp_step(temp, temp_duration)
-            self.start_experiment() #TODO remove this and find apt way to start the experiment
-        elif message == msg.ADD_STIR:
-            self.add_stir_step(stir_speed, stir_duration)
-        elif message == msg.ADD_WAIT:
-            self.add_wait_step(wait_duration)
-        elif message == msg.ADD_SAMPLE:
-            self.add_sampling_step(dilution)
-            self.start_experiment() #TODO remove this and find apt way to start the experiment
-        elif message == msg.ADD_TEMP_STIR:
-            self.add_temp_step(temp, temp_duration)
-            self.add_stir_step(stir_speed, stir_duration)
-            self.start_experiment() #TODO remove this and find apt way to start the experiment
-        elif message == msg.START:
-            self.start_experiment()
-        elif message == msg.STOP:
-            self.stop_experiment()
-
-        else:
-            rospy.loginfo("invalid command")
-
+        
+        if not message == self._prev_message:
+            if message == msg.ADD_TEMP:
+                self.add_temp_step(temp, temp_duration)
+                # self.start_experiment() #TODO remove this and find apt way to start the experiment
+            elif message == msg.ADD_STIR:
+                self.add_stir_step(stir_speed, stir_duration)
+            elif message == msg.ADD_WAIT:
+                self.add_wait_step(wait_duration)
+            elif message == msg.ADD_SAMPLE:
+                self.add_sampling_step(dilution)
+                # self.start_experiment() #TODO remove this and find apt way to start the experiment
+            elif message == msg.ADD_TEMP_STIR:
+                self.add_stir_step(stir_speed, stir_duration)
+                self.add_temp_step(temp, temp_duration)
+                #  self.start_experiment() #TODO remove this and find apt way to start the experiment
+            elif message == msg.START:
+                self.start_experiment()
+            elif message == msg.STOP:
+                self.stop_experiment()
+            elif message == msg.PARACETAMOL: # temporary message for paracetamol synthesis
+                self.paracitamol_synthesis()
+            else:
+                rospy.loginfo("invalid command")
+            
+            self._prev_message = message
 rospy.loginfo("working")

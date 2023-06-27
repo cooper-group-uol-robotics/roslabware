@@ -37,6 +37,12 @@ add_message_files(
    msg/tecan_xlp6000
  )
 
+
+add_message_files(
+  DIRECTORY
+   msg/lcms
+ )
+
 add_message_files(
   DIRECTORY
    msg/mettler_xpr226_drq
