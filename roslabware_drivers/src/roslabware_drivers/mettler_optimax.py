@@ -1,7 +1,7 @@
 
 # external
 from typing import Optional, Union
-
+import time
 import rospy
 from pylabware import Optimax
 
@@ -62,7 +62,7 @@ class OptimaxRos:
         rospy.loginfo("Mettler Optimax Driver Started")
 
         while not rospy.is_shutdown():
-            #plunger, valve = self.get_positions()
+            # plunger, valve = self.get_positions()
 
             self._task_complete_pub.publish(self.process_complete)
             rospy.sleep(5)
@@ -92,17 +92,21 @@ class OptimaxRos:
     def start_experiment(self):
         self.optimax.start()
         rospy.loginfo("Experiment Started")
-        self.start_timer()
-
-
-    def start_timer(self):
-        rospy.sleep(60)
+        self.start_timer(21600)
         self.process_complete = True
-        return self.process_complete
+
+
+    def start_timer(self, seconds):
+        start_time = time.time()
+        end_time = start_time + seconds
+        while time.time() < end_time:
+            remaining_time = int(end_time - time.time())
+            print(f"Time remaining for the completion: {round(remaining_time/60)} minutes", end="\r", flush=True)
+            time.sleep(1)
 
     def stop_experiment(self):
         self.optimax.stop()
-        rospy.loginfo("Experiment Stopped")
+        rospy.loginfo("Experiment Stopped")     
 
 
     def paracitamol_synthesis(self): # temporary method for paracetamol synthesis
@@ -114,10 +118,7 @@ class OptimaxRos:
         self.add_wait_step(240)
         self.add_end_experiment_step()
         self.start_experiment()
-        rospy.loginfo("Paracetamol Synthesis Started")
                 
-    
-
     # Callback for subscriber.
     def callback_commands(self, msg):
 
@@ -136,6 +137,7 @@ class OptimaxRos:
             dilution = msg.dilution
         
         if not message == self._prev_message:
+            self.process_complete = False
             if message == msg.ADD_TEMP:
                 self.add_temp_step(temp, temp_duration)
                 # self.start_experiment() #TODO remove this and find apt way to start the experiment
