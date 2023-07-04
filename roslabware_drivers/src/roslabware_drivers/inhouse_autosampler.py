@@ -1,8 +1,9 @@
 # external
 from typing import Optional, Union
+from time import sleep
 
 import rospy
-from misclabware import AutoSampler
+from miscware import AutoSampler
 
 # Core
 from roslabware_msgs.msg import (
@@ -33,6 +34,8 @@ class AutosamplerRos:
         # if simulation == "True":
         #     self.optimax.simulation = True
         self.autosampler.connect()
+
+        sleep(2)
 
         self.autosampler.initialize_device()
         self.process_complete = False

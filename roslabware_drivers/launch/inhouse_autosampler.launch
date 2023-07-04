@@ -24,6 +24,5 @@
 			-add $(arg address)
 			-p $(arg port)
 			-l $(arg simulation)
-			-x $(arg experiment_name)"
 		output="screen"/>
 </launch>
