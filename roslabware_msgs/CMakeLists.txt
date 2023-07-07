@@ -57,6 +57,11 @@ add_message_files(
    msg/tecan_xcalibur
  )
 
+add_message_files(
+  DIRECTORY
+   msg/inhouse_autosampler
+ )
+
 generate_messages(
 DEPENDENCIES
 std_msgs

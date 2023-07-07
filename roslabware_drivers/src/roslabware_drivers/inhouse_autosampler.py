@@ -1,6 +1,5 @@
 # external
 from typing import Optional, Union
-from time import sleep
 
 import rospy
 from miscware import AutoSampler
@@ -35,7 +34,7 @@ class AutosamplerRos:
         #     self.optimax.simulation = True
         self.autosampler.connect()
 
-        sleep(2)
+        rospy.sleep(2)
 
         self.autosampler.initialize_device()
         self.process_complete = False
