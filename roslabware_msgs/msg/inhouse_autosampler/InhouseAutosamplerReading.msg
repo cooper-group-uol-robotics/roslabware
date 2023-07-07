@@ -1,3 +1,1 @@
-int32 current_x_position
-int32 current_y_position
-int32 current_z_position
+geometry_msgs/Vector3 position

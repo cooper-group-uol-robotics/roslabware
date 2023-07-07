@@ -10,6 +10,7 @@ from roslabware_msgs.msg import (
     InhouseAutosamplerReading,
 )
 from std_msgs.msg import Bool
+from geometry_msgs.msg import Vector3
 
 
 class AutosamplerRos:
@@ -73,19 +74,25 @@ class AutosamplerRos:
         rospy.loginfo(f"Added moving step to position {x_pos}, {y_pos}, {z_pos}")
 
     def get_position(self):
-        self.autosampler.get_position()
-        rospy.loginfo("Getting the position")
+        message = self.autosampler.get_position()
+        # removing excess text from the start of string
+        if "Current Position: " in message:
+            message = message[len("Current Position: "):]
+            coordinates = message.split()
+            coord_vector = Vector3
+            coord_vector.x = float(coordinates[0])
+            coord_vector.y = float(coordinates[1])
+            coord_vector.z = float(coordinates[2])
+            self.pub.publish(coord_vector)
+        rospy.loginfo("Position published to /inhouse_autosampler_info")
 
     # Callback for subscriber.
     def callback_commands(self, msg):
-
-        message = msg.optimax_command
-        if msg.target_x_position:
-            target_x_position = msg.target_x_position
-        if msg.target_y_position:
-            target_y_position = msg.target_y_position
-        if msg.target_z_position:
-            target_z_position = msg.target_z_position
+        message = msg.autosampler_command
+        if msg.position:
+            target_x_position = msg.position.x
+            target_y_position = msg.position.y
+            target_z_position = msg.position.z
 
         if message == msg.HOME:
             self.homing_step()

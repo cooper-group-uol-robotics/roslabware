@@ -5,6 +5,7 @@ project(roslabware_msgs)
 find_package(catkin REQUIRED COMPONENTS
   std_msgs
   message_generation
+  geometry_msgs
 )
 
 add_message_files(
@@ -65,6 +66,7 @@ add_message_files(
 generate_messages(
 DEPENDENCIES
 std_msgs
+geometry_msgs
 )
 
 catkin_package(
