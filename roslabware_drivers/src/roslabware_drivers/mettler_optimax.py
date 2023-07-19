@@ -63,6 +63,8 @@ class OptimaxRos:
         while not rospy.is_shutdown():
             #plunger, valve = self.get_positions()
 
+            self.process_complete = self.optimax.end_of_experiment_check()
+
             self._task_complete_pub.publish(self.process_complete)
             rospy.sleep(5)
 
@@ -89,10 +91,10 @@ class OptimaxRos:
         self.start_timer()
 
 
-    def start_timer(self):
-        rospy.sleep(60)
-        self.process_complete = True
-        return self.process_complete
+    # def start_timer(self):
+    #     rospy.sleep(60)
+    #     self.process_complete = True
+    #     return self.process_complete
 
     def stop_experiment(self):
         self.optimax.stop()
