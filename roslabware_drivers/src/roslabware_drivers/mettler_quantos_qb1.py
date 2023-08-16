@@ -291,20 +291,22 @@ class QuantosQB1Ros:
         """
 
 
-        mass_reply = self._set_target_mass(amount)
+        reply = self.quantos.set_target_mass(amount)
 
-        if mass_reply["success"]:
+        if reply["success"]:
            
-           tolerance_reply = self._set_tolerance(percentage)
+           reply = self.quantos.set_tolerance_value(percentage)
 
-           if tolerance_reply["success"]:
-               self._start_dosing()                
+           if reply["success"]:
+               reply = self.quantos.start_dosing()              
         
            else: 
-               rospy.loginfo("Set tolerance was unsuccesful")
+               rospy.logwarn("Set tolerance was unsuccesful")
                 
         else:
-           rospy.loginfo("Set target mass unsuccesful")
+           rospy.logwarn("Set target mass unsuccesful")
+
+        return reply
 
     def dispense(self, tolerance_percentage: float, amount: float, num_samples: int = 1 ):
         """
@@ -325,16 +327,49 @@ class QuantosQB1Ros:
                 move_reply = self._move_sampler(position)
                 
                 if move_reply["success"]:
-                    self._dispense_solid_at_position(tolerance_percentage, amount)
-                    self.get_sample_data()
+                    reply = self._dispense_solid_at_position(tolerance_percentage, amount)
+                    
+                    if reply["success"]:
+                        self.get_sample_data()
+                    else:
+                        rospy.logwarn("Dispensing was unsuccesful")
 
                 else: 
-                    rospy.loginfo("Sampler did not move!")
+                    rospy.logwarn("Sampler did not move!")
         
         elif self.quantos.autosampler_mounted_flag == False: #There is always the possibility that the autosampler flag may be None
-            self._dispense_solid_at_position(tolerance_percentage, amount)
-            self.get_sample_data()
-     
+            reply = self._dispense_solid_at_position(tolerance_percentage, amount)
+            
+            if reply["success"]:
+                self.get_sample_data()
+            else:
+                rospy.logwarn("Dispensing was unsuccesful")
+            
+    def open_doors(self):
+        rospy.loginfo(f"Opening the front and side doors")
+        
+        front_door_reply = self.quantos.open_front_door()
+        if front_door_reply["success"]:
+            side_door_reply = self.quantos.open_side_door()
+            self.pub.publish(command_running = "Opening all doors",
+                        success = side_door_reply["success"], output = side_door_reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+        else:
+            rospy.logwarn("Could not open front door!")
+
+               
+    def close_doors(self):
+        rospy.loginfo(f"Closing the front and side doors")
+        
+        front_door_reply = self.quantos.close_front_door()
+        if front_door_reply["success"]:
+            side_door_reply = self.quantos.close_side_door()
+            self.pub.publish(command_running = "Closing all doors",
+                        success = side_door_reply["success"], output = side_door_reply["outcomes"], side_door_open = self.quantos.side_door_open,
+                        front_door_open = self.quantos.front_door_open, sampler_pos = self.quantos.sampler_position)
+        else:
+            rospy.logwarn("Could not open front door!")
+
 
     # Callback for subscriber.
     def callback_commands(self, msg):
@@ -393,6 +428,10 @@ class QuantosQB1Ros:
             self.open_side_doors()
         elif message == msg.CLOSE_SIDE_DOORS:
             self.close_side_doors()
+        elif message == msg.OPEN_ALL_DOORS:
+            self.open_doors()
+        elif message == msg.CLOSE_ALL_DOORS:
+            self.close_doors()
 
         else:
             rospy.loginfo("invalid command")
