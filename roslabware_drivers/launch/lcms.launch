@@ -1,0 +1,32 @@
+<launch>
+	<arg
+		name="device_name"
+		default="lcms"/>
+	<arg
+		name="connection_mode"
+		default="tcpip"/>
+	<arg
+		name="address"
+		default="172.31.1.18"/>
+	<arg
+		name="port"
+		default="8000"/>
+	<arg
+		name="experiment_name"
+		default="test"/>
+	<arg
+		name="simulation"
+		default="False"/>
+	<node
+		name="lcms"
+		pkg="roslabware_drivers"
+		type="lcms"
+		args="
+			-d $(arg device_name)
+			-c $(arg connection_mode)
+			-add $(arg address)
+			-p $(arg port)
+			-l $(arg simulation)
+			-x $(arg experiment_name)"
+		output="screen"/>
+</launch>
