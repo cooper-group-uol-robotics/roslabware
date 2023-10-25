@@ -29,7 +29,7 @@ class FiltrationRos:
         self.filtration_system  = serial.Serial(port=port, baudrate=9600, timeout=None)
 
         self.process_complete = False
-
+        self.previous_command = None
         if simulation == "True":
             self.filtration_system.simulation = True
 
@@ -84,17 +84,18 @@ class FiltrationRos:
     # Callback for subscriber.
     def callback_commands(self, msg):
         message = msg.filtration_system_command
-
-        if message == msg.DRAIN:
-            self.process_complete = False
-            self.drain()
-        elif message == msg.VACUUM:
-            self.process_complete = False
-            self.vacuum()
-        elif message == msg.STOP:
-            self.process_complete = False
-            self.stop()
-        else:
-            rospy.loginfo("invalid command")
+        if not message == self.previous_command:
+            if message == msg.DRAIN:
+                self.process_complete = False
+                self.drain()
+            elif message == msg.VACUUM:
+                self.process_complete = False
+                self.vacuum()
+            elif message == msg.STOP:
+                self.process_complete = False
+                self.stop()
+            else:
+                rospy.loginfo("invalid command")
+            self.previous_command = message
 
 rospy.loginfo("working")
