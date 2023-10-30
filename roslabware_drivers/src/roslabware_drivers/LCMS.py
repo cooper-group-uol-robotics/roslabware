@@ -2,7 +2,7 @@
 from typing import Optional, Union
 
 import rospy
-from labmatic import LCMS
+# from labmatic import LCMS
 
 # Core
 from roslabware_msgs.msg import (
@@ -27,13 +27,16 @@ class LcmsRos:
         experiment_name: str = "test"
     ):
 
+
+        self.result = False
+        self.concentration = None
         # Create device object
-        self.lcms = LCMS(device_name = device_name, connection_mode = connection_mode, address= address, port = port, experiment_name=experiment_name)
+        # self.lcms = LCMS(device_name = device_name, connection_mode = connection_mode, address= address, port = port, experiment_name=experiment_name)
 
-        self.lcms.connect_socket()
+        # self.lcms.connect_socket()
 
-        if not self.lcms.is_connected():
-            rospy.loginfo("LCMS server - not connected")
+        # if not self.lcms.is_connected():
+        #     rospy.loginfo("LCMS server - not connected")
         
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -51,26 +54,24 @@ class LcmsRos:
         rospy.loginfo("LCMS-client ROS Driver Started")
 
         self._task_complete_pub = rospy.Publisher(
-            '/tecan_xlp/task_complete',
+            '/lcms/task_complete',
             Bool,
             queue_size=1)
         
         # Sleeping rate
-        self.rate = rospy.Rate(1)
+        self.rate = rospy.Rate(0.3)
 
         # Get data
         while not rospy.is_shutdown():
             result, concentration = self.get_results()
-            self.pub.publish(result, concentration)
-            rospy.loginfo(
-                " result: "
-                + str(result)
-                + " paracetamol_concentration "
-                + str(concentration))
+            lcmsmsg = LcmsReading()
+            lcmsmsg.result = result # self.result
+            lcmsmsg.paracetamol_concentration = concentration # self.concentration
+            self.pub.publish(lcmsmsg)
             self.rate.sleep()
     
-    def get_results():
-        pass
+    def get_results(self):
+        return True, 0.52
 
     def prep_analysis(self):
         _batch_file_create = self.lcms.create_batch_csv()
@@ -96,8 +97,8 @@ class LcmsRos:
             rospy.loginfo("batch load error")
 
     def start_analysis(self):
-        _get_result = self.lcms.send_csv_receive_conc()
-        if _get_result:
+        self.result,self.concentration = self.lcms.send_csv_receive_conc()
+        if self.result:
             rospy.loginfo("Analysis done and results received")
         else:
             rospy.loginfo("results not received")

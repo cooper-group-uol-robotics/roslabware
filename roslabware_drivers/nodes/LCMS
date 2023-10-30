@@ -68,7 +68,7 @@ if __name__ == "__main__":
     rospy.init_node("LCMS Driver", anonymous=True)
 
     # Create instance of ROS Wrapper
-    optimax_ros = LcmsRos(
+    lcms_ros = LcmsRos(
             device_name=args.device_name,
             connection_mode=args.connection_mode,
             address=args.address,
