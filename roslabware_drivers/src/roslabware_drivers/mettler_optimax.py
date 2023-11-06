@@ -109,7 +109,7 @@ class OptimaxRos:
         rospy.loginfo("Experiment Stopped")     
 
 
-    def paracitamol_synthesis(self): # temporary method for paracetamol synthesis
+    def paracetamol_synthesis(self): # temporary method for paracetamol synthesis
         self.add_stir_step(300, 20)
         self.add_temp_step(120,10)
         self.add_wait_step(60)
