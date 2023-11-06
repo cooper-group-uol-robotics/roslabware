@@ -156,7 +156,7 @@ class OptimaxRos:
             elif message == msg.STOP:
                 self.stop_experiment()
             elif message == msg.PARACETAMOL: # temporary message for paracetamol synthesis
-                self.paracitamol_synthesis()
+                self.paracetamol_synthesis()
             else:
                 rospy.loginfo("invalid command")
             
