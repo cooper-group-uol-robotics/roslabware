@@ -1,4 +1,4 @@
-# Available commands to use the Fisher Scientific PPS4102 Top Pan balance
+# Available commands to use the Tecan XLP6000
 int32 DISPENSE = 0
 int32 WITHDRAW = 1
 

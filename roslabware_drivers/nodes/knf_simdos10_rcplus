@@ -51,6 +51,14 @@ if __name__ == "__main__":
         nargs='?',
         const=1,
         help='Switch address on the back of the pump')
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
 
     args = parser.parse_args()
 
@@ -63,7 +71,8 @@ if __name__ == "__main__":
         connection_mode=args.connection_mode,
         address=args.address,
         port=args.port,
-        switch_address=args.switch_address)
+        switch_address=args.switch_address,
+        simulation=args.simulation)
 
     # Stop everything on shutdown
     rospy.on_shutdown(diaphragm_pump.stop())

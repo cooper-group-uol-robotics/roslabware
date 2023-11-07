@@ -42,12 +42,12 @@ class XLP6000Ros:
 
         if simulation == "True":
             self.tecan.simulation = True
-
+        
         # Add syringe size attribute
         self._syringe_size = syringe_size
         self.tecan.connect()
         self.tecan.set_resolution_mode(resolution_mode=DEFAULT_RESOLUTION)
-        self.tecan.set_speed(DEFAULT_SPEED)
+        #self.tecan.set_speed(DEFAULT_SPEED) # not working !! in simulation issue
         self.tecan.initialize_device()
 
         # Initialize ROS subscriber
@@ -76,7 +76,8 @@ class XLP6000Ros:
 
         # Get data
         while not rospy.is_shutdown():
-            plunger, valve = self.get_positions()
+            print("here1")
+            plunger, valve = self.get_positions() # not working !! in simulation issue
             self.pub.publish(plunger, valve)
             rospy.loginfo(
                 " Plunger position: "

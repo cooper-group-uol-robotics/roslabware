@@ -15,17 +15,18 @@
 		name="switch_address"
 		default="0"/>
 	<arg
-		name="switch_address"
-		default="0"/>
+		name="simulation"
+		default="False"/>
 	<node 
 		name="knf_rcplus"
-		pkg="knf_rcplus"
+		pkg="roslabware_drivers"
 		type="knf_rcplus"
 		args="
-			$(arg device_name)
-			$(arg connection_mode)
-			$(arg address)
-			$(arg port)
-			$(arg switch_address)
+			-d $(arg device_name)
+			-c $(arg connection_mode)
+			-add $(arg address)
+			-p $(arg port)
+			-w $(arg switch_address)
+			-l $(arg simulation)"
 		output="screen"/>
 </launch>

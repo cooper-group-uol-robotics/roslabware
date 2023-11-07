@@ -29,8 +29,8 @@
 			-c $(arg connection_mode)
 			-add $(arg address)
 			-p $(arg port)
-			-l $(arg simulation)
 			-w $(arg switch_address)
-			-z $(arg syringe_size)"
+			-z $(arg syringe_size)
+			-l $(arg simulation)"/
 		output="screen"/>
 </launch>

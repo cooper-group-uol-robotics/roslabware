@@ -58,7 +58,6 @@ if __name__ == "__main__":
         nargs='?',
         const=1,
         help='Syringe size in mL')
-
     parser.add_argument(
         '-l',
         '--simulation',
