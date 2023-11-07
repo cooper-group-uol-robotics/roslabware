@@ -1,8 +1,8 @@
 # external
 from typing import Optional, Union
-
+import datetime
 import rospy
-# from labmatic import LCMS
+from labmatic import LCMS
 
 # Core
 from roslabware_msgs.msg import (
@@ -27,16 +27,21 @@ class LcmsRos:
         experiment_name: str = "test"
     ):
 
-
         self.result = False
         self.concentration = None
+
         # Create device object
-        # self.lcms = LCMS(device_name = device_name, connection_mode = connection_mode, address= address, port = port, experiment_name=experiment_name)
+        self.lcms = LCMS( 
+            device_name = device_name, 
+            connection_mode = connection_mode, 
+            address= address, port = port, 
+            experiment_name=experiment_name
+        )
 
-        # self.lcms.connect_socket()
+        self.lcms.connect_socket()
 
-        # if not self.lcms.is_connected():
-        #     rospy.loginfo("LCMS server - not connected")
+        if not self.lcms.is_connected():
+            rospy.loginfo("LCMS server not connected!")
         
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -51,7 +56,7 @@ class LcmsRos:
             data_class=LcmsReading,
             queue_size=10,
         )
-        rospy.loginfo("LCMS-client ROS Driver Started")
+        rospy.loginfo("LCMS-client ROS Driver started.")
 
         self._task_complete_pub = rospy.Publisher(
             '/lcms/task_complete',
@@ -73,44 +78,44 @@ class LcmsRos:
     def get_results(self):
         return True, 0.52
 
-    def prep_analysis(self):
-        _batch_file_create = self.lcms.create_batch_csv()
+    def prep_analysis(self, num_samples):
+        _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples, file_text=datetime.datetime.now().strftime("%I:%M%p_%B-%d-%Y"))
         rospy.sleep(2)
         if _batch_file_create:
-            rospy.loginfo("batch file created")
+            rospy.loginfo("Batch file created.")
         else:
-            rospy.loginfo("batch file not created")
+            rospy.loginfo("Batch file not created.")
         self.lcms.autosampler_initialise()
     
     def load_batch(self):
         _batch_load = self.lcms.autosampler_load()
         if _batch_load:
-            rospy.loginfo("batch loaded into LCMS")
+            rospy.loginfo("Batch loaded into LCMS.")
         else:
-            rospy.loginfo("batch load error")
+            rospy.loginfo("Batch load error.")
 
     def unload_batch(self):
         _batch_unload = self.lcms.autosampler_unload()
         if _batch_unload:
-            rospy.loginfo("batch loaded into LCMS")
+            rospy.loginfo("Batch loaded into LCMS.")
         else:
-            rospy.loginfo("batch load error")
+            rospy.loginfo("Batch load error.")
 
     def start_analysis(self):
-        self.result,self.concentration = self.lcms.send_csv_receive_conc()
+        self.result, self.concentration = self.lcms.send_csv_receive_conc()
         if self.result:
-            rospy.loginfo("Analysis done and results received")
+            rospy.loginfo("Analysis done and results received.")
         else:
-            rospy.loginfo("results not received")
+            rospy.loginfo("Results not received.")
 
     # Callback for subscriber.
     def callback_commands(self, msg):
 
         message = msg.lcms_command
-        param = msg.lcms_param
+        num_samples = msg.lcms_num_samples
 
         if message == msg.START_PREP:
-            self.prep_analysis()
+            self.prep_analysis(num_samples)
         elif message == msg.LOAD_BATCH:
             self.load_batch()
         elif message == msg.UNLOAD_BATCH:
@@ -118,6 +123,6 @@ class LcmsRos:
         elif message == msg.START_ANALYSIS:
             self.start_analysis()
         else:
-            rospy.loginfo("invalid command")
+            rospy.loginfo("Invalid command.")
 
-rospy.loginfo("working")
+rospy.loginfo("Working.")
