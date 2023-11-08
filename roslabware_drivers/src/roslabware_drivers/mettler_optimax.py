@@ -69,10 +69,13 @@ class OptimaxRos:
             self._task_complete_pub.publish(self.process_complete)
             rospy.sleep(5)
 
+    def create_experiment(self, experiment_name):
+        self.optimax._create_experiment(experiment_name)
+        rospy.loginfo(f"Created new experiment with name {experiment_name}")
+
     def add_temp_step(self, temperature, duration):
         self.optimax._add_temperature_step(temperature, duration)
         rospy.loginfo(f"Added temperature step with temperature {temperature} ºC")
-
 
     def add_stir_step(self, speed, duration):
         self.optimax._add_stirring_step(speed, duration)
@@ -134,9 +137,13 @@ class OptimaxRos:
             wait_duration = msg.wait_duration
         if msg.dilution:
             dilution = msg.dilution
+        if msg.experiment_name:
+            experiment_name = msg.experiment_name
         
         if not message == self._prev_message:
-            if message == msg.ADD_TEMP:
+            if message == msg.CREATE_EXPERIMENT:
+                self.create_experiment(experiment_name)
+            elif message == msg.ADD_TEMP:
                 self.add_temp_step(temp, temp_duration)
             elif message == msg.ADD_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
@@ -159,4 +166,5 @@ class OptimaxRos:
                 rospy.loginfo("invalid command")
             
             self._prev_message = message
+            
 rospy.loginfo("working")
