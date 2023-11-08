@@ -68,15 +68,15 @@ class LcmsRos:
 
         # Get data
         while not rospy.is_shutdown():
-            result, concentration = self.get_results()
+            # result, concentration = self.get_results() ## for testing
             lcmsmsg = LcmsReading()
-            lcmsmsg.result = result # self.result
-            lcmsmsg.paracetamol_concentration = concentration # self.concentration
+            self.result = lcmsmsg.result
+            self.concentration = lcmsmsg.paracetamol_concentration
             self.pub.publish(lcmsmsg)
             self.rate.sleep()
     
-    def get_results(self):
-        return True, 0.52
+    # def get_results(self): ## for testing
+    #     return True, 0.52
 
     def prep_analysis(self, num_samples):
         _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples, file_text=datetime.datetime.now().strftime("%I:%M%p_%B-%d-%Y"))
