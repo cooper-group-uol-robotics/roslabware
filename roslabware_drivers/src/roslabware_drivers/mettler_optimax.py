@@ -90,7 +90,6 @@ class OptimaxRos:
         self.optimax._add_end_experiment_step()
         rospy.loginfo("Added end experiment step")
 
-
     def start_experiment(self):
         self.optimax.start()
         rospy.loginfo("Experiment Started")
@@ -139,18 +138,17 @@ class OptimaxRos:
         if not message == self._prev_message:
             if message == msg.ADD_TEMP:
                 self.add_temp_step(temp, temp_duration)
-                # self.start_experiment() #TODO remove this and find apt way to start the experiment
             elif message == msg.ADD_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
             elif message == msg.ADD_WAIT:
                 self.add_wait_step(wait_duration)
             elif message == msg.ADD_SAMPLE:
                 self.add_sampling_step(dilution)
-                # self.start_experiment() #TODO remove this and find apt way to start the experiment
             elif message == msg.ADD_TEMP_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
                 self.add_temp_step(temp, temp_duration)
-                #  self.start_experiment() #TODO remove this and find apt way to start the experiment
+            elif message == msg.ADD_END:
+                self.add_end_experiment_step()
             elif message == msg.START:
                 self.start_experiment()
             elif message == msg.STOP:

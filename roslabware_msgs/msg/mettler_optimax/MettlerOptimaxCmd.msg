@@ -1,11 +1,12 @@
 int32 ADD_TEMP = 0
 int32 ADD_STIR = 1
 int32 ADD_WAIT = 2
-int32 ADD_TEMP_STIR = 3
-int32 ADD_SAMPLE = 4
-int32 START = 5
-int32 STOP = 6
-int32 PARACETAMOL = 7
+int32 ADD_SAMPLE = 3
+int32 ADD_TEMP_STIR = 4
+int32 ADD_END = 5
+int32 START = 6
+int32 STOP = 7
+int32 PARACETAMOL = 8
 
 int32 optimax_command
 int32 temperature
