@@ -85,17 +85,17 @@ class RCPlusRos:
         speed: Optional[float] = DEFAULT_SPEED
     ):
         """ Dispense the specified volume with the defined speed.
-        :param volume (float): volume to dispense in mL
+        :param volume (float): volume to dispense in mL 
         :param speed Optional(float): speed in mL/min
         """
         self.operation_complete = False
         self.knf.set_dispense_mode() # set dispense in mL and time
-        self.knf.set_dispense_volume(volume)
+        self.knf.set_dispense_volume(volume*1000) #convet dispense mL to uL (pylabware driver takes uL
         dispense_time = (volume/speed)*60 # gives time to dispense in seconds
         self.knf.set_time(dispense_time)
         self.knf.start()
         while not self.operation_complete:
-            status = self.knf.get_status(1) #TODO check how this actually works... what status returned when it is pumping vs not pumping?
+            status = self.knf.get_status(1) 
             if 'Motor' in status:
                 self.operation_complete = False
             else:
@@ -103,8 +103,8 @@ class RCPlusRos:
 
     def check_idle(self):
         """Reads back pump operation status."""
-        status = self.knf.get_status(1) #TODO check how this actually works... what status returned when it is pumping vs not pumping?
-        if 'Motor' in status:
+        status = self.knf.get_status(1)
+        if 'TRUE Motor' in status:
             self.operation_complete = False
             return False
         else:
