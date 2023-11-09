@@ -1,0 +1,30 @@
+<launch>
+<!-- sash Door_Details -->
+
+	<arg
+		name="Door_name"
+		default="Balance_Door"/>
+	<arg
+		name="Door_connection_mode"
+		default="serial"/>
+	<arg
+		name="Door_address"
+		default="None"/>
+	<arg
+		name="Door_port"
+		default="/dev/ttyACM0"/>
+	<arg
+		name="Door_simulation"
+		default = 'False'/>
+	<node
+		name="Kern_door_driver"
+		pkg="roslabware_drivers"
+		type="kern_door"
+		args="
+			-d $(arg Door_name)
+			-c $(arg Door_connection_mode)
+			-add $(arg Door_address)
+			-p $(arg Door_port)
+			-s $(arg Door_simulation)"
+		output="screen"/>
+</launch>

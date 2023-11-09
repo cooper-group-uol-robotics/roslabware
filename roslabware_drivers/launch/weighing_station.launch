@@ -21,15 +21,15 @@
 		pkg="roslabware_drivers"
 		type="kern_pcb2500"
 		args="
-			-d $(arg device_name)
-			-c $(arg connection_mode)
-			-add $(arg address)
-			-p $(arg port)
-			-l $(arg simulation)"
+			-bd $(arg device_name)
+			-bc $(arg connection_mode)
+			-badd $(arg address)
+			-bp $(arg port)
+			-bs $(arg simulation)"
 		output="screen"/>
 
 
- <!-- Door_Details -->
+ <!-- balance Door_Details -->
 
 	<arg
 		name="Door_name"
@@ -51,10 +51,11 @@
 		pkg="roslabware_drivers"
 		type="kern_door"
 		args="
-			-de $(arg Door_name)
-			-co $(arg Door_connection_mode)
-			-addr $(arg Door_address)
-			-po $(arg Door_port)
-			-s $(arg Door_simulation)"
+			-kd $(arg Door_name)
+			-kc $(arg Door_connection_mode)
+			-kadd $(arg Door_address)
+			-lp $(arg Door_port)
+			-ks $(arg Door_simulation)"
 		output="screen"/>
+
 </launch>

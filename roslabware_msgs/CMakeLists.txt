@@ -27,9 +27,14 @@ add_message_files(
    msg/kern_pcb2500
  )
 
- add_message_files(
-  DIRECTORY
-   msg/kern_door
+add_message_files(
+DIRECTORY
+  msg/kern_door
+ )
+
+add_message_files(
+DIRECTORY
+  msg/sash_door
  )
 
 add_message_files(
@@ -57,10 +62,10 @@ add_message_files(
 #    msg/knf_simdos10_rcplus
 #  )
 
- add_message_files(
-  DIRECTORY
-   msg/tecan_xcalibur
- )
+add_message_files(
+DIRECTORY
+  msg/tecan_xcalibur
+)
 
 generate_messages(
 DEPENDENCIES

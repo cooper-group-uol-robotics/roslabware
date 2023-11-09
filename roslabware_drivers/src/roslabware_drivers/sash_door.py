@@ -1,21 +1,22 @@
 # external
 # written by satheesh
+
+
 from typing import Optional, Union
 
 import rospy
-
 import serial
 
 # Core
 from roslabware_msgs.msg import (
-    KernDoorCmd,
-    KernDoorStatus
+    sashDoorCmd,
+    sashDoorStatus
 )
 from std_msgs.msg import Bool
 
-class KernDoorRos:
+class SashDoorRos:
     """
-    ROS wrapper and python driver class for controlling weighing station door
+    ROS wrapper and python driver class for controlling Fumehood sash door
     """
 
     def __init__(
@@ -36,20 +37,20 @@ class KernDoorRos:
 
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
-            name="kern_door_Commands",
-            data_class=KernDoorCmd,
+            name="sash_door_Commands",
+            data_class=sashDoorCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ros published for balance responses (weights)
         self.pub = rospy.Publisher(
-            name="kern_Door_Status",
-            data_class=KernDoorStatus,
+            name="sash_Door_Status",
+            data_class=sashDoorStatus,
             queue_size=10
         )
 
         self._task_complete_pub = rospy.Publisher(
-            '/kern_door/task_complete',
+            '/sash_door/task_complete',
             Bool,
             queue_size=1)
 
@@ -57,29 +58,29 @@ class KernDoorRos:
         # Initialize rate object for consistent timed looping
         self.rate = rospy.Rate(10)
 
-        rospy.loginfo("Kern door driver started")
+        rospy.loginfo("Sash door driver started")
         while not rospy.is_shutdown():
             self._task_complete_pub.publish(True)
             rospy.sleep(5)
         #initialize device
 
     def open_door(self):
-        self.door.write((bytes("open", 'utf-8')))
-        rospy.loginfo("open_door_message_sent_to_miscware")
+        self.door.write((bytes("sopen", 'utf-8')))
+        rospy.loginfo("open_door_message_sent_to_device_controller")
         self.pub.publish( status = 'Door_Opened')
         rospy.sleep(5)
         self.process_complete = True
 
     def close_door(self):
-        self.door.write((bytes("close", 'utf-8')))
-        rospy.loginfo("close_door_message_sent_to_miscware")
+        self.door.write((bytes("sclose", 'utf-8')))
+        rospy.loginfo("close_door_message_sent_to_device_controller")
         #if serial msg received:
         self.pub.publish(status = 'Door_Closed')
         rospy.sleep(5)
         self.process_complete = True
 
     def callback_commands(self, msg):
-        message = msg.kern_door_command
+        message = msg.sash_door_command
         rospy.loginfo("message_received")
         if not message == self._prev_msg:
             if message == msg.OPEN_DOOR:
