@@ -31,7 +31,7 @@ if __name__ == "__main__":
         '-add',
         '--address',
         action='store',
-        default='None',
+        default="172.31.1.18",
         nargs='?',
         const=1,
         help='IP Address.')
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-p',
         '--port',
         action='store',
-        default='/dev/ttyUSB0',
+        default=8000,
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')

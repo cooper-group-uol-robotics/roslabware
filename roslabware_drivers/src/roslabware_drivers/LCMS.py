@@ -2,7 +2,7 @@
 from typing import Optional, Union
 
 import rospy
-# from labmatic import LCMS
+from labmatic import LCMS
 
 # Core
 from roslabware_msgs.msg import (
@@ -21,8 +21,8 @@ class LcmsRos:
         self,
         device_name: str = None,
         connection_mode: str = "tcpip",
-        address: Optional[str] = None, # IP address
-        port: Union[str, int] = None, # Port
+        address: Optional[str] = "172.31.1.18", # IP address
+        port: Union[str, int] = 8000, # Port
         simulation: bool = False,
         experiment_name: str = "test"
     ):
@@ -31,12 +31,13 @@ class LcmsRos:
         self.result = False
         self.concentration = None
         # Create device object
-        # self.lcms = LCMS(device_name = device_name, connection_mode = connection_mode, address= address, port = port, experiment_name=experiment_name)
+        # rospy.loginfo(address, port)
+        self.lcms = LCMS(device_name = device_name, connection_mode = connection_mode, address= address, port = port)
 
-        # self.lcms.connect_socket()
+        self.lcms.connect_socket()
 
-        # if not self.lcms.is_connected():
-        #     rospy.loginfo("LCMS server - not connected")
+        if not self.lcms.is_connected():
+            rospy.loginfo("LCMS server - not connected")
         
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -74,7 +75,7 @@ class LcmsRos:
         return True, 0.52
 
     def prep_analysis(self):
-        _batch_file_create = self.lcms.create_batch_csv()
+        _batch_file_create = self.lcms.create_batch_csv(1, "test")
         rospy.sleep(2)
         if _batch_file_create:
             rospy.loginfo("batch file created")
@@ -92,9 +93,9 @@ class LcmsRos:
     def unload_batch(self):
         _batch_unload = self.lcms.autosampler_unload()
         if _batch_unload:
-            rospy.loginfo("batch loaded into LCMS")
+            rospy.loginfo("batch unloaded from LCMS")
         else:
-            rospy.loginfo("batch load error")
+            rospy.loginfo("batch unload error")
 
     def start_analysis(self):
         self.result,self.concentration = self.lcms.send_csv_receive_conc()
