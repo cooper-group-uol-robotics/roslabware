@@ -5,4 +5,4 @@ int32 START_ANALYSIS = 3
 
 
 int32 lcms_command
-int32 lcms_param
+int32 lcms_num_samples

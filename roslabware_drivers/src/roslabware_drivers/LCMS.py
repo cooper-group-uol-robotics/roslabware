@@ -1,4 +1,5 @@
 # external
+import datetime
 from typing import Optional, Union
 
 import rospy
@@ -31,8 +32,12 @@ class LcmsRos:
         self.result = False
         self.concentration = None
         # Create device object
-        # rospy.loginfo(address, port)
-        self.lcms = LCMS(device_name = device_name, connection_mode = connection_mode, address= address, port = port)
+        self.lcms = LCMS( 
+            device_name = device_name, 
+            connection_mode = connection_mode, 
+            address= address, port = port, 
+            experiment_name=experiment_name
+        )
 
         self.lcms.connect_socket()
 
@@ -64,18 +69,18 @@ class LcmsRos:
 
         # Get data
         while not rospy.is_shutdown():
-            result, concentration = self.get_results()
+            # result, concentration = self.get_results()
             lcmsmsg = LcmsReading()
-            lcmsmsg.result = result # self.result
-            lcmsmsg.paracetamol_concentration = concentration # self.concentration
+            lcmsmsg.result = self.result
+            lcmsmsg.paracetamol_concentration = self.concentration
             self.pub.publish(lcmsmsg)
             self.rate.sleep()
     
-    def get_results(self):
-        return True, 0.52
+    # def get_results(self):
+    #     return True, 0.52
 
-    def prep_analysis(self):
-        _batch_file_create = self.lcms.create_batch_csv(1, "test")
+    def prep_analysis(self, num_samples):
+        _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples, file_text=datetime.datetime.now().strftime("%I:%M%p_%B-%d-%Y"))
         rospy.sleep(2)
         if _batch_file_create:
             rospy.loginfo("batch file created")
