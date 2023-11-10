@@ -52,7 +52,7 @@ add_message_files(
 #    msg/knf_simdos10_rcplus
 #  )
 
- add_message_files(
+add_message_files(
   DIRECTORY
    msg/tecan_xcalibur
  )

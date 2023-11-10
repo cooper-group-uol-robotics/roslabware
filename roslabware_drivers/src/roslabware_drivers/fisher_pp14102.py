@@ -3,16 +3,13 @@ import rospy
 from pylabware import PPS4102
 
 # Core
-from roslabware_msgs.msg import (
-    FisherPP14102Cmd,
-    FisherPP14102Reading
-)
+from roslabware_msgs.msg import FisherPP14102Cmd, FisherPP14102Reading
 
 
 class PP14102Ros:
-    """ROS Wrapper for Fisher Scientific PPS4102 Top Pan Balance Serial Driver
-    Utilises ROS Topics to facilitate communication with balance using a
-    serial driver."""
+    """ROS Wrapper for Fisher Scientific PPS4102 Top Pan Balance Serial
+    Driver Utilises ROS Topics to facilitate communication with balance
+    using a serial driver."""
 
     def __init__(
         self,
@@ -20,9 +17,8 @@ class PP14102Ros:
         connection_mode: str,
         address: str,
         port: str,
-        simulation: bool
+        simulation: bool,
     ):
-
         # Instantiate balance driver
         self.balance = PPS4102(
             device_name=device_name,

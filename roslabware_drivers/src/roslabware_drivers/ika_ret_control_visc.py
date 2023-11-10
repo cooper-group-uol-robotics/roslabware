@@ -10,9 +10,7 @@ from roslabware_msgs.msg import (
 
 
 class RETControlViscHotplateRos:
-    """
-    Ros wrapper for the IKA RCT hotplate driver
-    """
+    """Ros wrapper for the IKA RCT hotplate driver."""
 
     def __init__(
         self,
@@ -21,9 +19,8 @@ class RETControlViscHotplateRos:
         address: str,
         port: str,
         sensor: int,
-        simulation: bool
+        simulation: bool,
     ):
-
         # Instantiate IKA driver
         self.hotplate = RETControlViscHotplate(
             device_name=device_name,
@@ -60,7 +57,6 @@ class RETControlViscHotplateRos:
 
         # Get data
         while not rospy.is_shutdown():
-
             # Get temperature of external sensor as default
             temperature = self.hotplate.get_temperature(sensor=int(sensor))
             stir_speed = self.hotplate.get_speed()
@@ -106,7 +102,6 @@ class RETControlViscHotplateRos:
         rospy.loginfo("Setting Heating To: " + str(temperature) + "ºC")
 
     def callback_commands(self, msg):
-
         message = msg.ika_command
 
         if message == msg.HEAT_ON:
