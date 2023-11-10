@@ -108,8 +108,23 @@ class OptimaxRos:
 
     def stop_experiment(self):
         self.optimax.stop()
-        rospy.loginfo("Experiment Stopped")     
+        rospy.loginfo("Experiment Stopped") 
 
+    def para_heat_wait(self, temp, stir_speed, wait_duration):
+        self.create_experiment()
+        self.add_stir_step(stir_speed, 20)
+        self.add_temp_step(temp, 10)
+        self.add_wait_step(wait_duration)
+        self.add_end_experiment_step()
+        self.start_experiment()
+
+    def para_sample(self, temp, stir_speed, dilution):
+        self.create_experiment()
+        self.add_stir_step(stir_speed, 20)
+        self.add_temp_step(temp, 10)
+        self.add_sampling_step(dilution)
+        self.add_end_experiment_step()
+        self.start_experiment()
 
     def paracetamol_synthesis(self): # temporary method for paracetamol synthesis
         self.add_stir_step(300, 20)
@@ -160,6 +175,10 @@ class OptimaxRos:
                 self.start_experiment()
             elif message == msg.STOP:
                 self.stop_experiment()
+            elif message == msg.PARA_HEAT_WAIT:
+                self.para_heat_wait(temp, stir_speed, wait_duration)
+            elif message == msg.PARA_SAMPLE:
+                self.para_sample(temp, stir_speed, dilution)
             elif message == msg.PARACETAMOL: # temporary message for paracetamol synthesis
                 self.paracetamol_synthesis()
             else:
