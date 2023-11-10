@@ -11,6 +11,8 @@
 	<arg
 		name="port"
 		default="/dev/ttyUSB0"/>
+
+
 	<node
 		name="mettler_quantos_qb1"
 		pkg="roslabware_drivers"
@@ -20,6 +22,6 @@
 			-c $(arg connection_mode)
 			-add $(arg address)
 			-p $(arg port)
-			-l $(arg simulation)"
+			"
 		output="screen"/>
 </launch>

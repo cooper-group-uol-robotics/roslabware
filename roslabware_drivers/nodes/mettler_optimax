@@ -9,58 +9,64 @@ from roslabware_drivers.mettler_optimax import OptimaxRos
 # Object oriented initialization for ROS
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        prog="Mettler Optimax ROS",
-        description='ROS node for Mettler Optimax')
+        prog="Mettler Optimax ROS", description="ROS node for Mettler Optimax"
+    )
     parser.add_argument(
-        '-d',
-        '--device_name',
-        action='store',
-        default='mettler_optimax',
-        nargs='?',
+        "-d",
+        "--device_name",
+        action="store",
+        default="mettler_optimax",
+        nargs="?",
         const=1,
-        help='Device name')
+        help="Device name",
+    )
     parser.add_argument(
-        '-c',
-        '--connection_mode',
-        action='store',
-        default='serial',
-        nargs='?',
+        "-c",
+        "--connection_mode",
+        action="store",
+        default="serial",
+        nargs="?",
         const=1,
-        help='Connection mode: "tcpip", "serial" or "http"')
+        help='Connection mode: "tcpip", "serial" or "http"',
+    )
     parser.add_argument(
-        '-add',
-        '--address',
-        action='store',
-        default='None',
-        nargs='?',
+        "-add",
+        "--address",
+        action="store",
+        default="None",
+        nargs="?",
         const=1,
-        help='IP Address.')
+        help="IP Address.",
+    )
     parser.add_argument(
-        '-p',
-        '--port',
-        action='store',
-        default='/dev/ttyUSB0',
-        nargs='?',
+        "-p",
+        "--port",
+        action="store",
+        default="/dev/ttyUSB0",
+        nargs="?",
         const=1,
-        help='Serial or TCP/IP port')
+        help="Serial or TCP/IP port",
+    )
 
     parser.add_argument(
-        '-l',
-        '--simulation',
-        action='store',
-        nargs='?',
+        "-l",
+        "--simulation",
+        action="store",
+        nargs="?",
         const=1,
-        default='False',
-        help='Simulation mode or not (bool)')
+        default="False",
+        help="Simulation mode or not (bool)",
+    )
 
     parser.add_argument(
-        '-x',
-        '--exname',
-        action='store',
-        nargs='?',
+        "-x",
+        "--exname",
+        action="store",
+        nargs="?",
         const=1,
-        default='test',
-        help='Experiment name')
+        default="test",
+        help="Experiment name",
+    )
 
     args, unknown = parser.parse_known_args()
 
@@ -69,12 +75,13 @@ if __name__ == "__main__":
 
     # Create instance of ROS Wrapper
     optimax_ros = OptimaxRos(
-            device_name=args.device_name,
-            connection_mode=args.connection_mode,
-            address=args.address,
-            port=args.port,
-            simulation=args.simulation,
-            experiment_name=args.exname)
+        device_name=args.device_name,
+        connection_mode=args.connection_mode,
+        address=args.address,
+        port=args.port,
+        simulation=args.simulation,
+        experiment_name=args.exname,
+    )
 
     # Keeps python from exiting until node is stopped
     rospy.spin()
