@@ -25,11 +25,10 @@ class OptimaxRos:
         address: Optional[str] = None,
         port: Union[str, int] = None,
         simulation: bool = False,
-        experiment_name: str = None
     ):
         #
         # Create device object
-        self.optimax = Optimax(experiment_name=experiment_name, device_name=device_name, connection_mode=connection_mode, address=address, port=port)
+        self.optimax = Optimax(device_name=device_name, connection_mode=connection_mode, address=address, port=port)
         
         # TODO after (IF) API implementation
         # if simulation == "True":
