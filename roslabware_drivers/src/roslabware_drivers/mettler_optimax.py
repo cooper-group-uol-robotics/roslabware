@@ -69,10 +69,13 @@ class OptimaxRos:
             self._task_complete_pub.publish(self.process_complete)
             rospy.sleep(5)
 
+    def create_experiment(self, experiment_name):
+        self.optimax._create_experiment(experiment_name)
+        rospy.loginfo(f"Created new experiment with name {experiment_name}")
+
     def add_temp_step(self, temperature, duration):
         self.optimax._add_temperature_step(temperature, duration)
         rospy.loginfo(f"Added temperature step with temperature {temperature} ºC")
-
 
     def add_stir_step(self, speed, duration):
         self.optimax._add_stirring_step(speed, duration)
@@ -90,7 +93,6 @@ class OptimaxRos:
         self.optimax._add_end_experiment_step()
         rospy.loginfo("Added end experiment step")
 
-
     def start_experiment(self):
         self.optimax.start()
         rospy.loginfo("Experiment Started")
@@ -106,16 +108,31 @@ class OptimaxRos:
 
     def stop_experiment(self):
         self.optimax.stop()
-        rospy.loginfo("Experiment Stopped")     
+        rospy.loginfo("Experiment Stopped") 
 
+    def para_heat_wait(self, temp, stir_speed, wait_duration):
+        self.create_experiment()
+        self.add_stir_step(stir_speed, 20)
+        self.add_temp_step(temp, 10)
+        self.add_wait_step(wait_duration)
+        self.add_end_experiment_step()
+        self.start_experiment()
 
-    def paracitamol_synthesis(self): # temporary method for paracetamol synthesis
-        self.add_stir_step(100, 5)
-        # self.add_temp_step(120,10)
-        # self.add_wait_step(60)
-        # self.add_stir_step(300,20)
-        # self.add_temp_step(5,30)
-        self.add_wait_step(1)
+    def para_sample(self, temp, stir_speed, dilution):
+        self.create_experiment()
+        self.add_stir_step(stir_speed, 20)
+        self.add_temp_step(temp, 10)
+        self.add_sampling_step(dilution)
+        self.add_end_experiment_step()
+        self.start_experiment()
+
+    def paracetamol_synthesis(self): # temporary method for paracetamol synthesis
+        self.add_stir_step(300, 20)
+        self.add_temp_step(120,10)
+        self.add_wait_step(60)
+        self.add_stir_step(300,20)
+        self.add_temp_step(5,30)
+        self.add_wait_step(240)
         self.add_end_experiment_step()
         self.start_experiment()
                 
@@ -135,30 +152,38 @@ class OptimaxRos:
             wait_duration = msg.wait_duration
         if msg.dilution:
             dilution = msg.dilution
+        if msg.experiment_name:
+            experiment_name = msg.experiment_name
         
         if not message == self._prev_message:
-            if message == msg.ADD_TEMP:
+            if message == msg.CREATE_EXPERIMENT:
+                self.create_experiment(experiment_name)
+            elif message == msg.ADD_TEMP:
                 self.add_temp_step(temp, temp_duration)
-                # self.start_experiment() #TODO remove this and find apt way to start the experiment
             elif message == msg.ADD_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
             elif message == msg.ADD_WAIT:
                 self.add_wait_step(wait_duration)
             elif message == msg.ADD_SAMPLE:
                 self.add_sampling_step(dilution)
-                # self.start_experiment() #TODO remove this and find apt way to start the experiment
             elif message == msg.ADD_TEMP_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
                 self.add_temp_step(temp, temp_duration)
-                #  self.start_experiment() #TODO remove this and find apt way to start the experiment
+            elif message == msg.ADD_END:
+                self.add_end_experiment_step()
             elif message == msg.START:
                 self.start_experiment()
             elif message == msg.STOP:
                 self.stop_experiment()
+            elif message == msg.PARA_HEAT_WAIT:
+                self.para_heat_wait(temp, stir_speed, wait_duration)
+            elif message == msg.PARA_SAMPLE:
+                self.para_sample(temp, stir_speed, dilution)
             elif message == msg.PARACETAMOL: # temporary message for paracetamol synthesis
-                self.paracitamol_synthesis()
+                self.paracetamol_synthesis()
             else:
                 rospy.loginfo("invalid command")
             
             self._prev_message = message
+            
 rospy.loginfo("working")
