@@ -1,7 +1,7 @@
 <launch>
 	<arg 
 		name="device_name"
-		default="knf_rcplus"/>
+		default="knf_simdos10_rcplus"/>
 	<arg
 		name="connection_mode"
 		default="serial"/>
@@ -18,9 +18,9 @@
 		name="simulation"
 		default="False"/>
 	<node 
-		name="knf_rcplus"
+		name="knf_simdos10_rcplus"
 		pkg="roslabware_drivers"
-		type="knf_rcplus"
+		type="knf_simdos10_rcplus"
 		args="
 			-d $(arg device_name)
 			-c $(arg connection_mode)
