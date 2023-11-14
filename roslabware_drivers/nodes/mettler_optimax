@@ -53,15 +53,6 @@ if __name__ == "__main__":
         default='False',
         help='Simulation mode or not (bool)')
 
-    parser.add_argument(
-        '-x',
-        '--exname',
-        action='store',
-        nargs='?',
-        const=1,
-        default='test',
-        help='Experiment name')
-
     args, unknown = parser.parse_known_args()
 
     # Initiliaze rospy node
@@ -73,8 +64,7 @@ if __name__ == "__main__":
             connection_mode=args.connection_mode,
             address=args.address,
             port=args.port,
-            simulation=args.simulation,
-            experiment_name=args.exname)
+            simulation=args.simulation)
 
     # Keeps python from exiting until node is stopped
     rospy.spin()

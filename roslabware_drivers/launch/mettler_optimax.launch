@@ -12,9 +12,6 @@
 		name="port"
 		default="/dev/ttyUSB0"/>
 	<arg
-		name="experiment_name"
-		default="test"/>
-	<arg
 		name="simulation"
 		default="False"/>
 	<node
@@ -26,7 +23,6 @@
 			-c $(arg connection_mode)
 			-add $(arg address)
 			-p $(arg port)
-			-l $(arg simulation)
-			-x $(arg experiment_name)"
+			-l $(arg simulation)"
 		output="screen"/>
 </launch>

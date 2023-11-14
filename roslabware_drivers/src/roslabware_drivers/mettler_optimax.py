@@ -24,17 +24,17 @@ class OptimaxRos:
         connection_mode: str = "serial",
         address: Optional[str] = None,
         port: Union[str, int] = None,
-        simulation: bool = False,
-        experiment_name: str = None
+        simulation: bool = False
+
     ):
         #
         # Create device object
-        self.optimax = Optimax(experiment_name=experiment_name, device_name=device_name, connection_mode=connection_mode, address=address, port=port)
+        self.optimax = Optimax(device_name=device_name, connection_mode=connection_mode, address=address, port=port)
         
         # TODO after (IF) API implementation
         # if simulation == "True":
         #     self.optimax.simulation = True
-        self.optimax.connect()
+        # self.optimax.connect()
 
         self.optimax.initialize_device()
         self.process_complete = False
@@ -110,12 +110,12 @@ class OptimaxRos:
 
 
     def paracitamol_synthesis(self): # temporary method for paracetamol synthesis
-        self.add_stir_step(300, 20)
-        self.add_temp_step(120,10)
-        self.add_wait_step(60)
-        self.add_stir_step(300,20)
-        self.add_temp_step(5,30)
-        self.add_wait_step(240)
+        self.add_stir_step(100, 5)
+        # self.add_temp_step(120,10)
+        # self.add_wait_step(60)
+        # self.add_stir_step(300,20)
+        # self.add_temp_step(5,30)
+        self.add_wait_step(1)
         self.add_end_experiment_step()
         self.start_experiment()
                 
