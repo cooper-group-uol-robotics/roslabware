@@ -4,7 +4,7 @@
 import argparse
 import rospy
 
-from roslabware_drivers.kern_pcb2500 import PCB2500Ros
+from roslabware_drivers.kern_door import KernDoorRos
 
 if __name__ == "__main__":
     # Get arguments needed
@@ -12,41 +12,41 @@ if __name__ == "__main__":
         prog="Kern Top balance ROS",
         description='ROS node for a Kern Top balance')
     parser.add_argument(
-        '-d',
-        '--device_name',
+        '-kd',
+        '--Door_name',
         action='store',
-        default='rct_ika_hotplate',
+        default='kern_door',
         nargs='?',
         const=1,
         help='Device name')
     parser.add_argument(
-        '-c',
-        '--connection_mode',
+        '-kc',
+        '--Door_connection_mode',
         action='store',
         default='serial',
         nargs='?',
         const=1,
         help='Connection mode: "tcpip", "serial" or "http"')
     parser.add_argument(
-        '-add',
-        '--address',
+        '-kadd',
+        '--Door_address',
         action='store',
         default='None',
         nargs='?',
         const=1,
         help='IP Address.')
     parser.add_argument(
-        '-p',
-        '--port',
+        '-kp',
+        '--Door_port',
         action='store',
-        default='/dev/ttyUSB0',
+        default='/dev/ttyACM0',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
 
     parser.add_argument(
-        '-l',
-        '--simulation',
+        '-ks',
+        '--Door_simulation',
         action='store',
         nargs='?',
         const=1,
@@ -56,15 +56,15 @@ if __name__ == "__main__":
     args, unknown = parser.parse_known_args()
 
     # Initialize ROS node
-    rospy.init_node("Kern_PCB2500_Driver", anonymous=True)
+    rospy.init_node("Kern_door_driver", anonymous=True)
 
     # Objectoriented initialization of ROS
-    kern_ros = PCB2500Ros(
-        device_name=args.device_name,
-        connection_mode=args.connection_mode,
-        address=args.address,
-        port=args.port,
-        simulation=args.simulation)
+    kern_ros = KernDoorRos(
+        device_name=args.Door_name,
+        connection_mode=args.Door_connection_mode,
+        address=args.Door_address,
+        port=args.Door_port,
+        simulation=args.Door_simulation)
 
-    rospy.loginfo("Kern balance roslabware driver started")
+    rospy.loginfo("Kern door roslabware driver started")
     rospy.spin()

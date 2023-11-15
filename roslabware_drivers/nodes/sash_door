@@ -4,24 +4,24 @@
 import argparse
 import rospy
 
-from roslabware_drivers.kern_pcb2500 import PCB2500Ros
+from roslabware_drivers.sash_door import SashDoorRos
 
 if __name__ == "__main__":
     # Get arguments needed
     parser = argparse.ArgumentParser(
-        prog="Kern Top balance ROS",
-        description='ROS node for a Kern Top balance')
+        prog="Sash Door ROS",
+        description='ROS node for a fumehood sash door')
     parser.add_argument(
         '-d',
-        '--device_name',
+        '--Door_name',
         action='store',
-        default='rct_ika_hotplate',
+        default='sash_door',
         nargs='?',
         const=1,
         help='Device name')
     parser.add_argument(
         '-c',
-        '--connection_mode',
+        '--Door_connection_mode',
         action='store',
         default='serial',
         nargs='?',
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         help='Connection mode: "tcpip", "serial" or "http"')
     parser.add_argument(
         '-add',
-        '--address',
+        '--Door_address',
         action='store',
         default='None',
         nargs='?',
@@ -37,16 +37,16 @@ if __name__ == "__main__":
         help='IP Address.')
     parser.add_argument(
         '-p',
-        '--port',
+        '--Door_port',
         action='store',
-        default='/dev/ttyUSB0',
+        default='/dev/ttyACM0',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
 
     parser.add_argument(
-        '-l',
-        '--simulation',
+        '-s',
+        '--Door_simulation',
         action='store',
         nargs='?',
         const=1,
@@ -56,15 +56,15 @@ if __name__ == "__main__":
     args, unknown = parser.parse_known_args()
 
     # Initialize ROS node
-    rospy.init_node("Kern_PCB2500_Driver", anonymous=True)
+    rospy.init_node("sash_door_driver", anonymous=True)
 
     # Objectoriented initialization of ROS
-    kern_ros = PCB2500Ros(
-        device_name=args.device_name,
-        connection_mode=args.connection_mode,
-        address=args.address,
-        port=args.port,
-        simulation=args.simulation)
+    sash_ros = SashDoorRos(
+        device_name=args.Door_name,
+        connection_mode=args.Door_connection_mode,
+        address=args.Door_address,
+        port=args.Door_port,
+        simulation=args.Door_simulation)
 
-    rospy.loginfo("Kern balance roslabware driver started")
+    rospy.loginfo("sash door roslabware driver started")
     rospy.spin()
