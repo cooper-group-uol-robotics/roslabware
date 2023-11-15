@@ -69,9 +69,9 @@ class OptimaxRos:
             self._task_complete_pub.publish(self.process_complete)
             rospy.sleep(5)
 
-    def create_experiment(self, experiment_name):
-        self.optimax._create_experiment(experiment_name)
-        rospy.loginfo(f"Created new experiment with name {experiment_name}")
+    def create_experiment(self):
+        self.optimax._create_experiment()
+        rospy.loginfo(f"Created new experiment.")
 
     def add_temp_step(self, temperature, duration):
         self.optimax._add_temperature_step(temperature, duration)
@@ -140,33 +140,22 @@ class OptimaxRos:
     def callback_commands(self, msg):
 
         message = msg.optimax_command
-        if msg.temperature:
+        if msg.temperature is not None:
             temp = msg.temperature
-        if msg.stir_speed:
+        if msg.stir_speed is not None:
             stir_speed = msg.stir_speed
-        if msg.temp_duration:
+        if msg.temp_duration is not None:
             temp_duration = msg.temp_duration
-        if msg.stir_duration:
+        if msg.stir_duration is not None:
             stir_duration = msg.stir_duration
-        if msg.wait_duration:
+        if msg.wait_duration is not None:
             wait_duration = msg.wait_duration
-        if msg.dilution:
+        if msg.dilution is not None:
             dilution = msg.dilution
-        if msg.experiment_name:
-            experiment_name = msg.experiment_name
+
         
         if not message == self._prev_message:
-            if message == msg.CREATE_EXPERIMENT:
-                self.create_experiment(experiment_name)
-            elif message == msg.ADD_TEMP:
-                self.add_temp_step(temp, temp_duration)
-            elif message == msg.ADD_STIR:
-                self.add_stir_step(stir_speed, stir_duration)
-            elif message == msg.ADD_WAIT:
-                self.add_wait_step(wait_duration)
-            elif message == msg.ADD_SAMPLE:
-                self.add_sampling_step(dilution)
-            elif message == msg.ADD_TEMP_STIR:
+            if message == msg.ADD_TEMP_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
                 self.add_temp_step(temp, temp_duration)
             elif message == msg.ADD_END:
@@ -175,9 +164,9 @@ class OptimaxRos:
                 self.start_experiment()
             elif message == msg.STOP:
                 self.stop_experiment()
-            elif message == msg.PARA_HEAT_WAIT:
+            elif message == msg.PARA_HW:
                 self.para_heat_wait(temp, stir_speed, wait_duration)
-            elif message == msg.PARA_SAMPLE:
+            elif message == msg.PARA_S:
                 self.para_sample(temp, stir_speed, dilution)
             elif message == msg.PARACETAMOL: # temporary message for paracetamol synthesis
                 self.paracetamol_synthesis()
