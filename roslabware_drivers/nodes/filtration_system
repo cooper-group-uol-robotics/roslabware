@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+
+# External
+import argparse
+import rospy
+
+from roslabware_drivers.filtration_system import FiltrationRos
+
+if __name__ == "__main__":
+    # Get arguments needed
+    parser = argparse.ArgumentParser(
+        prog="Filtration system ROS",
+        description='ROS node for the filtration station')
+    parser.add_argument(
+        '-d',
+        '--device_name',
+        action='store',
+        default='filtration system',
+        nargs='?',
+        const=1,
+        help='Device name')
+    parser.add_argument(
+        '-c',
+        '--connection_mode',
+        action='store',
+        default='serial',
+        nargs='?',
+        const=1,
+        help='Connection mode: "tcpip", "serial" or "http"')
+    parser.add_argument(
+        '-add',
+        '--address',
+        action='store',
+        default='None',
+        nargs='?',
+        const=1,
+        help='IP Address.')
+    parser.add_argument(
+        '-p',
+        '--port',
+        action='store',
+        default='/dev/ttyUSB0',
+        nargs='?',
+        const=1,
+        help='Serial or TCP/IP port')
+
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
+
+    args, unknown = parser.parse_known_args()
+
+    # Initialize ROS node
+    rospy.init_node("filtration Driver", anonymous=True)
+
+    # Objectoriented initialization of ROS
+    kern_ros = FiltrationRos(
+        device_name=args.device_name,
+        connection_mode=args.connection_mode,
+        address=args.address,
+        port=args.port,
+        simulation=args.simulation)
+
+    rospy.loginfo("Filtration driver started")
+    rospy.spin()

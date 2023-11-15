@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+
+# External
+import argparse
+
+import rospy
+from roslabware_drivers.LCMS import LcmsRos
+
+# Object oriented initialization for ROS
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog="LCMS ROS",
+        description='ROS node for LCMS')
+    parser.add_argument(
+        '-d',
+        '--device_name',
+        action='store',
+        default='lcms',
+        nargs='?',
+        const=1,
+        help='Device name')
+    parser.add_argument(
+        '-c',
+        '--connection_mode',
+        action='store',
+        default='serial',
+        nargs='?',
+        const=1,
+        help='Connection mode: "tcpip", "serial" or "http"')
+    parser.add_argument(
+        '-add',
+        '--address',
+        action='store',
+        default="172.31.1.18",
+        nargs='?',
+        const=1,
+        help='IP Address.')
+    parser.add_argument(
+        '-p',
+        '--port',
+        action='store',
+        default=8000,
+        nargs='?',
+        const=1,
+        help='Serial or TCP/IP port')
+
+    parser.add_argument(
+        '-l',
+        '--simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
+
+    parser.add_argument(
+        '-x',
+        '--exname',
+        action='store',
+        nargs='?',
+        const=1,
+        default='test',
+        help='Experiment name')
+
+    args, unknown = parser.parse_known_args()
+
+    # Initiliaze rospy node
+    rospy.init_node("LCMS Driver", anonymous=True)
+
+    # Create instance of ROS Wrapper
+    lcms_ros = LcmsRos(
+            device_name=args.device_name,
+            connection_mode=args.connection_mode,
+            address=args.address,
+            port=args.port,
+            simulation=args.simulation,
+            experiment_name=args.exname)
+
+    # Keeps python from exiting until node is stopped
+    rospy.spin()

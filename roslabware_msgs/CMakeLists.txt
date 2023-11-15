@@ -8,6 +8,16 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 add_message_files(
+  DIRECTORY
+   msg/base_valve
+)
+
+add_message_files(
+  DIRECTORY
+   msg/filtration_system 
+)
+
+add_message_files(
 DIRECTORY
   msg/fisher_pp14102
 )
@@ -28,13 +38,23 @@ add_message_files(
  )
 
 add_message_files(
-  DIRECTORY
-   msg/mettler_quantos_qb1
+DIRECTORY
+  msg/kern_door
  )
 
 add_message_files(
   DIRECTORY
-   msg/tecan_xlp6000
+   msg/knf_simdos10_rcplus
+ )
+
+add_message_files(
+  DIRECTORY
+    msg/lcms
+)
+ 
+add_message_files(
+  DIRECTORY
+   msg/mettler_quantos_qb1
  )
 
 add_message_files(
@@ -47,14 +67,19 @@ add_message_files(
    msg/mettler_optimax
  )
 
-add_message_files(
+ add_message_files(
   DIRECTORY
-   msg/knf_simdos10_rcplus
- )
+    msg/sash_door
+  )
 
 add_message_files(
   DIRECTORY
    msg/tecan_xcalibur
+ )
+
+add_message_files(
+  DIRECTORY
+   msg/tecan_xlp6000
  )
 
 generate_messages(

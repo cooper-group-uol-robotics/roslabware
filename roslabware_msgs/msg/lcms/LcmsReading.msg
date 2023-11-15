@@ -1,0 +1,2 @@
+bool result
+float32 paracetamol_concentration
