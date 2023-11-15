@@ -1,7 +1,6 @@
 
 # external
 from typing import Optional, Union
-import time
 import rospy
 from pylabware import Optimax
 
@@ -96,15 +95,6 @@ class OptimaxRos:
     def start_experiment(self):
         self.optimax.start()
         rospy.loginfo("Experiment Started")
-        self.start_timer(21600)
-
-    def start_timer(self, seconds):
-        start_time = time.time()
-        end_time = start_time + seconds
-        while time.time() < end_time:
-            remaining_time = int(end_time - time.time())
-            print(f"Time remaining for the completion: {round(remaining_time/60)} minutes", end="\r", flush=True)
-            time.sleep(1)
 
     def stop_experiment(self):
         self.optimax.stop()
