@@ -4,13 +4,11 @@ from miscware import BaseValve
 import rospy
 import serial
 
-
 # Core
 from roslabware_msgs.msg import (
     BaseValveCmd,
     BaseValveStatus)
 from std_msgs.msg import Bool
-
 
 
 class BaseValveRos:
@@ -65,13 +63,13 @@ class BaseValveRos:
             rospy.sleep(5)
 
     def _open_valve(self):
-        self.base_valve.write((bytes("<o>", 'utf-8')))
+        self.base_valve.write((bytes("vopen", 'utf-8')))
         rospy.loginfo("open_valve_message_sent_to_miscware")
         rospy.sleep(5)
         self.process_complete = True
 
     def _close_valve(self):
-        self.base_valve.write((bytes("<c>", 'utf-8')))
+        self.base_valve.write((bytes("vclose", 'utf-8')))
         rospy.loginfo("close_valve_message_sent_to_miscware")
         rospy.sleep(5)
         self.process_complete = True
