@@ -2,6 +2,7 @@
 from typing import Optional
 from pylabware import RCPlus
 import rospy
+import time
 
 # Core
 from roslabware_msgs.msg import (
@@ -41,19 +42,24 @@ class RCPlusRos:
         if simulation == "True":
             self.knf.simulation = True
 
-        # Don't think any initialisation methods are needed for KNF.
-        #self.knf.connect() # TODO check
+        self.operation_complete = False
+
+        # Initialise connection for KNF.
+        self.knf.connect()  
+        time.sleep(1)
+
+        rospy.loginfo("KNF pump connected: %s", self.knf.is_connected())
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
-            name="KNF Simdos 10 RC-Plus Commands",
+            name="KNF_RCPlus_Commands",
             data_class=KnfRCPlusCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for status
         self.pub = rospy.Publisher(
-            name="KNF Simdos 10 RC-Plus Readings",
+            name="KNF_RCPlus_Readings",
             data_class=KnfRCPlusReading,
             queue_size=10
         )
@@ -85,15 +91,20 @@ class RCPlusRos:
         speed: Optional[float] = DEFAULT_SPEED
     ):
         """ Dispense the specified volume with the defined speed.
+
         :param volume (float): volume to dispense in mL 
         :param speed Optional(float): speed in mL/min
         """
         self.operation_complete = False
-        self.knf.set_dispense_mode() # set dispense in mL and time
-        self.knf.set_dispense_volume(volume*1000) #convet dispense mL to uL (pylabware driver takes uL
-        dispense_time = (volume/speed)*60 # gives time to dispense in seconds
+        self.knf.set_dispense_mode() # Set dispense in mL and time
+        time.sleep(0.5)
+        self.knf.set_dispense_volume(volume*1000) # Convert dispense mL to uL (pylabware driver takes uL)
+        time.sleep(0.5)
+        dispense_time = (volume/speed)*60 # Gives time to dispense in seconds
         self.knf.set_time(dispense_time)
+        time.sleep(0.5)
         self.knf.start()
+        time.sleep(0.5)
         while not self.operation_complete:
             status = self.knf.get_status(1) 
             if 'Motor' in status:
@@ -122,5 +133,5 @@ class RCPlusRos:
         elif message == msg.CHECK_IDLE:
             self.check_idle()
         else:
-            rospy.loginfo("invalid command")
+            rospy.loginfo("Invalid command.")
         

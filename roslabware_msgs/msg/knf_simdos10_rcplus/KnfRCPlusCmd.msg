@@ -1,4 +1,4 @@
-# Available commands to use the Tecan XLP6000
+# Available commands to use KNF Simdos 10
 int32 DISPENSE = 0
 int32 STOP = 1
 int32 CHECK_IDLE = 2
