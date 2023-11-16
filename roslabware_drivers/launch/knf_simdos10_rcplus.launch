@@ -10,10 +10,10 @@
 		default="None"/>
 	<arg
 		name="port"
-		default="/dev/ttyACM0"/>
+		default="COM10"/>
 	<arg
 		name="switch_address"
-		default="0"/>
+		default="00"/>
 	<arg
 		name="simulation"
 		default="False"/>
@@ -26,7 +26,7 @@
 			-c $(arg connection_mode)
 			-add $(arg address)
 			-p $(arg port)
-			-w $(arg switch_address)
+			-swa $(arg switch_address)
 			-l $(arg simulation)"
 		output="screen"/>
 </launch>

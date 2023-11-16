@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-p',
         '--port',
         action='store',
-        default='/dev/ttyACM0',
+        default='COM10',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         '-swa',
         '--switch_address',
         action='store',
-        default='0',
+        default='00',
         nargs='?',
         const=1,
         help='Switch address on the back of the pump')
@@ -60,7 +60,7 @@ if __name__ == "__main__":
         default='False',
         help='Simulation mode or not (bool)')
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     # Initialize rospy node
     rospy.init_node("KNF RC-Plus syringe pump driver", anonymous=True)
