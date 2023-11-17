@@ -25,10 +25,13 @@ class FiltrationRos:
         simulation: bool,
     ):
 
-        self.filtration_system  = serial.Serial(port=port, baudrate=9600, timeout=None)
+        self.filtration_system  = FiltrationSystem()
+
+        self.filtration_system.connect()
 
         self.process_complete = False
         self.previous_command = None
+
         if simulation == "True":
             self.filtration_system.simulation = True
 
@@ -62,44 +65,48 @@ class FiltrationRos:
             rospy.sleep(5)
 
     def main_filtration(self):
-        self.filtration_system.write((bytes("main_filtration", 'utf-8')))
+        self.process_complete = False
         rospy.loginfo("Running main filtration method.")
-        rospy.sleep(5)
+        self.filtration_system.main_filtration()
+        rospy.sleep(3)
         self.process_complete = True
 
-    # TODO need some proper checking for when our main three processes are complete.
-
     def dry(self):
-        self.filtration_system.write((bytes("dry", 'utf-8')))
+        self.process_complete = False
         rospy.loginfo("Drying.")
-        rospy.sleep(5)
+        self.filtration_system.dry()
+        rospy.sleep(3)
         self.process_complete = True
     
     def timed_drain(self):
-        self.filtration_system.write((bytes("timed_drain", 'utf-8')))
+        self.process_complete = False
         rospy.loginfo("Running timed drain.")
-        rospy.sleep(5)
+        self.filtration_system.timed_drain()
+        rospy.sleep(3)
         self.process_complete = True
 
     def drain(self):
-        self.filtration_system.write((bytes("drain", 'utf-8')))
+        self.process_complete = False
         rospy.loginfo("Draining.")
-        rospy.sleep(5)
+        self.filtration_system.drain_on()
+        rospy.sleep(3)
         self.process_complete = True
 
     def vacuum(self):
-        self.filtration_system.write((bytes("vac", 'utf-8')))
+        self.process_complete = False
         rospy.loginfo("Vacuuming.")
-        rospy.sleep(5)
+        self.filtration_system.vac_pump_on()
+        self.filtration_system.vac_valve_open()
+        rospy.sleep(3)
         self.process_complete = True
     
     def stop(self):
-        self.filtration_system.write((bytes("stop", 'utf-8')))
+        self.process_complete = False
         rospy.loginfo("Stopping all process.")
-        rospy.sleep(5)
+        self.filtration_system.stop()
+        rospy.sleep(3)
         self.process_complete = True
     
-
     # Callback for subscriber.
     def callback_commands(self, msg):
         message = msg.filtration_system_command
