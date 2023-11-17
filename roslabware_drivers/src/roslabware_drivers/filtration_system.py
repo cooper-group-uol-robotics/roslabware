@@ -25,7 +25,7 @@ class FiltrationRos:
         simulation: bool,
     ):
 
-        self.filtration_system  = FiltrationSystem()
+        self.filtration_system = FiltrationSystem()
 
         self.filtration_system.connect()
 
