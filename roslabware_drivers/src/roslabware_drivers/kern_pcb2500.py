@@ -24,8 +24,7 @@ class PCB2500Ros:
         port: Union[str, int] = None,
         simulation: bool = False,
     ):
-
-        self.pub = None
+        
         self.tared = False
 
         # Instantiate IKA driver
@@ -42,6 +41,7 @@ class PCB2500Ros:
         # Connect to balance
         self.balance.connect()
         self.balance.initialize_device()
+        rospy.sleep(2)
 
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
@@ -64,7 +64,6 @@ class PCB2500Ros:
 
     def tare_balance(self):
         self.tared = False
-        rospy.sleep(2)
         rospy.loginfo("Zeroing balance.")
         self.balance.tare_balance()
         rospy.sleep(2)
@@ -73,12 +72,15 @@ class PCB2500Ros:
     def get_stable_mass(self):
         rospy.loginfo("Getting stable mass.")
         stable_mass = self.balance.get_stable_mass()
-        rospy.
+        rospy.sleep(2)
+        rospy.loginfo("Stable mass is: %s", stable_mass)
         self.pub.publish(stable_mass)
 
     def get_mass(self):
         rospy.loginfo("Getting mass.")
         mass = self.balance.get_mass()
+        rospy.sleep(2)
+        rospy.loginfo("Stable mass is: %s", mass)
         self.pub.publish(mass)
 
     def callback_commands(self, msg):
