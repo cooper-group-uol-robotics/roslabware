@@ -10,7 +10,7 @@
 		default="None"/>
 	<arg
 		name="port"
-		default="/dev/ttyACM1"/>
+		default="COM7"/>
 	<arg
 		name="simulation"
 		default="False"/>

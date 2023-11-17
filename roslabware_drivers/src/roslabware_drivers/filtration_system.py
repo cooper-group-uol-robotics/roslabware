@@ -11,7 +11,6 @@ from roslabware_msgs.msg import (
 from std_msgs.msg import Bool
 
 
-
 class FiltrationRos:
     """
     ROS Wrapper for Driver for filtration Station.
@@ -62,21 +61,41 @@ class FiltrationRos:
             self._task_complete_pub.publish(self.process_complete)
             rospy.sleep(5)
 
+    def main_filtration(self):
+        self.filtration_system.write((bytes("main_filtration", 'utf-8')))
+        rospy.loginfo("Running main filtration method.")
+        rospy.sleep(5)
+        self.process_complete = True
+
+    # TODO need some proper checking for when our main three processes are complete.
+
+    def dry(self):
+        self.filtration_system.write((bytes("dry", 'utf-8')))
+        rospy.loginfo("Drying.")
+        rospy.sleep(5)
+        self.process_complete = True
+    
+    def timed_drain(self):
+        self.filtration_system.write((bytes("timed_drain", 'utf-8')))
+        rospy.loginfo("Running timed drain.")
+        rospy.sleep(5)
+        self.process_complete = True
+
     def drain(self):
         self.filtration_system.write((bytes("drain", 'utf-8')))
-        rospy.loginfo("Draining")
+        rospy.loginfo("Draining.")
         rospy.sleep(5)
         self.process_complete = True
 
     def vacuum(self):
         self.filtration_system.write((bytes("vac", 'utf-8')))
-        rospy.loginfo("Vacuuming")
+        rospy.loginfo("Vacuuming.")
         rospy.sleep(5)
         self.process_complete = True
     
     def stop(self):
         self.filtration_system.write((bytes("stop", 'utf-8')))
-        rospy.loginfo("Stopping all process")
+        rospy.loginfo("Stopping all process.")
         rospy.sleep(5)
         self.process_complete = True
     
@@ -85,7 +104,16 @@ class FiltrationRos:
     def callback_commands(self, msg):
         message = msg.filtration_system_command
         if not message == self.previous_command:
-            if message == msg.DRAIN:
+            if message == msg.MAIN_FILTRAION:
+                self.process_complete = False
+                self.main_filtration()
+            elif message == msg.DRY:
+                self.process_complete = False
+                self.dry()
+            elif message == msg.TIMED_DRAIN:
+                self.process_complete = False
+                self.timed_drain()
+            elif message == msg.DRAIN:
                 self.process_complete = False
                 self.drain()
             elif message == msg.VACUUM:
