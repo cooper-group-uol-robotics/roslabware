@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-p',
         '--Door_port',
         action='store',
-        default='/dev/ttyACM0',
+        default='COM7',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')

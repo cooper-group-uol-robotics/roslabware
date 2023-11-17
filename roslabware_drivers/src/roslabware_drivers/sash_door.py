@@ -1,7 +1,6 @@
 # external
 # written by satheesh
 
-
 from typing import Optional, Union
 
 import rospy
@@ -34,7 +33,6 @@ class SashDoorRos:
         self.process_complete = False
         self._prev_msg = None
         
-
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
             name="sash_door_Commands",
@@ -53,7 +51,6 @@ class SashDoorRos:
             '/sash_door/task_complete',
             Bool,
             queue_size=1)
-
 
         # Initialize rate object for consistent timed looping
         self.rate = rospy.Rate(10)
