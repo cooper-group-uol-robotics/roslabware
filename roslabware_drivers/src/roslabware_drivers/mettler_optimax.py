@@ -1,7 +1,6 @@
 
 # external
 from typing import Optional, Union
-import time
 import rospy
 from pylabware import Optimax
 
