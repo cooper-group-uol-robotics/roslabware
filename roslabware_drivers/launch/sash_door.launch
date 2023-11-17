@@ -10,7 +10,7 @@
 		default="None"/>
 	<arg
 		name="port"
-		default="COM7"/>
+		default="COM5"/>
 	<arg
 		name="simulation"
 		default="False"/>

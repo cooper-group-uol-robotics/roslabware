@@ -63,20 +63,23 @@ class PCB2500Ros:
         rospy.loginfo("Kern PCB2500 pylabware driver started")
 
     def tare_balance(self):
-        self.tared = True
-        rospy.sleep(2)
-
-        self.balance.tare_balance()
-        rospy.loginfo("Zeroing Balance")
-
-        rospy.sleep(2)
         self.tared = False
+        rospy.sleep(2)
+        rospy.loginfo("Zeroing balance.")
+        self.balance.tare_balance()
+        rospy.sleep(2)
+        self.tared = True
 
     def get_stable_mass(self):
-        self.pub.publish(float(self.balance.get_stable_mass()[0]))
+        rospy.loginfo("Getting stable mass.")
+        stable_mass = self.balance.get_stable_mass()
+        rospy.
+        self.pub.publish(stable_mass)
 
     def get_mass(self):
-        self.pub.publish(float(self.balance.get_mass()[0]))
+        rospy.loginfo("Getting mass.")
+        mass = self.balance.get_mass()
+        self.pub.publish(mass)
 
     def callback_commands(self, msg):
         message = msg.kern_command

@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-p',
         '--Door_port',
         action='store',
-        default='COM7',
+        default='COM5',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
@@ -66,5 +66,5 @@ if __name__ == "__main__":
         port=args.Door_port,
         simulation=args.Door_simulation)
 
-    rospy.loginfo("sash door roslabware driver started")
+    rospy.loginfo("Sash door roslabware driver started")
     rospy.spin()

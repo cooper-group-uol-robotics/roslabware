@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-p',
         '--port',
         action='store',
-        default='/dev/ttyUSB0',
+        default='COM12',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')

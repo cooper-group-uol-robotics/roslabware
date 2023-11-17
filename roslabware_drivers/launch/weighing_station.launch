@@ -12,7 +12,7 @@
 		default="None"/>
 	<arg
 		name="port"
-		default="/dev/ttyUSB0"/>
+		default="COM12"/>
 	<arg
 		name="simulation"
 		default = 'False'/>
@@ -29,7 +29,7 @@
 		output="screen"/>
 
 
- <!-- balance Door_Details -->
+ <!-- Balance_Door_Details -->
 
 	<arg
 		name="Door_name"
@@ -42,7 +42,7 @@
 		default="None"/>
 	<arg
 		name="Door_port"
-		default="/dev/ttyACM0"/>
+		default="COM5"/>
 	<arg
 		name="Door_simulation"
 		default = 'False'/>
