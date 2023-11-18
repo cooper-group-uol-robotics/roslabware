@@ -28,9 +28,7 @@ class LcmsRos:
         experiment_name: str = "test"
     ):
 
-
-        self.result = False
-        self.concentration = None
+        self.result_dist = None
         # Create device object
         self.lcms = LCMS( 
             device_name = device_name, 
@@ -42,7 +40,7 @@ class LcmsRos:
         self.lcms.connect_socket()
 
         if not self.lcms.is_connected():
-            rospy.loginfo("LCMS server - not connected")
+            rospy.loginfo("LCMS server - not connected.")
         
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -57,7 +55,7 @@ class LcmsRos:
             data_class=LcmsReading,
             queue_size=10,
         )
-        rospy.loginfo("LCMS-client ROS Driver Started")
+        rospy.loginfo("LCMS-client ROS driver started.")
 
         self._task_complete_pub = rospy.Publisher(
             '/lcms/task_complete',
@@ -65,49 +63,48 @@ class LcmsRos:
             queue_size=1)
         
         # Sleeping rate
-        self.rate = rospy.Rate(0.3)
+        self.rate = rospy.Rate(1)
 
         # Get data
         while not rospy.is_shutdown():
-            # result, concentration = self.get_results()
-            lcmsmsg = LcmsReading()
-            lcmsmsg.result = self.result
-            lcmsmsg.paracetamol_concentration = self.concentration
-            self.pub.publish(lcmsmsg)
+            if self.result_dict is not None:
+                lcmsmsg = LcmsReading()
+                lcmsmsg.chemicals = self.result_dict[1]['chemicals']
+                lcmsmsg.concentrtions = self.result_dict[1]['concentrations']
+                lcmsmsg.y_values = self.result_dict[1]['y_values']
+                self.pub.publish(lcmsmsg)
             self.rate.sleep()
-    
-    # def get_results(self):
-    #     return True, 0.52
 
     def prep_analysis(self, num_samples):
         _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples, file_text=datetime.datetime.now().strftime("%I:%M%p_%B-%d-%Y"))
         rospy.sleep(2)
         if _batch_file_create:
-            rospy.loginfo("batch file created")
+            rospy.loginfo("Batch file created.")
         else:
-            rospy.loginfo("batch file not created")
-        self.lcms.autosampler_initialise()
+            rospy.loginfo("Batch file not created.")
+        self.lcms.autosampler_initialise() # TODO maybe don't need this?
     
     def load_batch(self):
         _batch_load = self.lcms.autosampler_load()
         if _batch_load:
-            rospy.loginfo("batch loaded into LCMS")
+            rospy.loginfo("Batch loaded into LCMS.")
         else:
-            rospy.loginfo("batch load error")
+            rospy.loginfo("Batch load error.")
+
+    def start_analysis(self):
+        self.result_dict = self.lcms.get_lcms_results()
+        if self.result:
+            rospy.loginfo("Analysis done and results received.")
+        else:
+            rospy.loginfo("Results not received.")
 
     def unload_batch(self):
         _batch_unload = self.lcms.autosampler_unload()
         if _batch_unload:
-            rospy.loginfo("batch unloaded from LCMS")
+            rospy.loginfo("Batch unloaded from LCMS.")
         else:
-            rospy.loginfo("batch unload error")
+            rospy.loginfo("Batch unload error.")
 
-    def start_analysis(self):
-        self.result,self.concentration = self.lcms.send_csv_receive_conc()
-        if self.result:
-            rospy.loginfo("Analysis done and results received")
-        else:
-            rospy.loginfo("results not received")
 
     # Callback for subscriber.
     def callback_commands(self, msg):

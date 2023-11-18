@@ -1,2 +1,5 @@
-bool result
-float32 paracetamol_concentration
+string[] chemicals
+float[] concentrations
+string[] y_values
+
+
