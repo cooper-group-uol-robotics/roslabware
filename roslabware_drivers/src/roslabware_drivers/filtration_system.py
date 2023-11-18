@@ -61,36 +61,39 @@ class FiltrationRos:
 
         # publish status of the valve
         while not rospy.is_shutdown():
-            self._task_complete_pub.publish(self.process_complete)
+            self._task_complete_pub.publish(self.process_complete())
             rospy.sleep(5)
+
+    def process_complete(self):
+        status = self.filtration_system.check_status()
+        if status == True:
+            return True
+        else:
+            return False
 
     def main_filtration(self):
         self.process_complete = False
         rospy.loginfo("Running main filtration method.")
         self.filtration_system.main_filtration()
         rospy.sleep(3)
-        self.process_complete = True
 
     def dry(self):
         self.process_complete = False
         rospy.loginfo("Drying.")
         self.filtration_system.dry()
         rospy.sleep(3)
-        self.process_complete = True
     
     def timed_drain(self):
         self.process_complete = False
         rospy.loginfo("Running timed drain.")
         self.filtration_system.timed_drain()
         rospy.sleep(3)
-        self.process_complete = True
 
     def drain(self):
         self.process_complete = False
         rospy.loginfo("Draining.")
         self.filtration_system.drain_on()
         rospy.sleep(3)
-        self.process_complete = True
 
     def vacuum(self):
         self.process_complete = False
@@ -98,14 +101,12 @@ class FiltrationRos:
         self.filtration_system.vac_pump_on()
         self.filtration_system.vac_valve_open()
         rospy.sleep(3)
-        self.process_complete = True
     
     def stop(self):
         self.process_complete = False
         rospy.loginfo("Stopping all process.")
         self.filtration_system.stop()
         rospy.sleep(3)
-        self.process_complete = True
     
     # Callback for subscriber.
     def callback_commands(self, msg):
