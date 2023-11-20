@@ -83,8 +83,8 @@ add_message_files(
  )
 
 generate_messages(
-DEPENDENCIES
-std_msgs
+  DEPENDENCIES
+    std_msgs
 )
 
 catkin_package(

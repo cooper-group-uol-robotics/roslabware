@@ -25,11 +25,12 @@ class FiltrationRos:
         simulation: bool,
     ):
 
-        self.filtration_system = FiltrationSystem()
+        self.filtration_system = FiltrationSystem(device_name="filtration_system", port="COM6", connection_mode="serial")
 
         self.filtration_system.connect()
+        rospy.sleep(2)
 
-        self.process_complete = False
+        self.complete = False
         self.previous_command = None
 
         if simulation == "True":
@@ -49,7 +50,7 @@ class FiltrationRos:
             queue_size=10
         )
 
-        rospy.loginfo("Filtration station Driver Started")
+        rospy.loginfo("Filtration station driver Started")
 
         self._task_complete_pub = rospy.Publisher(
             '/filtration/task_complete',
@@ -61,49 +62,38 @@ class FiltrationRos:
 
         # publish status of the valve
         while not rospy.is_shutdown():
-            self._task_complete_pub.publish(self.process_complete())
+            self.complete = self.filtration_system.check_status()
+            rospy.loginfo("Process complete: %s", self.complete)
+            self._task_complete_pub.publish(self.complete)
             rospy.sleep(5)
 
-    def process_complete(self):
-        status = self.filtration_system.check_status()
-        if status == True:
-            return True
-        else:
-            return False
-
     def main_filtration(self):
-        self.process_complete = False
         rospy.loginfo("Running main filtration method.")
         self.filtration_system.main_filtration()
         rospy.sleep(3)
 
     def dry(self):
-        self.process_complete = False
         rospy.loginfo("Drying.")
         self.filtration_system.dry()
         rospy.sleep(3)
     
     def timed_drain(self):
-        self.process_complete = False
         rospy.loginfo("Running timed drain.")
         self.filtration_system.timed_drain()
         rospy.sleep(3)
 
     def drain(self):
-        self.process_complete = False
         rospy.loginfo("Draining.")
         self.filtration_system.drain_on()
         rospy.sleep(3)
 
     def vacuum(self):
-        self.process_complete = False
         rospy.loginfo("Vacuuming.")
         self.filtration_system.vac_pump_on()
         self.filtration_system.vac_valve_open()
         rospy.sleep(3)
     
     def stop(self):
-        self.process_complete = False
         rospy.loginfo("Stopping all process.")
         self.filtration_system.stop()
         rospy.sleep(3)
@@ -112,23 +102,17 @@ class FiltrationRos:
     def callback_commands(self, msg):
         message = msg.filtration_system_command
         if not message == self.previous_command:
-            if message == msg.MAIN_FILTRAION:
-                self.process_complete = False
+            if message == msg.MAIN_FILTRATION:
                 self.main_filtration()
             elif message == msg.DRY:
-                self.process_complete = False
                 self.dry()
             elif message == msg.TIMED_DRAIN:
-                self.process_complete = False
                 self.timed_drain()
             elif message == msg.DRAIN:
-                self.process_complete = False
                 self.drain()
             elif message == msg.VACUUM:
-                self.process_complete = False
                 self.vacuum()
             elif message == msg.STOP:
-                self.process_complete = False
                 self.stop()
             else:
                 rospy.loginfo("invalid command")

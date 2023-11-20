@@ -1,5 +1,5 @@
 string[] chemicals
-float[] concentrations
+float32[] concentrations
 string[] y_values
 
 
