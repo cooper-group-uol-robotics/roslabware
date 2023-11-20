@@ -64,7 +64,7 @@ class SashDoorRos:
     def open_door(self):
         self.door.write((bytes("sopen", 'utf-8')))
         rospy.loginfo("open_door_message_sent_to_device_controller")
-        self.pub.publish( status = 'Door_Opened')
+        self.pub.publish(status = 'door_open')
         rospy.sleep(5)
         self.process_complete = True
 
@@ -72,7 +72,7 @@ class SashDoorRos:
         self.door.write((bytes("sclose", 'utf-8')))
         rospy.loginfo("close_door_message_sent_to_device_controller")
         #if serial msg received:
-        self.pub.publish(status = 'Door_Closed')
+        self.pub.publish(status = 'door_closed')
         rospy.sleep(5)
         self.process_complete = True
 

@@ -66,7 +66,7 @@ class KernDoorRos:
     def open_door(self):
         self.door.write((bytes("bopen", 'utf-8')))
         rospy.loginfo("open_door_message_sent_to_miscware")
-        self.pub.publish( status = 'Door_Opened')
+        self.pub.publish( status = 'door_open')
         rospy.sleep(5)
         self.process_complete = True
 
@@ -74,7 +74,7 @@ class KernDoorRos:
         self.door.write((bytes("bclose", 'utf-8')))
         rospy.loginfo("close_door_message_sent_to_miscware")
         #if serial msg received:
-        self.pub.publish(status = 'Door_Closed')
+        self.pub.publish(status = 'door_closed')
         rospy.sleep(5)
         self.process_complete = True
 
