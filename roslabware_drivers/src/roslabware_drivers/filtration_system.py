@@ -69,32 +69,38 @@ class FiltrationRos:
 
     def main_filtration(self):
         rospy.loginfo("Running main filtration method.")
+        self.complete = False
         self.filtration_system.main_filtration()
         rospy.sleep(3)
 
     def dry(self):
         rospy.loginfo("Drying.")
+        self.complete = False
         self.filtration_system.dry()
         rospy.sleep(3)
     
     def timed_drain(self):
         rospy.loginfo("Running timed drain.")
+        self.complete = False
         self.filtration_system.timed_drain()
         rospy.sleep(3)
 
     def drain(self):
         rospy.loginfo("Draining.")
+        self.complete = False
         self.filtration_system.drain_on()
         rospy.sleep(3)
 
     def vacuum(self):
         rospy.loginfo("Vacuuming.")
+        self.complete = False
         self.filtration_system.vac_pump_on()
         self.filtration_system.vac_valve_open()
         rospy.sleep(3)
     
     def stop(self):
         rospy.loginfo("Stopping all process.")
+        self.complete = False
         self.filtration_system.stop()
         rospy.sleep(3)
     
