@@ -43,7 +43,6 @@ if __name__ == "__main__":
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
-
     parser.add_argument(
         '-l',
         '--simulation',
@@ -69,12 +68,13 @@ if __name__ == "__main__":
 
     # Create instance of ROS Wrapper
     lcms_ros = LcmsRos(
-            device_name=args.device_name,
-            connection_mode=args.connection_mode,
-            address=args.address,
-            port=args.port,
-            simulation=args.simulation,
-            experiment_name=args.exname)
+        device_name=args.device_name,
+        connection_mode=args.connection_mode,
+        address=args.address,
+        port=args.port,
+        simulation=args.simulation,
+        experiment_name=args.exname
+    )
 
     # Keeps python from exiting until node is stopped
     rospy.spin()

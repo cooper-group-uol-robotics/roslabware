@@ -1,7 +1,7 @@
 # external
 import datetime
 from typing import Optional, Union
-
+import time
 import rospy
 from labmatic import LCMS
 
@@ -28,10 +28,7 @@ class LcmsRos:
         simulation: bool = False
     ):
 
-        self.result_dict = None
-        self.complete = False
-        
-        # Create device object
+        Create device object
         self.lcms = LCMS( 
             device_name = device_name, 
             connection_mode = connection_mode, 
@@ -40,21 +37,25 @@ class LcmsRos:
             experiment_name=experiment_name
         )
 
+        self.result_dict = None
+        self.complete = False
+
         self.lcms.connect_socket()
+        time.sleep(1)
 
         if not self.lcms.is_connected():
             rospy.loginfo("LCMS server not connected.")
         
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
-            name="lcms_command",
+            name="/lcms_command",
             data_class=LcmsCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for plataform info
         self.pub = rospy.Publisher(
-            name="lcms_info",
+            name="/lcms_info",
             data_class=LcmsReading,
             queue_size=10,
         )
@@ -66,7 +67,7 @@ class LcmsRos:
             queue_size=1)
         
         # Sleeping rate
-        self.rate = rospy.Rate(1)
+        self.rate = rospy.Rate(2)
 
         # Get data
         while not rospy.is_shutdown():
@@ -78,8 +79,10 @@ class LcmsRos:
                 self.pub.publish(lcmsmsg)
             self.rate.sleep()
             self._task_complete_pub.publish(self.complete)
+            self.rate.sleep()
 
     def prep_analysis(self, num_samples=1):
+        rospy.loginfo("in here! 1")
         self.complete = False
         self.result_dict = None
         _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples)
