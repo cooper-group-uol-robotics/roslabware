@@ -29,6 +29,7 @@ class LcmsRos:
     ):
 
         self.result_dict = None
+        self.complete = False
         
         # Create device object
         self.lcms = LCMS( 
@@ -76,8 +77,10 @@ class LcmsRos:
                 lcmsmsg.y_values = self.result_dict[1]['y_values']
                 self.pub.publish(lcmsmsg)
             self.rate.sleep()
+            self._task_complete_pub.publish(self.complete)
 
-    def prep_analysis(self, num_samples):
+    def prep_analysis(self, num_samples=1):
+        self.complete = False
         self.result_dict = None
         _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples)
         rospy.sleep(2)
@@ -86,38 +89,47 @@ class LcmsRos:
         else:
             rospy.loginfo("Batch file not created.")
         self.lcms.autosampler_initialise() # TODO maybe don't need this?
+        self.complete = True
     
     def load_batch(self):
+        self.complete = False
         _batch_load = self.lcms.autosampler_load()
         if _batch_load:
             rospy.loginfo("Batch loaded into LCMS.")
         else:
             rospy.loginfo("Batch load error.")
+        self.complete = True
 
     def start_analysis(self):
+        self.complete = False
         self.result_dict = self.lcms.get_lcms_results()
         if self.result_dict:
             rospy.loginfo("Analysis done and results received.")
         else:
             rospy.loginfo("Results not received.")
+        self.complete = True
 
     def unload_batch(self):
+        self.complete = False
         _batch_unload = self.lcms.autosampler_unload()
         if _batch_unload:
             rospy.loginfo("Batch unloaded from LCMS.")
         else:
             rospy.loginfo("Batch unload error.")
+        self.complete = True
 
 
     # Callback for subscriber.
     def callback_commands(self, msg):
 
         message = msg.lcms_command
-        num_samples = msg.lcms_num_samples
         rospy.loginfo("Message received.")
         if not message == self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
             if message == msg.START_PREP:
-                self.prep_analysis(num_samples)
+                if msg.lcms_num_samples is not None:
+                    self.prep_analysis(msg.lcms_num_samples)
+                else:
+                    self.prep_analysis()
             elif message == msg.LOAD_BATCH:
                 self.load_batch()
             elif message == msg.UNLOAD_BATCH:
