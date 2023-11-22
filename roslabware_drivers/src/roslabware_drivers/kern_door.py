@@ -80,7 +80,7 @@ class KernDoorRos:
 
     def callback_commands(self, msg):
         message = msg.kern_door_command
-        rospy.loginfo("message_received")
+        rospy.loginfo("Message received.")
         if not message == self._prev_msg:
             if message == msg.OPEN_DOOR:
                 self.process_complete = False

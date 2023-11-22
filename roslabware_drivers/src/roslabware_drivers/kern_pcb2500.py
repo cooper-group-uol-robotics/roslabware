@@ -85,12 +85,14 @@ class PCB2500Ros:
 
     def callback_commands(self, msg):
         message = msg.kern_command
-
-        if message == msg.TARE_BALANCE:
-            self.tare_balance()
-        elif message == msg.GET_MASS:
-            self.get_mass()
-        elif message == msg.GET_MASS_STABLE:
-            self.get_stable_mass()
-        else:
-            rospy.loginfo("Invalid command")
+        rospy.loginfo("Message received.")
+        if not message == self._prev_msg:
+            if message == msg.TARE_BALANCE:
+                self.tare_balance()
+            elif message == msg.GET_MASS:
+                self.get_mass()
+            elif message == msg.GET_MASS_STABLE:
+                self.get_stable_mass()
+            else:
+                rospy.loginfo("Invalid command")
+            self._prev_msg = message

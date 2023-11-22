@@ -107,7 +107,7 @@ class FiltrationRos:
     # Callback for subscriber.
     def callback_commands(self, msg):
         message = msg.filtration_system_command
-        if not message == self.previous_command:
+        if not message == self._prev_msg:
             if message == msg.MAIN_FILTRATION:
                 self.main_filtration()
             elif message == msg.DRY:
@@ -122,6 +122,6 @@ class FiltrationRos:
                 self.stop()
             else:
                 rospy.loginfo("invalid command")
-            self.previous_command = message
+            self._prev_msg = message
 
 rospy.loginfo("working")

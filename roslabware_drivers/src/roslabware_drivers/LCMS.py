@@ -24,23 +24,25 @@ class LcmsRos:
         connection_mode: str = "tcpip",
         address: Optional[str] = "172.31.1.18", # IP address
         port: Union[str, int] = 8000, # Port
-        simulation: bool = False,
-        experiment_name: str = "test"
+        experiment_name: str = "test",
+        simulation: bool = False
     ):
 
-        self.result_dist = None
+        self.result_dict = None
+        
         # Create device object
         self.lcms = LCMS( 
             device_name = device_name, 
             connection_mode = connection_mode, 
-            address= address, port = port, 
+            address= address, 
+            port = port, 
             experiment_name=experiment_name
         )
 
         self.lcms.connect_socket()
 
         if not self.lcms.is_connected():
-            rospy.loginfo("LCMS server - not connected.")
+            rospy.loginfo("LCMS server not connected.")
         
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -76,7 +78,8 @@ class LcmsRos:
             self.rate.sleep()
 
     def prep_analysis(self, num_samples):
-        _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples, file_text=datetime.datetime.now().strftime("%I:%M%p_%B-%d-%Y"))
+        self.result_dist = None
+        _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples)
         rospy.sleep(2)
         if _batch_file_create:
             rospy.loginfo("Batch file created.")
@@ -110,17 +113,19 @@ class LcmsRos:
     def callback_commands(self, msg):
 
         message = msg.lcms_command
-        param = msg.lcms_param
-
-        if message == msg.START_PREP:
-            self.prep_analysis()
-        elif message == msg.LOAD_BATCH:
-            self.load_batch()
-        elif message == msg.UNLOAD_BATCH:
-            self.unload_batch()
-        elif message == msg.START_ANALYSIS:
-            self.start_analysis()
-        else:
-            rospy.loginfo("invalid command")
+        num_samples = msg.lcms_num_samples
+        rospy.loginfo("Message received.")
+        if not message == self._prev_msg:
+            if message == msg.START_PREP:
+                self.prep_analysis(num_samples)
+            elif message == msg.LOAD_BATCH:
+                self.load_batch()
+            elif message == msg.UNLOAD_BATCH:
+                self.unload_batch()
+            elif message == msg.START_ANALYSIS:
+                self.start_analysis()
+            else:
+                rospy.loginfo("invalid command")
+            self._prev_msg = message    
 
 rospy.loginfo("working")

@@ -125,13 +125,15 @@ class RCPlusRos:
     def callback_commands(self, msg):
         """ Callback commands for susbcriber. """
         message = msg.knf_command
-
-        if message == msg.DISPENSE:
-            self.dispense(msg.knf_volume)
-        elif message == msg.STOP:
-            self.stop()
-        elif message == msg.CHECK_IDLE:
-            self.check_idle()
-        else:
-            rospy.loginfo("Invalid command.")
+        rospy.loginfo("Message received.")
+        if not message == self._prev_msg:
+            if message == msg.DISPENSE:
+                self.dispense(msg.knf_volume)
+            elif message == msg.STOP:
+                self.stop()
+            elif message == msg.CHECK_IDLE:
+                self.check_idle()
+            else:
+                rospy.loginfo("Invalid command.")
+            self._prev_msg = message
         

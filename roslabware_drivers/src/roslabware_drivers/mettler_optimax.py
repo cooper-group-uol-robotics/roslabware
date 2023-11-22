@@ -144,7 +144,7 @@ class OptimaxRos:
             dilution = msg.dilution
 
         
-        if not message == self._prev_message:
+        if not message == self._prev_msg:
             if message == msg.ADD_TEMP_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
                 self.add_temp_step(temp, temp_duration)
@@ -163,6 +163,6 @@ class OptimaxRos:
             else:
                 rospy.loginfo("invalid command")
             
-            self._prev_message = message
+            self._prev_msg = message
             
 rospy.loginfo("working")

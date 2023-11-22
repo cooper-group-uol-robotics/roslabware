@@ -65,13 +65,13 @@ class BaseValveRos:
     def _open_valve(self):
         self.base_valve.write((bytes("vopen", 'utf-8')))
         rospy.loginfo("open_valve_message_sent_to_miscware")
-        rospy.sleep(8)
+        rospy.sleep(8) # TODO need a more robust method to know when valve has been opened rather than time.
         self.process_complete = True
 
     def _close_valve(self):
         self.base_valve.write((bytes("vclose", 'utf-8')))
         rospy.loginfo("close_valve_message_sent_to_miscware")
-        rospy.sleep(8)
+        rospy.sleep(8) # TODO need a more robust method to know when valve has been opened rather than time.
         self.process_complete = True
     
 
@@ -79,7 +79,7 @@ class BaseValveRos:
     def callback_commands(self, msg):
 
         command = msg.valve_command
-        if not command == self.previous_command:
+        if not command == self._prev_msg:
             if command == msg.OPEN:
                 rospy.loginfo("Open message received.")
                 self.process_complete = False
@@ -90,4 +90,4 @@ class BaseValveRos:
                 self._close_valve()
             else:
                 rospy.loginfo("Invalid command.")
-            self.previous_command = command
+            self._prev_msg = command
