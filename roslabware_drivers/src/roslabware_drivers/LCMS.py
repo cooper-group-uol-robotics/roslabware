@@ -78,7 +78,7 @@ class LcmsRos:
             self.rate.sleep()
 
     def prep_analysis(self, num_samples):
-        self.result_dist = None
+        self.result_dict = None
         _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples)
         rospy.sleep(2)
         if _batch_file_create:
@@ -96,7 +96,7 @@ class LcmsRos:
 
     def start_analysis(self):
         self.result_dict = self.lcms.get_lcms_results()
-        if self.result:
+        if self.result_dict:
             rospy.loginfo("Analysis done and results received.")
         else:
             rospy.loginfo("Results not received.")
