@@ -126,7 +126,7 @@ class RCPlusRos:
         """ Callback commands for susbcriber. """
         message = msg.knf_command
         rospy.loginfo("Message received.")
-        if not message == self._prev_msg:
+        if not message == self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
             if message == msg.DISPENSE:
                 self.dispense(msg.knf_volume)
             elif message == msg.STOP:

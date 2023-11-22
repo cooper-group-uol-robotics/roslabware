@@ -107,7 +107,7 @@ class FiltrationRos:
     # Callback for subscriber.
     def callback_commands(self, msg):
         message = msg.filtration_system_command
-        if not message == self._prev_msg:
+        if not message == self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
             if message == msg.MAIN_FILTRATION:
                 self.main_filtration()
             elif message == msg.DRY:

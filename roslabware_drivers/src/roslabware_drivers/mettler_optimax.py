@@ -116,7 +116,7 @@ class OptimaxRos:
         self.add_end_experiment_step()
         self.start_experiment()
 
-    def paracetamol_synthesis(self): # temporary method for paracetamol synthesis
+    def paracetamol_synthesis(self): # Temporary method for whole paracetamol synthesis.
         self.add_stir_step(300, 20)
         self.add_temp_step(120,10)
         self.add_wait_step(60)
@@ -144,7 +144,7 @@ class OptimaxRos:
             dilution = msg.dilution
 
         
-        if not message == self._prev_msg:
+        if not message == self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
             if message == msg.ADD_TEMP_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
                 self.add_temp_step(temp, temp_duration)
@@ -158,7 +158,7 @@ class OptimaxRos:
                 self.para_heat_wait(temp, stir_speed, wait_duration)
             elif message == msg.PARA_S:
                 self.para_sample(temp, stir_speed, dilution)
-            elif message == msg.PARACETAMOL: # temporary message for paracetamol synthesis
+            elif message == msg.PARACETAMOL:
                 self.paracetamol_synthesis()
             else:
                 rospy.loginfo("invalid command")

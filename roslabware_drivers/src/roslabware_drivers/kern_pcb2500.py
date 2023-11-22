@@ -86,7 +86,7 @@ class PCB2500Ros:
     def callback_commands(self, msg):
         message = msg.kern_command
         rospy.loginfo("Message received.")
-        if not message == self._prev_msg:
+        if not message == self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
             if message == msg.TARE_BALANCE:
                 self.tare_balance()
             elif message == msg.GET_MASS:

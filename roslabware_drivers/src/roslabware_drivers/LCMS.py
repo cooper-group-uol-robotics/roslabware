@@ -115,7 +115,7 @@ class LcmsRos:
         message = msg.lcms_command
         num_samples = msg.lcms_num_samples
         rospy.loginfo("Message received.")
-        if not message == self._prev_msg:
+        if not message == self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
             if message == msg.START_PREP:
                 self.prep_analysis(num_samples)
             elif message == msg.LOAD_BATCH:

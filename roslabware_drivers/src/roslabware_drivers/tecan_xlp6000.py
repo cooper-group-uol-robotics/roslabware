@@ -207,12 +207,11 @@ class XLP6000Ros:
         self.operation_complete = True
 
 
-
     def callback_commands(self, msg):
         """Callback commands for susbcriber."""
         message = msg.tecan_xlp_command
-        _vol = msg.xlp_volume
-        if not _vol == self.prev_message:
+        _vol = msg.xlp_volume 
+        if not _vol == self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
             self.operation_complete = False
             if message == msg.DISPENSE:
                 self.request_pumping(
@@ -220,7 +219,7 @@ class XLP6000Ros:
                     msg.xlp_dispense_port,
                     msg.xlp_volume,
                     msg.xlp_speed)
-                self.prev_message = _vol
+                self._prev_msg = _vol
             else:
                 rospy.loginfo("invalid command")
   
