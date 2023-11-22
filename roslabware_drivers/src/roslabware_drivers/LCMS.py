@@ -22,8 +22,8 @@ class LcmsRos:
         self,
         device_name: str = None,
         connection_mode: str = "tcpip",
-        address: Optional[str] = "172.31.1.18", # IP address
-        port: Union[str, int] = 8000, # Port
+        address: str = "172.31.1.18", # IP address
+        port: int = 8000, # Port
         experiment_name: str = "test",
         simulation: bool = False
     ):
@@ -88,7 +88,7 @@ class LcmsRos:
             rospy.loginfo("Batch file created.")
         else:
             rospy.loginfo("Batch file not created.")
-        self.lcms.autosampler_initialise() # TODO maybe don't need this?
+        #self.lcms.autosampler_initialise() # TODO maybe don't need this?
         self.complete = True
     
     def load_batch(self):
