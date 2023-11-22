@@ -28,7 +28,7 @@ class LcmsRos:
         simulation: bool = False
     ):
 
-        Create device object
+        #Create device object
         self.lcms = LCMS( 
             device_name = device_name, 
             connection_mode = connection_mode, 
