@@ -39,6 +39,7 @@ class LcmsRos:
 
         self.result_dict = None
         self.complete = False
+        self._prev_msg = None
 
         self.lcms.connect_socket()
         time.sleep(1)
@@ -74,7 +75,7 @@ class LcmsRos:
             if self.result_dict is not None:
                 lcmsmsg = LcmsReading()
                 lcmsmsg.chemicals = self.result_dict[1]['chemicals']
-                lcmsmsg.concentrtions = self.result_dict[1]['concentrations']
+                lcmsmsg.concentrations = self.result_dict[1]['concentrations']
                 lcmsmsg.y_values = self.result_dict[1]['y_values']
                 self.pub.publish(lcmsmsg)
             self.rate.sleep()
@@ -82,7 +83,6 @@ class LcmsRos:
             self.rate.sleep()
 
     def prep_analysis(self, num_samples=1):
-        rospy.loginfo("in here! 1")
         self.complete = False
         self.result_dict = None
         _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples)
@@ -127,7 +127,7 @@ class LcmsRos:
 
         message = msg.lcms_command
         rospy.loginfo("Message received.")
-        if not message == self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
+        if message != self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
             if message == msg.START_PREP:
                 if msg.lcms_num_samples is not None:
                     self.prep_analysis(msg.lcms_num_samples)

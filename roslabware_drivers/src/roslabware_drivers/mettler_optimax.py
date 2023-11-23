@@ -41,14 +41,14 @@ class OptimaxRos:
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
-            name="mettler_optimax",
+            name="/mettler_optimax",
             data_class=MettlerOptimaxCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for plataform info
         self.pub = rospy.Publisher(
-            name="mettler_optimax_info",
+            name="/mettler_optimax_info",
             data_class=MettlerOptimaxReading,
             queue_size=10,
         )

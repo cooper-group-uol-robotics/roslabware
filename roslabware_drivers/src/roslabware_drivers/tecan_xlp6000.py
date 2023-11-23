@@ -36,6 +36,8 @@ class XLP6000Ros:
             port=port,
         )
 
+        self._prev_msg = None
+
         if simulation == "True":
             self.tecan.simulation = True
 
@@ -50,14 +52,16 @@ class XLP6000Ros:
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
-            name="Tecan_XLP6000_Commands",
+            name="/tecan_xlp6000_command",
             data_class=TecanXlp6000Cmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for status
         self.pub = rospy.Publisher(
-            name="Tecan_XLP6000_Readings", data_class=TecanXlp6000Reading, queue_size=10
+            name="/tecan_xlp6000_reading", 
+            data_class=TecanXlp6000Reading, 
+            queue_size=10
         )
 
         rospy.loginfo("XLP6000 Driver Started")
@@ -211,7 +215,7 @@ class XLP6000Ros:
         """Callback commands for susbcriber."""
         message = msg.tecan_xlp_command
         _vol = msg.xlp_volume 
-        if not _vol == self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
+        if _vol != self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
             self.operation_complete = False
             if message == msg.DISPENSE:
                 self.request_pumping(

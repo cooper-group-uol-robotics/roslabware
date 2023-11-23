@@ -43,6 +43,7 @@ class RCPlusRos:
             self.knf.simulation = True
 
         self.operation_complete = False
+        self._prev_msg = None
 
         # Initialise connection for KNF.
         self.knf.connect()  
@@ -52,14 +53,14 @@ class RCPlusRos:
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
-            name="KNF_RCPlus_Commands",
+            name="/knf_rcplus_command",
             data_class=KnfRCPlusCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for status
         self.pub = rospy.Publisher(
-            name="KNF_RCPlus_Readings",
+            name="/knf_rcplus_reading",
             data_class=KnfRCPlusReading,
             queue_size=10
         )
@@ -126,7 +127,7 @@ class RCPlusRos:
         """ Callback commands for susbcriber. """
         message = msg.knf_command
         rospy.loginfo("Message received.")
-        if not message == self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
+        if message != self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
             if message == msg.DISPENSE:
                 self.dispense(msg.knf_volume)
             elif message == msg.STOP:

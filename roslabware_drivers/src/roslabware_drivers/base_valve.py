@@ -28,21 +28,21 @@ class BaseValveRos:
         self.base_valve  = serial.Serial(port=port, baudrate=9600, timeout=None)
 
         self.process_complete = False
-        self.previous_command = None
+        self._prev_msg = None
 
         if simulation == "True":
             self.base_valve.simulation = True
 
         # Initialize ROS subscriber.
         self.subs = rospy.Subscriber(
-            name="/Optimax_BaseValve_Commands",
+            name="/optimax_basevalve_command",
             data_class=BaseValveCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for status.
         self.pub = rospy.Publisher(
-            name="/Optimax_BaseValve_Status",
+            name="/optimax_basevalve_status",
             data_class=BaseValveStatus,
             queue_size=10
         )
@@ -79,7 +79,7 @@ class BaseValveRos:
     def callback_commands(self, msg):
 
         command = msg.valve_command
-        if not command == self._prev_msg:
+        if command != self._prev_msg:
             if command == msg.OPEN:
                 rospy.loginfo("Open message received.")
                 self.process_complete = False

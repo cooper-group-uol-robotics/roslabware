@@ -20,7 +20,7 @@
 	<node
 		name="lcms"
 		pkg="roslabware_drivers"
-		type="LCMS"
+		type="lcms"
 		args="
 			-d $(arg device_name)
 			-c $(arg connection_mode)

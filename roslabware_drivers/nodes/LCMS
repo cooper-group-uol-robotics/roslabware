@@ -4,7 +4,7 @@
 import argparse
 
 import rospy
-from roslabware_drivers.LCMS import LcmsRos
+from roslabware_drivers.lcms import LcmsRos
 
 # Object oriented initialization for ROS
 if __name__ == "__main__":

@@ -33,17 +33,16 @@ class KernDoorRos:
         self.process_complete = False
         self._prev_msg = None
         
-
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
-            name="kern_door_Commands",
+            name="/kern_door_command",
             data_class=KernDoorCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ros published for balance responses (weights)
         self.pub = rospy.Publisher(
-            name="kern_Door_Status",
+            name="/kern_door_status",
             data_class=KernDoorStatus,
             queue_size=10
         )
@@ -81,7 +80,7 @@ class KernDoorRos:
     def callback_commands(self, msg):
         message = msg.kern_door_command
         rospy.loginfo("Message received.")
-        if not message == self._prev_msg:
+        if message != self._prev_msg:
             if message == msg.OPEN_DOOR:
                 self.process_complete = False
                 rospy.loginfo("open_door_message received")

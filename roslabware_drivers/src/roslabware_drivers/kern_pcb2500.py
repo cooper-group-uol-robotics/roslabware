@@ -26,6 +26,7 @@ class PCB2500Ros:
     ):
         
         self.tared = False
+        self._prev_msg = None
 
         # Instantiate IKA driver
         self.balance = PCB2500(
@@ -45,14 +46,14 @@ class PCB2500Ros:
 
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
-            name="kern_PCB2500_Commands",
+            name="/kern_pcb2500_command",
             data_class=KernPCB2500Cmd,
             callback=self.callback_commands,
         )
 
         # Initialize ros published for balance responses (weights)
         self.pub = rospy.Publisher(
-            name="kern_PCB2500_Readings",
+            name="/kern_pcb2500_reading",
             data_class=KernPCB2500Reading,
             queue_size=10
         )
@@ -86,7 +87,7 @@ class PCB2500Ros:
     def callback_commands(self, msg):
         message = msg.kern_command
         rospy.loginfo("Message received.")
-        if not message == self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
+        if message != self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
             if message == msg.TARE_BALANCE:
                 self.tare_balance()
             elif message == msg.GET_MASS:

@@ -35,14 +35,14 @@ class SashDoorRos:
         
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
-            name="sash_door_Commands",
+            name="/sash_door_command",
             data_class=sashDoorCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ros published for balance responses (weights)
         self.pub = rospy.Publisher(
-            name="sash_Door_Status",
+            name="/sash_door_status",
             data_class=sashDoorStatus,
             queue_size=10
         )

@@ -31,21 +31,21 @@ class FiltrationRos:
         rospy.sleep(2)
 
         self.complete = False
-        self.previous_command = None
+        self._prev_msg = None
 
         if simulation == "True":
             self.filtration_system.simulation = True
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
-            name="Filtration_Commands",
+            name="/filtration_command",
             data_class=FiltrationCmd,
             callback=self.callback_commands,
         )
 
         # Initialize ROS publisher for status
         self.pub = rospy.Publisher(
-            name="Filtration_Status",
+            name="/filtration_status",
             data_class=FiltrationStatus,
             queue_size=10
         )
@@ -107,7 +107,7 @@ class FiltrationRos:
     # Callback for subscriber.
     def callback_commands(self, msg):
         message = msg.filtration_system_command
-        if not message == self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
+        if message != self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
             if message == msg.MAIN_FILTRATION:
                 self.main_filtration()
             elif message == msg.DRY:
