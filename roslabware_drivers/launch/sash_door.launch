@@ -1,28 +1,28 @@
 <launch>
 	<arg
-		name="device_name"
+		name="s_device_name"
 		default="sash_door"/>
 	<arg
-		name="connection_mode"
+		name="s_connection_mode"
 		default="serial"/>
 	<arg
-		name="address"
+		name="s_address"
 		default="None"/>
 	<arg
-		name="port"
+		name="s_port"
 		default="COM5"/>
 	<arg
-		name="simulation"
+		name="s_simulation"
 		default="False"/>
 	<node
 		name="sash_door"
 		pkg="roslabware_drivers"
 		type="sash_door"
 		args="
-			-d $(arg device_name)
-			-c $(arg connection_mode)
-			-add $(arg address)
-			-p $(arg port)
-			-l $(arg simulation)"
+			-sd $(arg s_device_name)
+			-sc $(arg s_connection_mode)
+			-sadd $(arg s_address)
+			-sp $(arg s_port)
+			-sl $(arg s_simulation)"
 		output="screen"/>
 </launch>

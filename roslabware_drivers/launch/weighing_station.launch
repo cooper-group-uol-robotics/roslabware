@@ -2,60 +2,60 @@
  <!-- Weighing_Balance_Details -->
 
 	<arg
-		name="device_name"
+		name="b_device_name"
 		default="kern_pcb2500"/>
 	<arg
-		name="connection_mode"
+		name="b_connection_mode"
 		default="serial"/>
 	<arg
-		name="address"
+		name="b_address"
 		default="None"/>
 	<arg
-		name="port"
+		name="b_port"
 		default="COM12"/>
 	<arg
-		name="simulation"
+		name="b_simulation"
 		default = 'False'/>
 	<node
 		name="Kern_PCB2500_Driver"
 		pkg="roslabware_drivers"
 		type="kern_pcb2500"
 		args="
-			-bd $(arg device_name)
-			-bc $(arg connection_mode)
-			-badd $(arg address)
-			-bp $(arg port)
-			-bs $(arg simulation)"
+			-bd $(arg b_device_name)
+			-bc $(arg b_connection_mode)
+			-badd $(arg b_address)
+			-bp $(arg b_port)
+			-bs $(arg b_simulation)"
 		output="screen"/>
 
 
  <!-- Balance_Door_Details -->
 
 	<arg
-		name="Door_name"
+		name="k_name"
 		default="Balance_Door"/>
 	<arg
-		name="Door_connection_mode"
+		name="k_connection_mode"
 		default="serial"/>
 	<arg
-		name="Door_address"
+		name="k_address"
 		default="None"/>
 	<arg
-		name="Door_port"
+		name="k_port"
 		default="COM5"/>
 	<arg
-		name="Door_simulation"
+		name="k_simulation"
 		default = 'False'/>
 	<node
 		name="Kern_door_driver"
 		pkg="roslabware_drivers"
 		type="kern_door"
 		args="
-			-kd $(arg Door_name)
-			-kc $(arg Door_connection_mode)
-			-kadd $(arg Door_address)
-			-lp $(arg Door_port)
-			-ks $(arg Door_simulation)"
+			-kd $(arg k_name)
+			-kc $(arg k_connection_mode)
+			-kadd $(arg k_address)
+			-lp $(arg k_port)
+			-ks $(arg k_simulation)"
 		output="screen"/>
 
 </launch>

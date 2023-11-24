@@ -12,40 +12,40 @@ if __name__ == "__main__":
         prog="LCMS ROS",
         description='ROS node for LCMS')
     parser.add_argument(
-        '-d',
-        '--device_name',
+        '-ld',
+        '--l_device_name',
         action='store',
         default='lcms',
         nargs='?',
         const=1,
         help='Device name')
     parser.add_argument(
-        '-c',
-        '--connection_mode',
+        '-lc',
+        '--l_connection_mode',
         action='store',
         default='serial',
         nargs='?',
         const=1,
         help='Connection mode: "tcpip", "serial" or "http"')
     parser.add_argument(
-        '-add',
-        '--address',
+        '-ladd',
+        '--l_address',
         action='store',
         default="172.31.1.18",
         nargs='?',
         const=1,
         help='IP Address.')
     parser.add_argument(
-        '-p',
-        '--port',
+        '-lp',
+        '--l_port',
         action='store',
         default=8000,
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
     parser.add_argument(
-        '-l',
-        '--simulation',
+        '-ll',
+        '--l_simulation',
         action='store',
         nargs='?',
         const=1,
@@ -53,8 +53,8 @@ if __name__ == "__main__":
         help='Simulation mode or not (bool)')
 
     parser.add_argument(
-        '-x',
-        '--exname',
+        '-lx',
+        '--l_exname',
         action='store',
         nargs='?',
         const=1,
@@ -68,12 +68,12 @@ if __name__ == "__main__":
 
     # Create instance of ROS Wrapper
     lcms_ros = LcmsRos(
-        device_name=args.device_name,
-        connection_mode=args.connection_mode,
-        address=args.address,
-        port=args.port,
-        simulation=args.simulation,
-        experiment_name=args.exname
+        device_name=args.l_device_name,
+        connection_mode=args.l_connection_mode,
+        address=args.l_address,
+        port=args.l_port,
+        simulation=args.l_simulation,
+        experiment_name=args.l_exname
     )
 
     # Keeps python from exiting until node is stopped

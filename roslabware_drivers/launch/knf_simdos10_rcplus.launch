@@ -1,32 +1,32 @@
 <launch>
 	<arg 
-		name="device_name"
+		name="knf_device_name"
 		default="knf_simdos10_rcplus"/>
 	<arg
-		name="connection_mode"
+		name="knf_connection_mode"
 		default="serial"/>
 	<arg
-		name="address"
+		name="knf_address"
 		default="None"/>
 	<arg
-		name="port"
-		default="COM10"/>
+		name="knf_port"
+		default="COM13"/>
 	<arg
-		name="switch_address"
+		name="knf_switch_address"
 		default="00"/>
 	<arg
-		name="simulation"
+		name="knf_simulation"
 		default="False"/>
 	<node 
 		name="knf_simdos10_rcplus"
 		pkg="roslabware_drivers"
 		type="knf_simdos10_rcplus"
 		args="
-			-d $(arg device_name)
-			-c $(arg connection_mode)
-			-add $(arg address)
-			-p $(arg port)
-			-swa $(arg switch_address)
-			-l $(arg simulation)"
+			-knfd $(arg knf_device_name)
+			-knfc $(arg knf_connection_mode)
+			-knfadd $(arg knf_address)
+			-knfp $(arg knf_port)
+			-knfswa $(arg knf_switch_address)
+			-knfl $(arg knf_simulation)"
 		output="screen"/>
 </launch>

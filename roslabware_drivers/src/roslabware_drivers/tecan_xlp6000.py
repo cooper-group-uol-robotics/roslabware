@@ -10,7 +10,7 @@ from roslabware_msgs.msg import TecanXlp6000Cmd, TecanXlp6000Reading
 from std_msgs.msg import Bool
 
 # Constants
-DEFAULT_SPEED = 40  # ml/min
+DEFAULT_SPEED = 140  # ml/min
 DEFAULT_RESOLUTION = "N2"
 
 
@@ -45,9 +45,9 @@ class XLP6000Ros:
         self._syringe_size = float(syringe_size)
         self.tecan.connect()
         self.tecan.set_resolution_mode(resolution_mode=DEFAULT_RESOLUTION)
-        self.tecan.set_speed(DEFAULT_SPEED)
+        self.tecan.set_speed(150)
         self.tecan.initialize_device()
-        self.prev_message = None
+        self._prev_msg = None
         self.operation_complete = False
 
         # Initialize ROS subscriber
@@ -159,7 +159,7 @@ class XLP6000Ros:
 
         # Convert to increments and increments/s
         increments = self._volume_to_step(split_volume)
-        velocity = self._convert_velocity(self._speed)
+        velocity = self._convert_velocity(DEFAULT_SPEED)
         # Actions
         rospy.loginfo(f"withdraw command received for volume:{split_volume} ml")
         self.tecan.set_valve_position(_port)
@@ -214,8 +214,8 @@ class XLP6000Ros:
     def callback_commands(self, msg):
         """Callback commands for susbcriber."""
         message = msg.tecan_xlp_command
-        _vol = msg.xlp_volume 
-        if _vol != self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
+        time_now = time.time()
+        if (time_now-self.time_before) > 10:
             self.operation_complete = False
             if message == msg.DISPENSE:
                 self.request_pumping(
@@ -223,7 +223,7 @@ class XLP6000Ros:
                     msg.xlp_dispense_port,
                     msg.xlp_volume,
                     msg.xlp_speed)
-                self._prev_msg = _vol
+                self.time_before = time_now
             else:
                 rospy.loginfo("invalid command")
   

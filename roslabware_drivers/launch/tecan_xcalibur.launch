@@ -1,24 +1,24 @@
 <launch>
 	<arg
-		name="device_name"
+		name="t_device_name"
 		default="tecan_xcalibur"/>
 	<arg
-		name="connection_mode"
+		name="t_connection_mode"
 		default="serial"/>
 	<arg
-		name="address"
+		name="t_address"
 		default="None"/>
 	<arg
-		name="port"
+		name="t_port"
 		default="/dev/ttyUSB0"/>
 	<arg
-		name="switch_address"
+		name="t_switch_address"
 		default="0"/>
 	<arg
-		name="syringe_size"
+		name="t_syringe_size"
 		default="1.0"/>
 	<arg
-		name="simulation"
+		name="t_simulation"
 		default="False"/>
 	<node
 		name="tecan_xcalibur"

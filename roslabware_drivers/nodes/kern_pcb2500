@@ -12,32 +12,32 @@ if __name__ == "__main__":
         prog="Kern Top balance ROS",
         description='ROS node for a Kern Top balance')
     parser.add_argument(
-        '-d',
-        '--device_name',
+        '-bd',
+        '--b_device_name',
         action='store',
         default='rct_ika_hotplate',
         nargs='?',
         const=1,
         help='Device name')
     parser.add_argument(
-        '-c',
-        '--connection_mode',
+        '-bc',
+        '--b_connection_mode',
         action='store',
         default='serial',
         nargs='?',
         const=1,
         help='Connection mode: "tcpip", "serial" or "http"')
     parser.add_argument(
-        '-add',
-        '--address',
+        '-badd',
+        '--b_address',
         action='store',
         default='None',
         nargs='?',
         const=1,
         help='IP Address.')
     parser.add_argument(
-        '-p',
-        '--port',
+        '-bp',
+        '--b_port',
         action='store',
         default='COM12',
         nargs='?',
@@ -45,8 +45,8 @@ if __name__ == "__main__":
         help='Serial or TCP/IP port')
 
     parser.add_argument(
-        '-l',
-        '--simulation',
+        '-bl',
+        '--b_simulation',
         action='store',
         nargs='?',
         const=1,
@@ -60,11 +60,11 @@ if __name__ == "__main__":
 
     # Objectoriented initialization of ROS
     kern_ros = PCB2500Ros(
-        device_name=args.device_name,
-        connection_mode=args.connection_mode,
-        address=args.address,
-        port=args.port,
-        simulation=args.simulation)
+        device_name=args.b_device_name,
+        connection_mode=args.b_connection_mode,
+        address=args.b_address,
+        port=args.b_port,
+        simulation=args.b_simulation)
 
     rospy.loginfo("Kern balance roslabware driver started")
     rospy.spin()

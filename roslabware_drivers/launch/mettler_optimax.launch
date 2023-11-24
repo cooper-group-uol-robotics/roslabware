@@ -1,28 +1,28 @@
 <launch>
 	<arg
-		name="device_name"
+		name="o_device_name"
 		default="mettler_optimax"/>
 	<arg
-		name="connection_mode"
+		name="o_connection_mode"
 		default="serial"/>
 	<arg
-		name="address"
+		name="o_address"
 		default="None"/>
 	<arg
-		name="port"
+		name="o_port"
 		default="/dev/ttyUSB0"/>
 	<arg
-		name="simulation"
+		name="o_simulation"
 		default="False"/>
 	<node
 		name="mettler_optimax"
 		pkg="roslabware_drivers"
 		type="mettler_optimax"
 		args="
-			-d $(arg device_name)
-			-c $(arg connection_mode)
-			-add $(arg address)
-			-p $(arg port)
-			-l $(arg simulation)"
+			-od $(arg o_device_name)
+			-oc $(arg o_connection_mode)
+			-oadd $(arg o_address)
+			-op $(arg o_port)
+			-ol $(arg o_simulation)"
 		output="screen"/>
 </launch>

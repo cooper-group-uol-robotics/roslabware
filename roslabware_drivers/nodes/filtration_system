@@ -12,32 +12,32 @@ if __name__ == "__main__":
         prog="Filtration system ROS",
         description='ROS node for the filtration station')
     parser.add_argument(
-        '-d',
-        '--device_name',
+        '-fd',
+        '--f_device_name',
         action='store',
         default='filtration system',
         nargs='?',
         const=1,
         help='Device name')
     parser.add_argument(
-        '-c',
-        '--connection_mode',
+        '-fc',
+        '--f_connection_mode',
         action='store',
         default='serial',
         nargs='?',
         const=1,
         help='Connection mode: "tcpip", "serial" or "http"')
     parser.add_argument(
-        '-add',
-        '--address',
+        '-fadd',
+        '--f_address',
         action='store',
         default='None',
         nargs='?',
         const=1,
         help='IP Address.')
     parser.add_argument(
-        '-p',
-        '--port',
+        '-fp',
+        '--f_port',
         action='store',
         default='COM6',
         nargs='?',
@@ -45,8 +45,8 @@ if __name__ == "__main__":
         help='Serial or TCP/IP port')
 
     parser.add_argument(
-        '-l',
-        '--simulation',
+        '-fl',
+        '--f_simulation',
         action='store',
         nargs='?',
         const=1,
@@ -60,11 +60,11 @@ if __name__ == "__main__":
 
     # Objectoriented initialization of ROS
     kern_ros = FiltrationRos(
-        device_name=args.device_name,
-        connection_mode=args.connection_mode,
-        address=args.address,
-        port=args.port,
-        simulation=args.simulation)
+        device_name=args.f_device_name,
+        connection_mode=args.f_connection_mode,
+        address=args.f_address,
+        port=args.f_port,
+        simulation=args.f_simulation)
 
     rospy.loginfo("Filtration driver started")
     rospy.spin()

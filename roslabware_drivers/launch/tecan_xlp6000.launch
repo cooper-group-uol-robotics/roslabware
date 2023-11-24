@@ -1,36 +1,36 @@
 <launch>
 	<arg
-		name="device_name"
+		name="t_device_name"
 		default="tecan_xlp6000"/>
 	<arg
-		name="connection_mode"
+		name="t_connection_mode"
 		default="serial"/>
 	<arg
-		name="address"
+		name="t_address"
 		default="None"/>
 	<arg
-		name="port"
-		default="/dev/ttyUSB0"/>
+		name="t_port"
+		default="COM4"/>
 	<arg
-		name="switch_address"
+		name="t_switch_address"
 		default="0"/>
 	<arg
-		name="syringe_size"
+		name="t_syringe_size"
 		default="25.0"/>
 	<arg
-		name="simulation"
+		name="t_simulation"
 		default="False"/>
 	<node
 		name="tecan_xlp6000"
 		pkg="roslabware_drivers"
 		type="tecan_xlp6000"
 		args="
-			-d $(arg device_name)
-			-c $(arg connection_mode)
-			-add $(arg address)
-			-p $(arg port)
-			-l $(arg simulation)
-			-w $(arg switch_address)
-			-z $(arg syringe_size)"
+			-td $(arg t_device_name)
+			-tc $(arg t_connection_mode)
+			-tadd $(arg t_address)
+			-tp $(arg t_port)
+			-tl $(arg t_simulation)
+			-tw $(arg t_switch_address)
+			-tz $(arg t_syringe_size)"
 		output="screen"/>
 </launch>

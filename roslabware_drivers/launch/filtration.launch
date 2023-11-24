@@ -1,28 +1,28 @@
 <launch>
 	<arg
-		name="device_name"
+		name="f_device_name"
 		default="filtration_system"/>
 	<arg
-		name="connection_mode"
+		name="f_connection_mode"
 		default="serial"/>
 	<arg
-		name="address"
+		name="f_address"
 		default="None"/>
 	<arg
-		name="port"
+		name="f_port"
 		default="COM6"/>
 	<arg
-		name="simulation"
+		name="f_simulation"
 		default="False"/>
 	<node
 		name="filtration_system"
 		pkg="roslabware_drivers"
 		type="filtration_system"
 		args="
-			-d $(arg device_name)
-			-c $(arg connection_mode)
-			-add $(arg address)
-			-p $(arg port)
-			-l $(arg simulation)"
+			-fd $(arg f_device_name)
+			-fc $(arg f_connection_mode)
+			-fadd $(arg f_address)
+			-fp $(arg f_port)
+			-fl $(arg f_simulation)"
 		output="screen"/>
 </launch>

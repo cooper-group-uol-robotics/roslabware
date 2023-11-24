@@ -12,32 +12,32 @@ if __name__ == "__main__":
         prog="Mettler Optimax ROS",
         description='ROS node for Mettler Optimax')
     parser.add_argument(
-        '-d',
-        '--device_name',
+        '-od',
+        '--o_device_name',
         action='store',
         default='mettler_optimax',
         nargs='?',
         const=1,
         help='Device name')
     parser.add_argument(
-        '-c',
-        '--connection_mode',
+        '-oc',
+        '--o_connection_mode',
         action='store',
         default='serial',
         nargs='?',
         const=1,
         help='Connection mode: "tcpip", "serial" or "http"')
     parser.add_argument(
-        '-add',
-        '--address',
+        '-oadd',
+        '--o_address',
         action='store',
         default='None',
         nargs='?',
         const=1,
         help='IP Address.')
     parser.add_argument(
-        '-p',
-        '--port',
+        '-op',
+        '--o_port',
         action='store',
         default='/dev/ttyUSB0',
         nargs='?',
@@ -45,8 +45,8 @@ if __name__ == "__main__":
         help='Serial or TCP/IP port')
 
     parser.add_argument(
-        '-l',
-        '--simulation',
+        '-ol',
+        '--o_simulation',
         action='store',
         nargs='?',
         const=1,
@@ -60,11 +60,11 @@ if __name__ == "__main__":
 
     # Create instance of ROS Wrapper
     optimax_ros = OptimaxRos(
-            device_name=args.device_name,
-            connection_mode=args.connection_mode,
-            address=args.address,
-            port=args.port,
-            simulation=args.simulation)
+            device_name=args.o_device_name,
+            connection_mode=args.o_connection_mode,
+            address=args.o_address,
+            port=args.o_port,
+            simulation=args.o_simulation)
 
     # Keeps python from exiting until node is stopped
     rospy.spin()

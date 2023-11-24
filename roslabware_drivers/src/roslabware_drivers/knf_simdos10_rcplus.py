@@ -43,7 +43,7 @@ class RCPlusRos:
             self.knf.simulation = True
 
         self.operation_complete = False
-        self._prev_msg = None
+        self.time_before = time.time()
 
         # Initialise connection for KNF.
         self.knf.connect()  
@@ -127,7 +127,8 @@ class RCPlusRos:
         """ Callback commands for susbcriber. """
         message = msg.knf_command
         rospy.loginfo("Message received.")
-        if message != self._prev_msg: # TODO what if we do want to send the same volume twice? Use a time elapsed check (>15 secs)
+        time_now = time.time()
+        if (time_now-self.time_before) > 10:
             if message == msg.DISPENSE:
                 self.dispense(msg.knf_volume)
             elif message == msg.STOP:
@@ -136,5 +137,5 @@ class RCPlusRos:
                 self.check_idle()
             else:
                 rospy.loginfo("Invalid command.")
-            self._prev_msg = message
+            self.time_before = time_now
         

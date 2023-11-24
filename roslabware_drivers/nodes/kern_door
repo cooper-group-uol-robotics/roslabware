@@ -9,11 +9,11 @@ from roslabware_drivers.kern_door import KernDoorRos
 if __name__ == "__main__":
     # Get arguments needed
     parser = argparse.ArgumentParser(
-        prog="Kern Top balance ROS",
-        description='ROS node for a Kern Top balance')
+        prog="Balance doors ROS",
+        description='ROS node for a balance doors')
     parser.add_argument(
         '-kd',
-        '--Door_name',
+        '--k_name',
         action='store',
         default='kern_door',
         nargs='?',
@@ -21,7 +21,7 @@ if __name__ == "__main__":
         help='Device name')
     parser.add_argument(
         '-kc',
-        '--Door_connection_mode',
+        '--k_connection_mode',
         action='store',
         default='serial',
         nargs='?',
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         help='Connection mode: "tcpip", "serial" or "http"')
     parser.add_argument(
         '-kadd',
-        '--Door_address',
+        '--k_address',
         action='store',
         default='None',
         nargs='?',
@@ -37,16 +37,15 @@ if __name__ == "__main__":
         help='IP Address.')
     parser.add_argument(
         '-kp',
-        '--Door_port',
+        '--k_port',
         action='store',
         default='COM5',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')
-
     parser.add_argument(
         '-ks',
-        '--Door_simulation',
+        '--k_simulation',
         action='store',
         nargs='?',
         const=1,
@@ -60,11 +59,11 @@ if __name__ == "__main__":
 
     # Objectoriented initialization of ROS
     kern_ros = KernDoorRos(
-        device_name=args.Door_name,
-        connection_mode=args.Door_connection_mode,
-        address=args.Door_address,
-        port=args.Door_port,
-        simulation=args.Door_simulation)
+        device_name=args.k_name,
+        connection_mode=args.k_connection_mode,
+        address=args.k_address,
+        port=args.k_port,
+        simulation=args.k_simulation)
 
     rospy.loginfo("Kern door roslabware driver started")
     rospy.spin()

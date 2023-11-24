@@ -3,6 +3,7 @@ from typing import Optional
 from miscware import FiltrationSystem
 import rospy
 import serial
+import time
 
 # Core
 from roslabware_msgs.msg import (
@@ -31,7 +32,7 @@ class FiltrationRos:
         rospy.sleep(2)
 
         self.complete = False
-        self._prev_msg = None
+        self.time_before = time.time()
 
         if simulation == "True":
             self.filtration_system.simulation = True
@@ -63,7 +64,6 @@ class FiltrationRos:
         # publish status of the valve
         while not rospy.is_shutdown():
             self.complete = self.filtration_system.check_status()
-            rospy.loginfo("Process complete: %s", self.complete)
             self._task_complete_pub.publish(self.complete)
             rospy.sleep(5)
 
@@ -107,7 +107,8 @@ class FiltrationRos:
     # Callback for subscriber.
     def callback_commands(self, msg):
         message = msg.filtration_system_command
-        if message != self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
+        time_now = time.time()
+        if (time_now-self.time_before) > 10:
             if message == msg.MAIN_FILTRATION:
                 self.main_filtration()
             elif message == msg.DRY:
@@ -122,6 +123,6 @@ class FiltrationRos:
                 self.stop()
             else:
                 rospy.loginfo("invalid command")
-            self._prev_msg = message
+            self.time_before = time_now
 
 rospy.loginfo("working")

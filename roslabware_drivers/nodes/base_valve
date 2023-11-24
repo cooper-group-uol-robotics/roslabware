@@ -12,32 +12,32 @@ if __name__ == "__main__":
         prog="Base valve ROS",
         description='ROS node for the optimax base valve')
     parser.add_argument(
-        '-d',
-        '--device_name',
+        '-bvd',
+        '--bv_device_name',
         action='store',
         default='base_valve',
         nargs='?',
         const=1,
         help='Device name')
     parser.add_argument(
-        '-c',
-        '--connection_mode',
+        '-bvc',
+        '--bv_connection_mode',
         action='store',
         default='serial',
         nargs='?',
         const=1,
         help='Connection mode: "tcpip", "serial" or "http"')
     parser.add_argument(
-        '-add',
-        '--address',
+        '-bvadd',
+        '--bv_address',
         action='store',
         default='None',
         nargs='?',
         const=1,
         help='IP Address.')
     parser.add_argument(
-        '-p',
-        '--port',
+        '-bvp',
+        '--bv_port',
         action='store',
         default='COM7',
         nargs='?',
@@ -45,8 +45,8 @@ if __name__ == "__main__":
         help='Serial or TCP/IP port')
 
     parser.add_argument(
-        '-l',
-        '--simulation',
+        '-bvl',
+        '--bv_simulation',
         action='store',
         nargs='?',
         const=1,
@@ -60,11 +60,11 @@ if __name__ == "__main__":
 
     # Objectoriented initialization of ROS
     kern_ros = BaseValveRos(
-        device_name=args.device_name,
-        connection_mode=args.connection_mode,
-        address=args.address,
-        port=args.port,
-        simulation=args.simulation)
+        device_name=args.bv_device_name,
+        connection_mode=args.bv_connection_mode,
+        address=args.bv_address,
+        port=args.bv_port,
+        simulation=args.bv_simulation)
 
     rospy.loginfo("Base valve driver started")
     rospy.spin()

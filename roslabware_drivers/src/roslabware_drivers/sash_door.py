@@ -79,7 +79,7 @@ class SashDoorRos:
     def callback_commands(self, msg):
         message = msg.sash_door_command
         rospy.loginfo("message_received")
-        if not message == self._prev_msg:
+        if message != self._prev_msg:
             if message == msg.OPEN_DOOR:
                 self.process_complete = False
                 rospy.loginfo("open_door_message received")

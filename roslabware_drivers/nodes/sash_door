@@ -12,32 +12,32 @@ if __name__ == "__main__":
         prog="Sash Door ROS",
         description='ROS node for a fumehood sash door')
     parser.add_argument(
-        '-d',
-        '--Door_name',
+        '-sd',
+        '--s_name',
         action='store',
         default='sash_door',
         nargs='?',
         const=1,
         help='Device name')
     parser.add_argument(
-        '-c',
-        '--Door_connection_mode',
+        '-sc',
+        '--s_connection_mode',
         action='store',
         default='serial',
         nargs='?',
         const=1,
         help='Connection mode: "tcpip", "serial" or "http"')
     parser.add_argument(
-        '-add',
-        '--Door_address',
+        '-sadd',
+        '--s_address',
         action='store',
         default='None',
         nargs='?',
         const=1,
         help='IP Address.')
     parser.add_argument(
-        '-p',
-        '--Door_port',
+        '-sp',
+        '--s_port',
         action='store',
         default='COM5',
         nargs='?',
@@ -45,8 +45,8 @@ if __name__ == "__main__":
         help='Serial or TCP/IP port')
 
     parser.add_argument(
-        '-s',
-        '--Door_simulation',
+        '-ss',
+        '--s_simulation',
         action='store',
         nargs='?',
         const=1,
@@ -60,11 +60,11 @@ if __name__ == "__main__":
 
     # Objectoriented initialization of ROS
     sash_ros = SashDoorRos(
-        device_name=args.Door_name,
-        connection_mode=args.Door_connection_mode,
-        address=args.Door_address,
-        port=args.Door_port,
-        simulation=args.Door_simulation)
+        device_name=args.s_name,
+        connection_mode=args.s_connection_mode,
+        address=args.s_address,
+        port=args.s_port,
+        simulation=args.s_simulation)
 
     rospy.loginfo("Sash door roslabware driver started")
     rospy.spin()

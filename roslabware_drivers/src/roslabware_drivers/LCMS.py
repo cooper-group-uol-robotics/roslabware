@@ -39,7 +39,7 @@ class LcmsRos:
 
         self.result_dict = None
         self.complete = False
-        self._prev_msg = None
+        self.time_before = time.time()
 
         self.lcms.connect_socket()
         time.sleep(1)
@@ -127,7 +127,8 @@ class LcmsRos:
 
         message = msg.lcms_command
         rospy.loginfo("Message received.")
-        if message != self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
+        time_now = time.time()
+        if (time_now-self.time_before) > 10:
             if message == msg.START_PREP:
                 if msg.lcms_num_samples is not None:
                     self.prep_analysis(msg.lcms_num_samples)
@@ -141,6 +142,6 @@ class LcmsRos:
                 self.start_analysis()
             else:
                 rospy.loginfo("invalid command")
-            self._prev_msg = message    
+            self.time_before = time_now 
 
 rospy.loginfo("working")

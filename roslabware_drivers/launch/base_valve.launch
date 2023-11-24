@@ -1,28 +1,28 @@
 <launch>
 	<arg
-		name="device_name"
+		name="bv_device_name"
 		default="base_valve"/>
 	<arg
-		name="connection_mode"
+		name="bv_connection_mode"
 		default="serial"/>
 	<arg
-		name="address"
+		name="bv_address"
 		default="None"/>
 	<arg
-		name="port"
+		name="bv_port"
 		default="COM7"/>
 	<arg
-		name="simulation"
+		name="bv_simulation"
 		default="False"/>
 	<node
 		name="base_valve"
 		pkg="roslabware_drivers"
 		type="base_valve"
 		args="
-			-d $(arg device_name)
-			-c $(arg connection_mode)
-			-add $(arg address)
-			-p $(arg port)
-			-l $(arg simulation)"
+			-bvd $(arg bv_device_name)
+			-bvc $(arg bv_connection_mode)
+			-bvadd $(arg bv_address)
+			-bvp $(arg bv_port)
+			-bvl $(arg bv_simulation)"
 		output="screen"/>
 </launch>

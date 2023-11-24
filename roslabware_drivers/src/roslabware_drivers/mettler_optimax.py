@@ -2,6 +2,7 @@
 # external
 from typing import Optional, Union
 import rospy
+import time
 from pylabware import Optimax
 
 # Core
@@ -37,7 +38,7 @@ class OptimaxRos:
 
         self.optimax.initialize_device()
         self.process_complete = False
-        self._prev_message = None
+        self.time_before = time.time()
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -71,8 +72,9 @@ class OptimaxRos:
     def create_experiment(self):
         self.optimax._create_experiment()
         rospy.loginfo(f"Created new experiment.")
+        rospy.sleep(7)
 
-    def add_temp_step(self, temperature, duration):
+    def add_temp_step(self, temperature, duration=None):
         self.optimax._add_temperature_step(temperature, duration)
         rospy.loginfo(f"Added temperature step with temperature {temperature} ºC")
 
@@ -99,11 +101,12 @@ class OptimaxRos:
     def stop_experiment(self):
         self.optimax.stop()
         rospy.loginfo("Experiment Stopped") 
+        rospy.sleep(7)
 
     def para_heat_wait(self, temp, stir_speed, wait_duration):
         self.create_experiment()
         self.add_stir_step(stir_speed, 20)
-        self.add_temp_step(temp, 10)
+        self.add_temp_step(temp)
         self.add_wait_step(wait_duration)
         self.add_end_experiment_step()
         self.start_experiment()
@@ -111,7 +114,7 @@ class OptimaxRos:
     def para_sample(self, temp, stir_speed, dilution):
         self.create_experiment()
         self.add_stir_step(stir_speed, 20)
-        self.add_temp_step(temp, 10)
+        self.add_temp_step(temp)
         self.add_sampling_step(dilution)
         self.add_end_experiment_step()
         self.start_experiment()
@@ -143,8 +146,8 @@ class OptimaxRos:
         if msg.dilution is not None:
             dilution = msg.dilution
 
-        
-        if not message == self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
+        time_now = time.time()
+        if (time_now-self.time_before) > 10:
             if message == msg.ADD_TEMP_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
                 self.add_temp_step(temp, temp_duration)
@@ -157,12 +160,13 @@ class OptimaxRos:
             elif message == msg.PARA_HW:
                 self.para_heat_wait(temp, stir_speed, wait_duration)
             elif message == msg.PARA_S:
+                y
                 self.para_sample(temp, stir_speed, dilution)
             elif message == msg.PARACETAMOL:
                 self.paracetamol_synthesis()
             else:
                 rospy.loginfo("invalid command")
             
-            self._prev_msg = message
+            self.time_before = time_now
             
 rospy.loginfo("working")

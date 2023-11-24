@@ -1,6 +1,6 @@
 # external
 from typing import Optional, Union
-
+import time
 import rospy
 from pylabware import PCB2500
 
@@ -26,7 +26,7 @@ class PCB2500Ros:
     ):
         
         self.tared = False
-        self._prev_msg = None
+        self.time_before = time.time()
 
         # Instantiate IKA driver
         self.balance = PCB2500(
@@ -87,7 +87,8 @@ class PCB2500Ros:
     def callback_commands(self, msg):
         message = msg.kern_command
         rospy.loginfo("Message received.")
-        if message != self._prev_msg: # TODO what if we do want to send the same msg twice? Use a time elapsed check (>15 secs)
+        time_now = time.time()
+        if (time_now-self.time_before) > 10:
             if message == msg.TARE_BALANCE:
                 self.tare_balance()
             elif message == msg.GET_MASS:
@@ -96,4 +97,4 @@ class PCB2500Ros:
                 self.get_stable_mass()
             else:
                 rospy.loginfo("Invalid command")
-            self._prev_msg = message
+            self.time_before = time_now
