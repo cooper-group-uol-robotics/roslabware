@@ -215,7 +215,7 @@ class XLP6000Ros:
         """Callback commands for susbcriber."""
         message = msg.tecan_xlp_command
         time_now = time.time()
-        if (time_now-self.time_before) > 10:
+        if (time_now-self.time_before) > 30:
             self.operation_complete = False
             if message == msg.DISPENSE:
                 self.request_pumping(

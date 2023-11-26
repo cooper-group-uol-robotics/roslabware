@@ -108,7 +108,7 @@ class FiltrationRos:
     def callback_commands(self, msg):
         message = msg.filtration_system_command
         time_now = time.time()
-        if (time_now-self.time_before) > 10:
+        if (time_now-self.time_before) > 25:
             if message == msg.MAIN_FILTRATION:
                 self.main_filtration()
             elif message == msg.DRY:

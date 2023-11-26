@@ -58,15 +58,15 @@ class KernDoorRos:
 
         rospy.loginfo("Kern door driver started")
         while not rospy.is_shutdown():
-            self._task_complete_pub.publish(True)
+            self._task_complete_pub.publish(self.process_complete)
             rospy.sleep(5)
         #initialize device
 
     def open_door(self):
         self.door.write((bytes("bopen", 'utf-8')))
         rospy.loginfo("open_door_message_sent_to_miscware")
-        self.pub.publish( status = 'door_open')
-        rospy.sleep(5)
+        self.pub.publish(status = 'door_open')
+        rospy.sleep(8)
         self.process_complete = True
 
     def close_door(self):
@@ -74,7 +74,7 @@ class KernDoorRos:
         rospy.loginfo("close_door_message_sent_to_miscware")
         #if serial msg received:
         self.pub.publish(status = 'door_closed')
-        rospy.sleep(5)
+        rospy.sleep(8)
         self.process_complete = True
 
     def callback_commands(self, msg):

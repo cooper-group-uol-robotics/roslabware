@@ -27,7 +27,7 @@ class SashDoorRos:
         simulation: bool = False,
     ):
 
-        # Instantiate IKA driver
+        # Instantiate driver
         self.door = serial.Serial(port=port, baudrate=9600, timeout=None)
 
         self.process_complete = False
@@ -57,7 +57,7 @@ class SashDoorRos:
 
         rospy.loginfo("Sash door driver started")
         while not rospy.is_shutdown():
-            self._task_complete_pub.publish(True)
+            self._task_complete_pub.publish(self.process_complete)
             rospy.sleep(5)
         #initialize device
 
@@ -65,7 +65,7 @@ class SashDoorRos:
         self.door.write((bytes("sopen", 'utf-8')))
         rospy.loginfo("open_door_message_sent_to_device_controller")
         self.pub.publish(status = 'door_open')
-        rospy.sleep(5)
+        rospy.sleep(64)
         self.process_complete = True
 
     def close_door(self):
@@ -73,7 +73,7 @@ class SashDoorRos:
         rospy.loginfo("close_door_message_sent_to_device_controller")
         #if serial msg received:
         self.pub.publish(status = 'door_closed')
-        rospy.sleep(5)
+        rospy.sleep(66)
         self.process_complete = True
 
     def callback_commands(self, msg):

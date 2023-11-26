@@ -88,7 +88,7 @@ class PCB2500Ros:
         message = msg.kern_command
         rospy.loginfo("Message received.")
         time_now = time.time()
-        if (time_now-self.time_before) > 10:
+        if (time_now-self.time_before) > 15:
             if message == msg.TARE_BALANCE:
                 self.tare_balance()
             elif message == msg.GET_MASS:

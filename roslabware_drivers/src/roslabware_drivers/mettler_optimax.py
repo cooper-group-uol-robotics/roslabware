@@ -38,7 +38,7 @@ class OptimaxRos:
 
         self.optimax.initialize_device()
         self.process_complete = False
-        self.time_before = time.time()
+        self._prev_msg = None
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -146,8 +146,7 @@ class OptimaxRos:
         if msg.dilution is not None:
             dilution = msg.dilution
 
-        time_now = time.time()
-        if (time_now-self.time_before) > 10:
+        if message is not self._prev_msg:
             if message == msg.ADD_TEMP_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
                 self.add_temp_step(temp, temp_duration)
@@ -160,13 +159,12 @@ class OptimaxRos:
             elif message == msg.PARA_HW:
                 self.para_heat_wait(temp, stir_speed, wait_duration)
             elif message == msg.PARA_S:
-                y
                 self.para_sample(temp, stir_speed, dilution)
             elif message == msg.PARACETAMOL:
                 self.paracetamol_synthesis()
             else:
                 rospy.loginfo("invalid command")
             
-            self.time_before = time_now
+            self._prev_msg = message
             
 rospy.loginfo("working")

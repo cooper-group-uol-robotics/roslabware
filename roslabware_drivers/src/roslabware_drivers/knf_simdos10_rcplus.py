@@ -105,13 +105,13 @@ class RCPlusRos:
         self.knf.set_time(dispense_time)
         time.sleep(0.5)
         self.knf.start()
-        time.sleep(0.5)
-        while not self.operation_complete:
+        time.sleep(2)
+        while self.operation_complete is False:
             status = self.knf.get_status(1) 
-            if 'Motor' in status:
-                self.operation_complete = False
-            else:
+            if 'FALSE Motor turns' in str(status):
                 self.operation_complete = True
+            else:
+                self.operation_complete = False
 
     def check_idle(self):
         """Reads back pump operation status."""
@@ -128,7 +128,7 @@ class RCPlusRos:
         message = msg.knf_command
         rospy.loginfo("Message received.")
         time_now = time.time()
-        if (time_now-self.time_before) > 10:
+        if (time_now-self.time_before) > 20:
             if message == msg.DISPENSE:
                 self.dispense(msg.knf_volume)
             elif message == msg.STOP:

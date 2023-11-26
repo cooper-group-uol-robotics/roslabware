@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-knfp',
         '--knf_port',
         action='store',
-        default='COM13',
+        default='COM8',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')

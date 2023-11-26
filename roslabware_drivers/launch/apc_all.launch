@@ -12,7 +12,7 @@
 		default="None"/>
 	<arg
 		name="b_port"
-		default="COM12"/>
+		default="COM15"/>
 	<arg
 		name="b_simulation"
 		default = 'False'/>
@@ -87,7 +87,7 @@
 			-bvl $(arg bv_simulation)"
 		output="screen"/>
 
- <!-- Filtration_Station_Details -->
+ <!-- Filtration_System_Details -->
 
     <arg
 		name="f_device_name"
@@ -129,7 +129,7 @@
 		default="None"/>
 	<arg
 		name="knf_port"
-		default="COM13"/>
+		default="COM8"/>
 	<arg
 		name="knf_switch_address"
 		default="00"/>
