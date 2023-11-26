@@ -72,7 +72,7 @@ class OptimaxRos:
     def create_experiment(self):
         self.optimax._create_experiment()
         rospy.loginfo(f"Created new experiment.")
-        rospy.sleep(7)
+        rospy.sleep(3)
 
     def add_temp_step(self, temperature, duration=None):
         self.optimax._add_temperature_step(temperature, duration)
