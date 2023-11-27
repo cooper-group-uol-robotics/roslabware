@@ -4,18 +4,18 @@
 import argparse
 import rospy
 
-from roslabware_drivers.sash_door import SashDoorRos
+from roslabware_drivers.sash_and_balance_door import SashBalanceDoorRos
 
 if __name__ == "__main__":
     # Get arguments needed
     parser = argparse.ArgumentParser(
-        prog="Sash Door ROS",
-        description='ROS node for a fumehood sash door')
+        prog="Sash and Balance Door ROS",
+        description='ROS node for fumehood sash door and balance door')
     parser.add_argument(
         '-sd',
         '--s_name',
         action='store',
-        default='sash_door',
+        default='sash_and_balance_door',
         nargs='?',
         const=1,
         help='Device name')
@@ -56,15 +56,15 @@ if __name__ == "__main__":
     args, unknown = parser.parse_known_args()
 
     # Initialize ROS node
-    rospy.init_node("sash_door_driver", anonymous=True)
+    rospy.init_node("sash_and_balance_door_driver", anonymous=True)
 
     # Objectoriented initialization of ROS
-    sash_ros = SashDoorRos(
+    sash_ros = SashBalanceDoorRos(
         device_name=args.s_name,
         connection_mode=args.s_connection_mode,
         address=args.s_address,
         port=args.s_port,
         simulation=args.s_simulation)
 
-    rospy.loginfo("Sash door roslabware driver started")
+    rospy.loginfo("Sash and balance door roslabware driver started")
     rospy.spin()
