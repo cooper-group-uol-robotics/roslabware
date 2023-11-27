@@ -136,7 +136,7 @@ class SashBalanceDoorRos:
         self.balance_door_pub.publish(status = 'door_closed')
         self.balance_door_process_complete = True
 
-    def callback_commands(self, msg):
+    def balance_door_callback_commands(self, msg):
         message = msg.kern_door_command
         rospy.loginfo("Balance door message received.")
         if message != self._balance_door_prev_msg:
