@@ -223,6 +223,6 @@ class XLP6000Ros:
                     msg.xlp_volume,
                     msg.xlp_speed)
             else:
-                rospy.loginfo("invalid command")
+                rospy.loginfo("Invalid command.")
             self._prev_id = id
   

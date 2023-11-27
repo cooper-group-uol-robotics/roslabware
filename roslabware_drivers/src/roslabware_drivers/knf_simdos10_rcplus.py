@@ -12,7 +12,7 @@ from roslabware_msgs.msg import (
 from std_msgs.msg import Bool
 
 # Constants - from Tecan pump, maybe not needed for KNF one
-DEFAULT_SPEED = 90  # ml/min
+DEFAULT_SPEED = 95  # ml/min
 
 
 class RCPlusRos:
@@ -80,12 +80,10 @@ class RCPlusRos:
             self._task_complete_pub.publish(self.operation_complete)
             rospy.sleep(5)
 
-
     def stop(self):
         """ Stops executing any program/action immediately. """
         self.knf.stop()
 
-    
     def dispense(
         self,
         volume: float,

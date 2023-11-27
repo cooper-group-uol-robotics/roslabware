@@ -58,11 +58,9 @@
 			-ss $(arg s_simulation)"
 		output="screen"/>
 
-</launch>
-
  <!-- Base_Valve_Details -->
 
-        <arg
+    <arg
 		name="bv_device_name"
 		default="base_valve"/>
 	<arg

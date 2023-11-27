@@ -25,8 +25,9 @@ class PCB2500Ros:
         simulation: bool = False,
     ):
         
-        self.tared = False
         self._prev_id = -1
+        self.tared = False
+        self.mass = None
 
         # Instantiate IKA driver
         self.balance = PCB2500(
@@ -43,6 +44,8 @@ class PCB2500Ros:
         self.balance.connect()
         self.balance.initialize_device()
         rospy.sleep(2)
+
+        rospy.loginfo("Kern PCB2500 pylabware driver started.")
 
         # Initialize ros subscriber of topic to which commands are published
         self.subs = rospy.Subscriber(
@@ -61,7 +64,12 @@ class PCB2500Ros:
         # Initialize rate object for consistent timed looping
         self.rate = rospy.Rate(10)
 
-        rospy.loginfo("Kern PCB2500 pylabware driver started")
+        # Get data
+        while not rospy.is_shutdown():
+            if self.mass is not None:
+                self.pub.publish(self.mass)
+                self.rate.sleep()
+
 
     def tare_balance(self):
         self.tared = False
@@ -72,17 +80,15 @@ class PCB2500Ros:
 
     def get_stable_mass(self):
         rospy.loginfo("Getting stable mass.")
-        stable_mass = self.balance.get_stable_mass()
+        self.mass = self.balance.get_stable_mass()
         rospy.sleep(2)
-        rospy.loginfo("Stable mass is: %s", stable_mass)
-        self.pub.publish(stable_mass)
+        rospy.loginfo("Stable mass is: %s", self.mass)
 
     def get_mass(self):
         rospy.loginfo("Getting mass.")
-        mass = self.balance.get_mass()
+        self.mass = self.balance.get_mass()
         rospy.sleep(2)
-        rospy.loginfo("Stable mass is: %s", mass)
-        self.pub.publish(mass)
+        rospy.loginfo("Mass is: %s", self.mass)
 
     def callback_commands(self, msg):
         message = msg.kern_command

@@ -56,7 +56,8 @@ class SashBalanceDoorRos:
         self._sash_door_task_complete_pub = rospy.Publisher(
             '/sash_door/task_complete',
             Bool,
-            queue_size=1)
+            queue_size=1
+        )
         
         ##### Publishers and subcribers for balance door #####
 
@@ -77,15 +78,16 @@ class SashBalanceDoorRos:
         self._balance_door_task_complete_pub = rospy.Publisher(
             '/kern_door/task_complete',
             Bool,
-            queue_size=1)
+            queue_size=1
+        )
 
         # Initialize rate object for consistent timed looping
         self.rate = rospy.Rate(10)
 
         rospy.loginfo("Sash and balance door driver started.")
         while not rospy.is_shutdown():
-            self._sash_door_task_complete_pub.publish(self.process_complete)
-            self._balance_door_task_complete_pub.publish(self.process_complete)
+            self._sash_door_task_complete_pub.publish(self.sash_door_process_complete)
+            self._balance_door_task_complete_pub.publish(self.balance_door_process_complete)
             rospy.sleep(5)
 
     ###### Sash door methods #####
@@ -107,7 +109,7 @@ class SashBalanceDoorRos:
     def sash_door_callback_commands(self, msg):
         message = msg.sash_door_command
         rospy.loginfo("Sash door message received.")
-        if message != self._prev_msg:
+        if message != self._sash_door_prev_msg:
             if message == msg.OPEN_DOOR:
                 self.sash_door_process_complete = False
                 rospy.loginfo("Open sash message received.")
