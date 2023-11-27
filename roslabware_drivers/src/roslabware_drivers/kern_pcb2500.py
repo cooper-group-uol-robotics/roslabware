@@ -26,7 +26,7 @@ class PCB2500Ros:
     ):
         
         self.tared = False
-        self.time_before = time.time()
+        self._prev_id = -1
 
         # Instantiate IKA driver
         self.balance = PCB2500(
@@ -87,8 +87,8 @@ class PCB2500Ros:
     def callback_commands(self, msg):
         message = msg.kern_command
         rospy.loginfo("Message received.")
-        time_now = time.time()
-        if (time_now-self.time_before) > 15:
+        id = msg.seq
+        if id > self._prev_id:
             if message == msg.TARE_BALANCE:
                 self.tare_balance()
             elif message == msg.GET_MASS:
@@ -97,4 +97,4 @@ class PCB2500Ros:
                 self.get_stable_mass()
             else:
                 rospy.loginfo("Invalid command")
-            self.time_before = time_now
+            self._prev_id = id

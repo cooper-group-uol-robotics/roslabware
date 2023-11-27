@@ -36,7 +36,7 @@ class XLP6000Ros:
             port=port,
         )
 
-        self._prev_msg = None
+        self._prev_id = -1
 
         if simulation == "True":
             self.tecan.simulation = True
@@ -47,7 +47,6 @@ class XLP6000Ros:
         self.tecan.set_resolution_mode(resolution_mode=DEFAULT_RESOLUTION)
         self.tecan.set_speed(150)
         self.tecan.initialize_device()
-        self._prev_msg = None
         self.operation_complete = False
 
         # Initialize ROS subscriber
@@ -214,8 +213,8 @@ class XLP6000Ros:
     def callback_commands(self, msg):
         """Callback commands for susbcriber."""
         message = msg.tecan_xlp_command
-        time_now = time.time()
-        if (time_now-self.time_before) > 30:
+        id = msg.seq
+        if id > self._prev_id:
             self.operation_complete = False
             if message == msg.DISPENSE:
                 self.request_pumping(
@@ -223,7 +222,7 @@ class XLP6000Ros:
                     msg.xlp_dispense_port,
                     msg.xlp_volume,
                     msg.xlp_speed)
-                self.time_before = time_now
             else:
                 rospy.loginfo("invalid command")
+            self._prev_id = id
   

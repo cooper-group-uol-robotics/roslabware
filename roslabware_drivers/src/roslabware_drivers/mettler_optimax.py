@@ -38,7 +38,7 @@ class OptimaxRos:
 
         self.optimax.initialize_device()
         self.process_complete = False
-        self._prev_msg = None
+        self._prev_id = -1
 
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(
@@ -133,6 +133,7 @@ class OptimaxRos:
     def callback_commands(self, msg):
 
         message = msg.optimax_command
+        id = msg.seq
         if msg.temperature is not None:
             temp = msg.temperature
         if msg.stir_speed is not None:
@@ -146,7 +147,7 @@ class OptimaxRos:
         if msg.dilution is not None:
             dilution = msg.dilution
 
-        if message is not self._prev_msg:
+        if id > self._prev_id:
             if message == msg.ADD_TEMP_STIR:
                 self.add_stir_step(stir_speed, stir_duration)
                 self.add_temp_step(temp, temp_duration)
@@ -165,6 +166,6 @@ class OptimaxRos:
             else:
                 rospy.loginfo("invalid command")
             
-            self._prev_msg = message
+            self._prev_id = id
             
 rospy.loginfo("working")

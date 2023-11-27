@@ -5,4 +5,5 @@ int32 DRAIN = 3
 int32 VACUUM = 4
 int32 STOP = 5
 
+uint32 seq
 int32 filtration_system_command

@@ -1,1 +1,1 @@
-# not reqd for this driver
+# Not supported in this device

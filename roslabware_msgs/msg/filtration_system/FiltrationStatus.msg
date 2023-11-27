@@ -1,1 +1,1 @@
-# Not implemented.
+# Not supported in this device

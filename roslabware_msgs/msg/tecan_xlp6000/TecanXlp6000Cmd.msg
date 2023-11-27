@@ -1,5 +1,6 @@
 int32 DISPENSE = 0
 
+uint32 seq
 int32 tecan_xlp_command
 int32 xlp_withdraw_port
 int32 xlp_dispense_port

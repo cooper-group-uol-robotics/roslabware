@@ -65,7 +65,7 @@ class KernDoorRos:
     def open_door(self):
         self.door.write((bytes("bopen", 'utf-8')))
         rospy.loginfo("open_door_message_sent_to_miscware")
-        rospy.sleep(10)
+        rospy.sleep(7)
         self.pub.publish(status = 'door_open')
         self.process_complete = True
 
@@ -73,12 +73,13 @@ class KernDoorRos:
         self.door.write((bytes("bclose", 'utf-8')))
         rospy.loginfo("close_door_message_sent_to_miscware")
         #if serial msg received:
-        rospy.sleep(10)
+        rospy.sleep(7)
         self.pub.publish(status = 'door_closed')
         self.process_complete = True
 
     def callback_commands(self, msg):
         message = msg.kern_door_command
+        id = msg.seq
         rospy.loginfo("Message received.")
         if message != self._prev_msg:
             if message == msg.OPEN_DOOR:

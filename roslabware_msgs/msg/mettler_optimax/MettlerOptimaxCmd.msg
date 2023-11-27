@@ -7,6 +7,7 @@ int32 PARA_HW = 5
 int32 PARA_S = 6
 int32 PARACETAMOL = 7
 
+uint32 seq
 int32 optimax_command
 int32 temperature
 int32 stir_speed

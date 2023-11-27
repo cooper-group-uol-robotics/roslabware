@@ -43,7 +43,7 @@ class RCPlusRos:
             self.knf.simulation = True
 
         self.operation_complete = False
-        self.time_before = time.time()
+        self._prev_id = -1
 
         # Initialise connection for KNF.
         self.knf.connect()  
@@ -127,8 +127,8 @@ class RCPlusRos:
         """ Callback commands for susbcriber. """
         message = msg.knf_command
         rospy.loginfo("Message received.")
-        time_now = time.time()
-        if (time_now-self.time_before) > 20:
+        id = msg.seq
+        if id > self._prev_id:
             if message == msg.DISPENSE:
                 self.dispense(msg.knf_volume)
             elif message == msg.STOP:
@@ -137,5 +137,5 @@ class RCPlusRos:
                 self.check_idle()
             else:
                 rospy.loginfo("Invalid command.")
-            self.time_before = time_now
+            self._prev_id = id
         

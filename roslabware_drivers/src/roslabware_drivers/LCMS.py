@@ -39,7 +39,7 @@ class LcmsRos:
 
         self.result_dict = None
         self.complete = False
-        self.time_before = time.time()
+        self._prev_id = -1
 
         self.lcms.connect_socket()
         time.sleep(1)
@@ -127,8 +127,8 @@ class LcmsRos:
 
         message = msg.lcms_command
         rospy.loginfo("Message received.")
-        time_now = time.time()
-        if (time_now-self.time_before) > 10:
+        id = msg.seq
+        if id > self._prev_id:
             if message == msg.START_PREP:
                 if msg.lcms_num_samples is not None:
                     self.prep_analysis(msg.lcms_num_samples)
@@ -142,6 +142,6 @@ class LcmsRos:
                 self.start_analysis()
             else:
                 rospy.loginfo("invalid command")
-            self.time_before = time_now 
+            self._prev_id = id
 
 rospy.loginfo("working")

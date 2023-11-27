@@ -32,7 +32,7 @@ class FiltrationRos:
         rospy.sleep(2)
 
         self.complete = False
-        self.time_before = time.time()
+        self._prev_id = -1
 
         if simulation == "True":
             self.filtration_system.simulation = True
@@ -107,8 +107,8 @@ class FiltrationRos:
     # Callback for subscriber.
     def callback_commands(self, msg):
         message = msg.filtration_system_command
-        time_now = time.time()
-        if (time_now-self.time_before) > 25:
+        id = msg.seq
+        if id > self._prev_id:
             if message == msg.MAIN_FILTRATION:
                 self.main_filtration()
             elif message == msg.DRY:
@@ -123,6 +123,6 @@ class FiltrationRos:
                 self.stop()
             else:
                 rospy.loginfo("invalid command")
-            self.time_before = time_now
+            self._prev_id = id
 
 rospy.loginfo("working")
