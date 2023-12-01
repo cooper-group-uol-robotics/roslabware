@@ -127,14 +127,14 @@ class SashBalanceDoorRos:
     def open_balance_door(self):
         self.door.write((bytes("bopen", 'utf-8')))
         rospy.loginfo("Open balance door message sent to device controller.")
-        rospy.sleep(7)
+        rospy.sleep(8)
         self.balance_door_pub.publish(status = 'door_open')
         self.balance_door_process_complete = True
 
     def close_balance_door(self):
         self.door.write((bytes("bclose", 'utf-8')))
         rospy.loginfo("Close balance door message sent to device controller.")
-        rospy.sleep(7)
+        rospy.sleep(8)
         self.balance_door_pub.publish(status = 'door_closed')
         self.balance_door_process_complete = True
 
