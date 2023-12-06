@@ -7,7 +7,9 @@ import serial
 # Core
 from roslabware_msgs.msg import (
     BaseValveCmd,
-    BaseValveStatus)
+    BaseValveStatus,
+    BaseValveTask
+)
 from std_msgs.msg import Bool
 
 
@@ -50,9 +52,10 @@ class BaseValveRos:
         rospy.loginfo("Base Valve Driver Started")
 
         self._task_complete_pub = rospy.Publisher(
-            '/base_valve/task_complete',
-            Bool,
-            queue_size=1)
+            name="/base_valve/task_complete",
+            data_class=BaseValveTask,
+            queue_size=10
+        )
 
         # Sleeping rate.
         self.rate = rospy.Rate(1)

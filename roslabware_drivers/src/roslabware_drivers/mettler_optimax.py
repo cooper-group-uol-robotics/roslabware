@@ -9,6 +9,7 @@ from pylabware import Optimax
 from roslabware_msgs.msg import (
     MettlerOptimaxCmd,
     MettlerOptimaxReading,
+    MettlerOptimaxTask
 )
 from std_msgs.msg import Bool
 
@@ -55,9 +56,10 @@ class OptimaxRos:
         )
 
         self._task_complete_pub = rospy.Publisher(
-            '/mettler_optimax/task_complete',
-            Bool,
-            queue_size=1)
+            name="/mettler_optimax/task_complete",
+            data_class=MettlerOptimaxTask,
+            queue_size=10
+        )
 
         rospy.loginfo("Mettler Optimax Driver Started")
 
@@ -69,65 +71,67 @@ class OptimaxRos:
             self._task_complete_pub.publish(self.process_complete)
             rospy.sleep(5)
 
-    def create_experiment(self):
+    def _create_experiment(self):
         self.optimax._create_experiment()
         rospy.loginfo(f"Created new experiment.")
         rospy.sleep(3)
 
-    def add_temp_step(self, temperature, duration=None):
+    def _add_temp_step(self, temperature, duration=None):
         self.optimax._add_temperature_step(temperature, duration)
         rospy.loginfo(f"Added temperature step with temperature {temperature} ºC")
 
-    def add_stir_step(self, speed, duration):
+    def _add_stir_step(self, speed, duration):
         self.optimax._add_stirring_step(speed, duration)
         rospy.loginfo(f"Added stirring step with speed {speed} RPM")
 
-    def add_wait_step(self, time):
+    def _add_wait_step(self, time):
         self.optimax._add_waiting_step(time)
         rospy.loginfo(f"Added waiting step with duration {time} Minutes")
 
-    def add_sampling_step(self, dilution):
+    def _add_sampling_step(self, dilution):
         self.optimax._add_sampling_step(dilution)
         rospy.loginfo(f"Added sampling step with dilution {dilution}")
     
-    def add_end_experiment_step(self):
+    def _add_end_experiment_step(self):
         self.optimax._add_end_experiment_step()
         rospy.loginfo("Added end experiment step")
 
-    def start_experiment(self):
+    def _start_experiment(self):
         self.optimax.start()
         rospy.loginfo("Experiment Started")
 
-    def stop_experiment(self):
+    def stop_experiment(self, id):
         self.optimax.stop()
-        rospy.loginfo("Experiment Stopped") 
-        rospy.sleep(7)
+        finished = self.optimax.end_of_experiment_check()
+        while not finished:
+            finished = self.optimax.end_of_experiment_check()
+        rospy.loginfo("Experiment Stopped")
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
+        
+    def heat_wait(self, id, temp, stir_speed, wait_duration):
+        self._create_experiment()
+        self._add_stir_step(stir_speed, 20)
+        self._add_temp_step(temp)
+        self._add_wait_step(wait_duration)
+        self._add_end_experiment_step()
+        self._start_experiment()
+        time.sleep(15)
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
 
-    def para_heat_wait(self, temp, stir_speed, wait_duration):
-        self.create_experiment()
-        self.add_stir_step(stir_speed, 20)
-        self.add_temp_step(temp)
-        self.add_wait_step(wait_duration)
-        self.add_end_experiment_step()
-        self.start_experiment()
-
-    def para_sample(self, temp, stir_speed, dilution):
-        self.create_experiment()
-        self.add_stir_step(stir_speed, 20)
-        self.add_temp_step(temp)
-        self.add_sampling_step(dilution)
-        self.add_end_experiment_step()
-        self.start_experiment()
-
-    def paracetamol_synthesis(self): # Temporary method for whole paracetamol synthesis.
-        self.add_stir_step(300, 20)
-        self.add_temp_step(120,10)
-        self.add_wait_step(60)
-        self.add_stir_step(300,20)
-        self.add_temp_step(5,30)
-        self.add_wait_step(240)
-        self.add_end_experiment_step()
-        self.start_experiment()
+    def sample(self, id, temp, stir_speed, dilution):
+        self._create_experiment()
+        self._add_stir_step(stir_speed, 20)
+        self._add_temp_step(temp)
+        self._add_sampling_step(dilution)
+        self._add_end_experiment_step()
+        self._start_experiment()
+        finished = self.optimax.end_of_experiment_check()
+        while not finished:
+            finished = self.optimax.end_of_experiment_check()
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
                 
     # Callback for subscriber.
     def callback_commands(self, msg):
@@ -148,21 +152,10 @@ class OptimaxRos:
             dilution = msg.dilution
 
         if id > self._prev_id:
-            if message == msg.ADD_TEMP_STIR:
-                self.add_stir_step(stir_speed, stir_duration)
-                self.add_temp_step(temp, temp_duration)
-            elif message == msg.ADD_END:
-                self.add_end_experiment_step()
-            elif message == msg.START:
-                self.start_experiment()
-            elif message == msg.STOP:
-                self.stop_experiment()
-            elif message == msg.PARA_HW:
-                self.para_heat_wait(temp, stir_speed, wait_duration)
-            elif message == msg.PARA_S:
-                self.para_sample(temp, stir_speed, dilution)
-            elif message == msg.PARACETAMOL:
-                self.paracetamol_synthesis()
+            if message == msg.HEAT_WAIT:
+                self.heat_wait(id, temp, stir_speed, wait_duration)
+            elif message == msg.SAMPLE:
+                self.sample(id, temp, stir_speed, dilution)
             else:
                 rospy.loginfo("invalid command")
             

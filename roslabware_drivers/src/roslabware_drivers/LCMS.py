@@ -9,6 +9,7 @@ from labmatic import LCMS
 from roslabware_msgs.msg import (
     LcmsCmd,
     LcmsReading,
+    LcmsTask
 )
 
 from std_msgs.msg import Bool
@@ -63,9 +64,10 @@ class LcmsRos:
         rospy.loginfo("LCMS-client ROS driver started.")
 
         self._task_complete_pub = rospy.Publisher(
-            '/lcms/task_complete',
-            Bool,
-            queue_size=1)
+            name="/lcms/task_complete",
+            data_class=LcmsTask,
+            queue_size=10
+        )
         
         # Sleeping rate
         self.rate = rospy.Rate(2)

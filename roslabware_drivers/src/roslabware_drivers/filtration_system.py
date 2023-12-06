@@ -8,7 +8,9 @@ import time
 # Core
 from roslabware_msgs.msg import (
     FiltrationCmd,
-    FiltrationStatus)
+    FiltrationStatus,
+    FiltrationTask
+)
 from std_msgs.msg import Bool
 
 
@@ -54,9 +56,9 @@ class FiltrationRos:
         rospy.loginfo("Filtration station driver Started")
 
         self._task_complete_pub = rospy.Publisher(
-            '/filtration/task_complete',
-            Bool,
-            queue_size=1)
+            name="/filtration/task_complete",
+            data_class=FiltrationTask,
+            queue_size=10)
 
         # Sleeping rate
         self.rate = rospy.Rate(1)

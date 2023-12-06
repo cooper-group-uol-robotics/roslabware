@@ -1,11 +1,5 @@
-int32 CREATE_EXPERIMENT = 0
-int32 ADD_TEMP_STIR = 1
-int32 ADD_END = 2
-int32 START = 3
-int32 STOP = 4
-int32 PARA_HW = 5
-int32 PARA_S = 6
-int32 PARACETAMOL = 7
+int32 HEAT_WAIT = 0
+int32 SAMPLE = 1
 
 uint32 seq
 int32 optimax_command

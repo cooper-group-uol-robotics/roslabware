@@ -70,7 +70,6 @@ class PCB2500Ros:
                 self.pub.publish(self.mass)
                 self.rate.sleep()
 
-
     def tare_balance(self):
         self.tared = False
         rospy.loginfo("Zeroing balance.")

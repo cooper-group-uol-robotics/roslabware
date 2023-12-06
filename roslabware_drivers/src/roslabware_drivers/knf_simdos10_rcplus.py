@@ -7,7 +7,8 @@ import time
 # Core
 from roslabware_msgs.msg import (
     KnfRCPlusCmd,
-    KnfRCPlusReading
+    KnfRCPlusReading,
+    KnfRCPlusTask
 )
 from std_msgs.msg import Bool
 
@@ -68,9 +69,10 @@ class RCPlusRos:
         rospy.loginfo("KNF Simdos 10 RC-Plus Driver Started")
 
         self._task_complete_pub = rospy.Publisher(
-            '/knf_rcplus/task_complete',
-            Bool,
-            queue_size=1)
+            name="/knf_rcplus/task_complete",
+            data_class=KnfRCPlusTask,
+            queue_size=10
+        )
 
         # Sleeping rate
         self.rate = rospy.Rate(1)
