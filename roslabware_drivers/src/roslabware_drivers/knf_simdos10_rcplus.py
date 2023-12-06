@@ -43,7 +43,6 @@ class RCPlusRos:
         if simulation == "True":
             self.knf.simulation = True
 
-        self.operation_complete = False
         self._prev_id = -1
 
         # Initialise connection for KNF.
@@ -77,17 +76,15 @@ class RCPlusRos:
         # Sleeping rate
         self.rate = rospy.Rate(1)
 
-        # Get data - TODO What data should we be publishing for the knf pump? maybe dispensed volume?  if it is busy of not?
-        while not rospy.is_shutdown():
-            self._task_complete_pub.publish(self.operation_complete)
-            rospy.sleep(5)
-
-    def stop(self):
+    def stop(self, id):
         """ Stops executing any program/action immediately. """
         self.knf.stop()
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
 
     def dispense(
         self,
+        id,
         volume: float,
         speed: Optional[float] = DEFAULT_SPEED
     ):
@@ -96,7 +93,7 @@ class RCPlusRos:
         :param volume (float): volume to dispense in mL 
         :param speed Optional(float): speed in mL/min
         """
-        self.operation_complete = False
+        operation_complete = False
         self.knf.set_dispense_mode() # Set dispense in mL and time
         time.sleep(0.5)
         self.knf.set_dispense_volume(volume*1000) # Convert dispense mL to uL (pylabware driver takes uL)
@@ -105,23 +102,23 @@ class RCPlusRos:
         self.knf.set_time(dispense_time)
         time.sleep(0.5)
         self.knf.start()
-        time.sleep(2)
-        while self.operation_complete is False:
+        time.sleep(3)
+        while operation_complete is False:
             status = self.knf.get_status(1) 
             if 'FALSE Motor turns' in str(status):
-                self.operation_complete = True
-            else:
-                self.operation_complete = False
+                operation_complete = True
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
 
     def check_idle(self):
         """Reads back pump operation status."""
         status = self.knf.get_status(1)
-        if 'TRUE Motor' in status:
-            self.operation_complete = False
-            return False
-        else:
+        if 'False Motor turns' in status:
             self.operation_complete = True
             return True
+        else:
+            self.operation_complete = False
+            return False
 
     def callback_commands(self, msg):
         """ Callback commands for susbcriber. """
@@ -130,9 +127,9 @@ class RCPlusRos:
         id = msg.seq
         if id > self._prev_id:
             if message == msg.DISPENSE:
-                self.dispense(msg.knf_volume)
+                self.dispense(id, msg.knf_volume)
             elif message == msg.STOP:
-                self.stop()
+                self.stop(id)
             elif message == msg.CHECK_IDLE:
                 self.check_idle()
             else:

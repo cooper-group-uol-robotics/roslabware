@@ -29,7 +29,6 @@ class BaseValveRos:
 
         self.base_valve  = serial.Serial(port=port, baudrate=9600, timeout=None)
 
-        self.process_complete = False
         self._prev_msg = None
 
         if simulation == "True":
@@ -60,36 +59,32 @@ class BaseValveRos:
         # Sleeping rate.
         self.rate = rospy.Rate(1)
 
-        # Publish status of the valve.
-        while not rospy.is_shutdown():
-            self._task_complete_pub.publish(True)
-            rospy.sleep(5)
-
-    def _open_valve(self):
+    def _open_valve(self, id):
         self.base_valve.write((bytes("vopen", 'utf-8')))
         rospy.loginfo("open_valve_message_sent_to_miscware")
-        rospy.sleep(8) # TODO need a more robust method to know when valve has been opened rather than time.
-        self.process_complete = True
+        rospy.sleep(9) # TODO need a more robust method to know when valve has been opened rather than time.
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
 
-    def _close_valve(self):
+    def _close_valve(self, id):
         self.base_valve.write((bytes("vclose", 'utf-8')))
         rospy.loginfo("close_valve_message_sent_to_miscware")
-        rospy.sleep(8) # TODO need a more robust method to know when valve has been opened rather than time.
-        self.process_complete = True
+        rospy.sleep(9) # TODO need a more robust method to know when valve has been opened rather than time.
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
     
     # Callback for subscriber.
     def callback_commands(self, msg):
 
         command = msg.valve_command
+        id = msg.seq
         if command != self._prev_msg:
             if command == msg.OPEN:
                 rospy.loginfo("Open message received.")
-                self.process_complete = False
-                self._open_valve()
+                self._open_valve(id)
             elif command == msg.CLOSE:
                 rospy.loginfo("Close message received.")
-                self.process_complete = False
-                self._close_valve()
+                self._close_valve(id)
             else:
                 rospy.loginfo("Invalid command.")
             self._prev_msg = command

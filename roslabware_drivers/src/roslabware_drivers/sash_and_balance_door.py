@@ -34,8 +34,6 @@ class SashBalanceDoorRos:
         # Instantiate driver
         self.door = serial.Serial(port=port, baudrate=9600, timeout=None)
 
-        self.sash_door_process_complete = False
-        self.balance_door_process_complete = False
         self._sash_door_prev_msg = None
         self._balance_door_prev_msg = None
         

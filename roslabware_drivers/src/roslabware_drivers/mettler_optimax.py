@@ -38,7 +38,6 @@ class OptimaxRos:
         # self.optimax.connect()
 
         self.optimax.initialize_device()
-        self.process_complete = False
         self._prev_id = -1
 
         # Initialize ROS subscriber

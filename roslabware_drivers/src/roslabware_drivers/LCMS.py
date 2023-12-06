@@ -39,7 +39,6 @@ class LcmsRos:
         )
 
         self.result_dict = None
-        self.complete = False
         self._prev_id = -1
 
         self.lcms.connect_socket()
@@ -81,11 +80,8 @@ class LcmsRos:
                 lcmsmsg.y_values = self.result_dict[1]['y_values']
                 self.pub.publish(lcmsmsg)
             self.rate.sleep()
-            self._task_complete_pub.publish(self.complete)
-            self.rate.sleep()
 
-    def prep_analysis(self, num_samples=1):
-        self.complete = False
+    def prep_analysis(self, id, num_samples=1):
         self.result_dict = None
         _batch_file_create = self.lcms.create_batch_csv(num_samples=num_samples)
         rospy.sleep(2)
@@ -93,36 +89,35 @@ class LcmsRos:
             rospy.loginfo("Batch file created.")
         else:
             rospy.loginfo("Batch file not created.")
-        #self.lcms.autosampler_initialise() # TODO maybe don't need this?
-        self.complete = True
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
     
-    def load_batch(self):
-        self.complete = False
+    def load_batch(self, id):
         _batch_load = self.lcms.autosampler_load()
         if _batch_load:
             rospy.loginfo("Batch loaded into LCMS.")
         else:
             rospy.loginfo("Batch load error.")
-        self.complete = True
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
 
-    def start_analysis(self):
-        self.complete = False
+    def start_analysis(self, id):
         self.result_dict = self.lcms.get_lcms_results()
         if self.result_dict:
             rospy.loginfo("Analysis done and results received.")
         else:
             rospy.loginfo("Results not received.")
-        self.complete = True
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
 
-    def unload_batch(self):
-        self.complete = False
+    def unload_batch(self, id):
         _batch_unload = self.lcms.autosampler_unload()
         if _batch_unload:
             rospy.loginfo("Batch unloaded from LCMS.")
         else:
             rospy.loginfo("Batch unload error.")
-        self.complete = True
-
+        for i in range(10):
+            self._task_complete_pub(seq=id, complete=True)
 
     # Callback for subscriber.
     def callback_commands(self, msg):
@@ -133,15 +128,15 @@ class LcmsRos:
         if id > self._prev_id:
             if message == msg.START_PREP:
                 if msg.lcms_num_samples is not None:
-                    self.prep_analysis(msg.lcms_num_samples)
+                    self.prep_analysis(id, msg.lcms_num_samples)
                 else:
-                    self.prep_analysis()
+                    self.prep_analysis(id)
             elif message == msg.LOAD_BATCH:
-                self.load_batch()
+                self.load_batch(id)
             elif message == msg.UNLOAD_BATCH:
-                self.unload_batch()
+                self.unload_batch(id)
             elif message == msg.START_ANALYSIS:
-                self.start_analysis()
+                self.start_analysis(id)
             else:
                 rospy.loginfo("invalid command")
             self._prev_id = id

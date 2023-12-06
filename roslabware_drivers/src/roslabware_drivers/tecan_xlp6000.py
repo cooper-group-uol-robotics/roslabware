@@ -46,7 +46,6 @@ class XLP6000Ros:
         self.tecan.set_speed(150)
         self.tecan.initialize_device()
         self._waste_port = 12 # TODO check
-        self.operation_complete = False
         self.stop_dispense = False
 
         self._prev_id = -1
