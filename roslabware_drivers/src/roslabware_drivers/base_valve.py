@@ -74,7 +74,6 @@ class BaseValveRos:
         rospy.sleep(8) # TODO need a more robust method to know when valve has been opened rather than time.
         self.process_complete = True
     
-
     # Callback for subscriber.
     def callback_commands(self, msg):
 
