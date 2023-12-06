@@ -266,7 +266,7 @@ class XLP6000Ros:
             elif message == msg.STOP:
                 self.stop()
             elif message == msg.VOLUME:
-                self.volume_dispensed()
+                self.volume_dispensed(id)
             else:
                 rospy.loginfo("Invalid command.")
             self._prev_id = id
