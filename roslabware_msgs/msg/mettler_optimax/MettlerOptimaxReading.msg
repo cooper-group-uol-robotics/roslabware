@@ -1,1 +1,1 @@
-# Not supported in this device
+bool exp_ended

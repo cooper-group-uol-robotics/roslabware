@@ -63,12 +63,9 @@ class OptimaxRos:
         rospy.loginfo("Mettler Optimax Driver Started")
 
         while not rospy.is_shutdown():
-            # plunger, valve = self.get_positions()
-
-            self.process_complete = self.optimax.end_of_experiment_check()
-
-            self._task_complete_pub.publish(self.process_complete)
-            rospy.sleep(5)
+            self.experiment_ended = self.optimax.end_of_experiment_check()
+            self.pub.publish(exp_ended=self.experiment_ended)
+            rospy.sleep(3)
 
     def _create_experiment(self):
         self.optimax._create_experiment()
