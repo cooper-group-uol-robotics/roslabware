@@ -155,6 +155,8 @@ class OptimaxRos:
                 self.heat_wait(id, temp, stir_speed, wait_duration)
             elif message == msg.SAMPLE:
                 self.sample(id, temp, stir_speed, dilution)
+            elif message == msg.STOP:
+                self.stop_experiment(id)
             else:
                 rospy.loginfo("invalid command")
             

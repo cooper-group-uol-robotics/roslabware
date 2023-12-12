@@ -1,5 +1,6 @@
 int32 HEAT_WAIT = 0
 int32 SAMPLE = 1
+int32 STOP = 2
 
 uint32 seq
 int32 optimax_command
