@@ -64,14 +64,14 @@ class BaseValveRos:
         rospy.loginfo("Open valve message sent.")
         rospy.sleep(9) # TODO need a more robust method to know when valve has been opened rather than time.
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def _close_valve(self, id):
         self.base_valve.write((bytes("vclose", 'utf-8')))
         rospy.loginfo("Close valve message sent.")
         rospy.sleep(9) # TODO need a more robust method to know when valve has been opened rather than time.
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
     
     # Callback for subscriber.
     def callback_commands(self, msg):

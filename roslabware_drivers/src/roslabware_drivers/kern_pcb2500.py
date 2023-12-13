@@ -75,7 +75,7 @@ class PCB2500Ros:
         self.balance.tare_balance()
         rospy.sleep(2)
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def get_stable_mass(self, id):
         rospy.loginfo("Getting stable mass.")

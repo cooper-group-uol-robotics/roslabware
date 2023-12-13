@@ -3,14 +3,14 @@ from typing import Optional
 from pylabware import XLP6000
 import rospy
 import time
-
+import threading
 
 # Core
 from roslabware_msgs.msg import TecanXlp6000Cmd, TecanXlp6000Reading, TecanXlp6000Task
 from std_msgs.msg import Bool
 
 # Constants
-DEFAULT_SPEED = 140  # ml/min
+DEFAULT_SPEED = 100  # ml/min
 DEFAULT_RESOLUTION = "N2"
 
 
@@ -68,6 +68,7 @@ class XLP6000Ros:
 
         rospy.loginfo("XLP6000 Driver Started")
 
+        # Initialize ROS publisher for task completeness
         self._task_complete_pub = rospy.Publisher(
             name="/tecan_xlp/task_complete", 
             data_class=TecanXlp6000Task,
@@ -127,7 +128,7 @@ class XLP6000Ros:
         increments = self._volume_to_step(split_volume)
         velocity = self._convert_velocity(self._speed)
         # Actions
-        rospy.loginfo(f"dispense command received for volume:{split_volume} ml")
+        rospy.loginfo(f"Dispense command received for volume:{split_volume} ml")
         self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
         self.tecan.dispense(increments)
@@ -147,7 +148,7 @@ class XLP6000Ros:
         increments = self._volume_to_step(split_volume)
         velocity = self._convert_velocity(DEFAULT_SPEED)
         # Actions
-        rospy.loginfo(f"withdraw command received for volume:{split_volume} ml")
+        rospy.loginfo(f"Withdraw command received for volume:{split_volume} ml")
         self.tecan.set_valve_position(_port)
         self.tecan.set_speed(speed=velocity)
         self.tecan.withdraw(increments)
@@ -172,7 +173,7 @@ class XLP6000Ros:
     
     def volume_dispensed(self, id):
         """Return current amount dispensed."""
-        self.pub(seq = id, volume = self.vol_dispensed)
+        self.pub.publish(seq = id, volume = self.vol_dispensed)
     
     def request_pumping(
         self,
@@ -203,21 +204,23 @@ class XLP6000Ros:
             while not self.tecan.is_idle():
                 time.sleep(1)
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def request_inf_pumping(
         self,
         id,
         withdraw_port: int,
         dispense_port: int,
+        volume: float, # volume will be read as MAX to dispense - no more will be dispensed after this
         speed: Optional[float] = DEFAULT_SPEED
     ):
 
+        rospy.loginfo("Starting syringe pump infinite dispense.")
         self.vol_dispensed = 0
         self._withdraw_port = withdraw_port
         self._dispense_port = dispense_port
         self._speed = speed
-        while self.stop_dispense == False: #TODO test if this will work?  Or will it get stuck in here? Threading! 
+        while self.stop_dispense == False and self.vol_dispensed <= volume:
             self.withdraw(self._syringe_size)
             while not self.tecan.is_idle():
                 time.sleep(1)
@@ -226,39 +229,44 @@ class XLP6000Ros:
             while not self.tecan.is_idle():
                 time.sleep(1)
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def stop(self, id):
         """Stops executing any program/action immediately."""
+        rospy.loginfo("Stopping syringe pump and moving home.")
         self.stop_dispense = True 
         self.tecan.stop()
-        # TODO what port will be the waste port?
-        _port = "I" + str(self._waste_port)
+        _port = "I" + str(self._waste_port) # waste port is generally 12
         self.tecan.set_valve_position(_port)
         # Pump out any excess liquid to waste
         self.tecan.move_home()
+        time.sleep(5)
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
         
     def callback_commands(self, msg):
         """Callback commands for susbcriber."""
         message = msg.tecan_xlp_command
         id = msg.seq
         if id > self._prev_id:
-            self.operation_complete = False
-            if message == msg.FINITE_DISPENSE:
+            if message == msg.F_DISPENSE:
                 self.request_pumping(
                     id,
                     msg.xlp_withdraw_port,
                     msg.xlp_dispense_port,
                     msg.xlp_volume,
                     msg.xlp_speed)
-            elif message == msg.INFINITE_DISPENSE:
-                self.request_inf_pumping(
-                    id,
-                    msg.xlp_withdraw_port,
-                    msg.xlp_dispense_port,
-                    msg.xlp_speed)
+            elif message == msg.INF_DISPENSE:
+                t1 = threading.Thread(
+                    target=self.request_inf_pumping, 
+                    args=[
+                        id,
+                        msg.xlp_withdraw_port,
+                        msg.xlp_dispense_port,
+                        msg.xlp_speed
+                    ]
+                )
+                t1.start()
             elif message == msg.STOP:
                 self.stop(id)
             elif message == msg.VOLUME:

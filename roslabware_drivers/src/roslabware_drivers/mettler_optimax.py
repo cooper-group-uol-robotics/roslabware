@@ -103,7 +103,7 @@ class OptimaxRos:
             finished = self.optimax.end_of_experiment_check()
         rospy.loginfo("Experiment Stopped")
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
         
     def heat_wait(self, id, temp, stir_speed, wait_duration):
         self._create_experiment()
@@ -114,7 +114,7 @@ class OptimaxRos:
         self._start_experiment()
         time.sleep(15)
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def sample(self, id, temp, stir_speed, dilution):
         self._create_experiment()
@@ -127,7 +127,7 @@ class OptimaxRos:
         while not finished:
             finished = self.optimax.end_of_experiment_check()
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
                 
     # Callback for subscriber.
     def callback_commands(self, msg):

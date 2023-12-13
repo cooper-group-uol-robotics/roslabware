@@ -90,7 +90,7 @@ class LcmsRos:
         else:
             rospy.loginfo("Batch file not created.")
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
     
     def load_batch(self, id):
         _batch_load = self.lcms.autosampler_load()
@@ -99,7 +99,7 @@ class LcmsRos:
         else:
             rospy.loginfo("Batch load error.")
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def start_analysis(self, id):
         self.result_dict = self.lcms.get_lcms_results()
@@ -108,7 +108,7 @@ class LcmsRos:
         else:
             rospy.loginfo("Results not received.")
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def unload_batch(self, id):
         _batch_unload = self.lcms.autosampler_unload()
@@ -117,7 +117,7 @@ class LcmsRos:
         else:
             rospy.loginfo("Batch unload error.")
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     # Callback for subscriber.
     def callback_commands(self, msg):

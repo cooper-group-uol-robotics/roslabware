@@ -91,18 +91,18 @@ class SashBalanceDoorRos:
     def open_sash_door(self, id):
         self.door.write((bytes("sopen", "utf-8")))
         rospy.loginfo("Open sash door message sent to device controller.")
-        rospy.sleep(64)
+        rospy.sleep(70)
         self.sash_door_pub.publish(status="door_open")
         for i in range(10):
-            self._sash_door_task_complete_pub(seq=id, complete=True)
+            self._sash_door_task_complete_pub.publish(seq=id, complete=True)
 
     def close_sash_door(self, id):
         self.door.write((bytes("sclose", 'utf-8')))
         rospy.loginfo("Close sash door message sent to device controller.")
-        rospy.sleep(66)
+        rospy.sleep(70)
         self.sash_door_pub.publish(status="door_closed")
         for i in range(10):
-            self._sash_door_task_complete_pub(seq=id, complete=True)
+            self._sash_door_task_complete_pub.publish(seq=id, complete=True)
 
     def sash_door_callback_commands(self, msg):
         message = msg.sash_door_command
@@ -110,11 +110,9 @@ class SashBalanceDoorRos:
         rospy.loginfo("Sash door message received.")
         if message != self._sash_door_prev_msg:
             if message == msg.OPEN_DOOR:
-                self.sash_door_process_complete = False
                 rospy.loginfo("Open sash message received.")
                 self.open_sash_door(id)
             elif message == msg.CLOSE_DOOR:
-                self.sash_door_process_complete = False
                 rospy.loginfo("Close sash message received.")
                 self.close_sash_door(id)
             else:
@@ -129,7 +127,7 @@ class SashBalanceDoorRos:
         rospy.sleep(8)
         self.balance_door_pub.publish(status="door_open")
         for i in range(10):
-            self._balance_door_task_complete_pub(seq=id, complete=True)
+            self._balance_door_task_complete_pub.publish(seq=id, complete=True)
 
     def close_balance_door(self, id):
         self.door.write((bytes("bclose", 'utf-8')))
@@ -137,7 +135,7 @@ class SashBalanceDoorRos:
         rospy.sleep(8)
         self.balance_door_pub.publish(status="door_closed")
         for i in range(10):
-            self._balance_door_task_complete_pub(seq=id, complete=True)
+            self._balance_door_task_complete_pub.publish(seq=id, complete=True)
 
     def balance_door_callback_commands(self, msg):
         message = msg.kern_door_command
@@ -145,11 +143,9 @@ class SashBalanceDoorRos:
         rospy.loginfo("Balance door message received.")
         if message != self._balance_door_prev_msg:
             if message == msg.OPEN_DOOR:
-                self.balance_door_process_complete = False
                 rospy.loginfo("Open balance door message received.")
                 self.open_balance_door(id)
             elif message == msg.CLOSE_DOOR:
-                self.balance_door_process_complete = False
                 rospy.loginfo("Close balance door message received.")
                 self.close_balance_door(id)
             else:

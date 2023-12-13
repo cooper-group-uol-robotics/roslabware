@@ -74,6 +74,4 @@ if __name__ == "__main__":
         switch_address=args.knf_switch_address,
         simulation=args.knf_simulation)
 
-    # Stop everything on shutdown
-    rospy.on_shutdown(diaphragm_pump.stop())
     rospy.spin()

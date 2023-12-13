@@ -80,7 +80,7 @@ class RCPlusRos:
         """ Stops executing any program/action immediately. """
         self.knf.stop()
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def dispense(
         self,
@@ -108,7 +108,7 @@ class RCPlusRos:
             if 'FALSE Motor turns' in str(status):
                 operation_complete = True
         for i in range(10):
-            self._task_complete_pub(seq=id, complete=True)
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def check_idle(self):
         """Reads back pump operation status."""
