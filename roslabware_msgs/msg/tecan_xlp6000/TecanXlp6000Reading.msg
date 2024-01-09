@@ -1,2 +1,2 @@
 uint32 seq
-int32 volume
+float32 volume

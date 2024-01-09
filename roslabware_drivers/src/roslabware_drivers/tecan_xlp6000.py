@@ -173,7 +173,11 @@ class XLP6000Ros:
     
     def volume_dispensed(self, id):
         """Return current amount dispensed."""
-        self.pub.publish(seq = id, volume = self.vol_dispensed)
+        rospy.loginfo("Publishing dispensed volume.")
+        for i in range(10):
+            self.pub.publish(seq = id, volume = self.vol_dispensed)
+        for i in range(10):
+            self._task_complete_pub.publish(seq=id, complete=True)
     
     def request_pumping(
         self,
@@ -211,7 +215,7 @@ class XLP6000Ros:
         id,
         withdraw_port: int,
         dispense_port: int,
-        volume: float, # volume will be read as MAX to dispense - no more will be dispensed after this
+        volume: float = 100000, # volume will be read as MAX to dispense - no more will be dispensed after this
         speed: Optional[float] = DEFAULT_SPEED
     ):
 
@@ -221,13 +225,22 @@ class XLP6000Ros:
         self._dispense_port = dispense_port
         self._speed = speed
         while self.stop_dispense == False and self.vol_dispensed <= volume:
+            rospy.loginfo("Infinite pumping withdraw.")
             self.withdraw(self._syringe_size)
             while not self.tecan.is_idle():
                 time.sleep(1)
-            self.dispense(self._syringe_size)
-            self.vol_dispensed += self._syringe_size
-            while not self.tecan.is_idle():
-                time.sleep(1)
+            rospy.loginfo("Inf pumping dispense.")
+            num_steps = 50
+            step = self._syringe_size/num_steps
+            for i in range(num_steps):
+                if self.stop_dispense == False and self.vol_dispensed <= volume:
+                    self.dispense(step)
+                    self.vol_dispensed += step
+                    while not self.tecan.is_idle():
+                        time.sleep(1)
+                else:
+                    break
+        rospy.loginfo("Infinite pumping ended.")
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
 
@@ -239,6 +252,7 @@ class XLP6000Ros:
         _port = "I" + str(self._waste_port) # waste port is generally 12
         self.tecan.set_valve_position(_port)
         # Pump out any excess liquid to waste
+        rospy.loginfo("Pumping out any excess liquid to waste")
         self.tecan.move_home()
         time.sleep(5)
         for i in range(10):
@@ -263,6 +277,7 @@ class XLP6000Ros:
                         id,
                         msg.xlp_withdraw_port,
                         msg.xlp_dispense_port,
+                        msg.xlp_volume,
                         msg.xlp_speed
                     ]
                 )
