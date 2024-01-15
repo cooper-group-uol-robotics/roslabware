@@ -82,7 +82,7 @@ class SashBalanceDoorRos:
         )
 
         # Initialize rate object for consistent timed looping
-        self.rate = rospy.Rate(10)
+        self.rate = rospy.Rate(1)
 
         rospy.loginfo("Sash and balance door driver started.")
 
