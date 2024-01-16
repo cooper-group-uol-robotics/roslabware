@@ -1,0 +1,251 @@
+<launch>
+ <!-- Weighing_Balance_Details -->
+
+	<arg
+		name="b_device_name"
+		default="kern_pcb2500"/>
+	<arg
+		name="b_connection_mode"
+		default="serial"/>
+	<arg
+		name="b_address"
+		default="None"/>
+	<arg
+		name="b_port"
+		default="COM15"/>
+	<arg
+		name="b_simulation"
+		default = 'False'/>
+	<node
+		name="Kern_PCB2500_Driver"
+		pkg="roslabware_drivers"
+		type="kern_pcb2500"
+		args="
+			-bd $(arg b_device_name)
+			-bc $(arg b_connection_mode)
+			-badd $(arg b_address)
+			-bp $(arg b_port)
+			-bs $(arg b_simulation)"
+		output="screen"/>
+
+
+ <!-- Sash_and_Balance_Door_Details -->
+
+	<arg
+		name="s_name"
+		default="Sash_and_Balance_Door"/>
+	<arg
+		name="s_connection_mode"
+		default="serial"/>
+	<arg
+		name="s_address"
+		default="None"/>
+	<arg
+		name="s_port"
+		default="COM5"/>
+	<arg
+		name="s_simulation"
+		default = 'False'/>
+	<node
+		name="sash_and_balance_door_driver"
+		pkg="roslabware_drivers"
+		type="sash_and_balance_door"
+		args="
+			-sd $(arg s_name)
+			-sc $(arg s_connection_mode)
+			-sadd $(arg s_address)
+			-sp $(arg s_port)
+			-ss $(arg s_simulation)"
+		output="screen"/>
+
+ <!-- Base_Valve_Details -->
+
+    <arg
+		name="bv_device_name"
+		default="base_valve"/>
+	<arg
+		name="bv_connection_mode"
+		default="serial"/>
+	<arg
+		name="bv_address"
+		default="None"/>
+	<arg
+		name="bv_port"
+		default="COM7"/>
+	<arg
+		name="bv_simulation"
+		default="False"/>
+	<node
+		name="base_valve"
+		pkg="roslabware_drivers"
+		type="base_valve"
+		args="
+			-bvd $(arg bv_device_name)
+			-bvc $(arg bv_connection_mode)
+			-bvadd $(arg bv_address)
+			-bvp $(arg bv_port)
+			-bvl $(arg bv_simulation)"
+		output="screen"/>
+
+ <!-- Filtration_System_Details -->
+
+    <arg
+		name="f_device_name"
+		default="filtration_system"/>
+	<arg
+		name="f_connection_mode"
+		default="serial"/>
+	<arg
+		name="f_address"
+		default="None"/>
+	<arg
+		name="f_port"
+		default="COM6"/>
+	<arg
+		name="f_simulation"
+		default="False"/>
+	<node
+		name="filtration_system"
+		pkg="roslabware_drivers"
+		type="filtration_system"
+		args="
+			-fd $(arg f_device_name)
+			-fc $(arg f_connection_mode)
+			-fadd $(arg f_address)
+			-fp $(arg f_port)
+			-fl $(arg f_simulation)"
+		output="screen"/>
+
+ <!-- KNF_Pump_Details -->
+    
+    <arg 
+		name="knf_device_name"
+		default="knf_simdos10_rcplus"/>
+	<arg
+		name="knf_connection_mode"
+		default="serial"/>
+	<arg
+		name="knf_address"
+		default="None"/>
+	<arg
+		name="knf_port"
+		default="COM8"/>
+	<arg
+		name="knf_switch_address"
+		default="00"/>
+	<arg
+		name="knf_simulation"
+		default="False"/>
+	<node 
+		name="knf_simdos10_rcplus"
+		pkg="roslabware_drivers"
+		type="knf_simdos10_rcplus"
+		args="
+			-knfd $(arg knf_device_name)
+			-knfc $(arg knf_connection_mode)
+			-knfadd $(arg knf_address)
+			-knfp $(arg knf_port)
+			-knfswa $(arg knf_switch_address)
+			-knfl $(arg knf_simulation)"
+		output="screen"/>
+
+<!-- OptiMax_Details -->
+    
+    <arg
+		name="o_device_name"
+		default="mettler_optimax"/>
+	<arg
+		name="o_connection_mode"
+		default="serial"/>
+	<arg
+		name="o_address"
+		default="None"/>
+	<arg
+		name="o_port"
+		default="/dev/ttyUSB0"/>
+	<arg
+		name="o_simulation"
+		default="False"/>
+	<node
+		name="mettler_optimax"
+		pkg="roslabware_drivers"
+		type="mettler_optimax"
+		args="
+			-od $(arg o_device_name)
+			-oc $(arg o_connection_mode)
+			-oadd $(arg o_address)
+			-op $(arg o_port)
+			-ol $(arg o_simulation)"
+		output="screen"/>
+
+    <!-- LCMS_Details -->
+
+    <arg
+		name="l_device_name"
+		default="lcms"/>
+	<arg
+		name="l_connection_mode"
+		default="tcpip"/>
+	<arg
+		name="l_address"
+		default="172.31.1.18"/>
+	<arg
+		name="l_port"
+		default="8000"/>
+	<arg
+		name="l_experiment_name"
+		default="test"/>
+	<arg
+		name="l_simulation"
+		default="False"/>
+	<node
+		name="lcms"
+		pkg="roslabware_drivers"
+		type="lcms"
+		args="
+			-ld $(arg l_device_name)
+			-lc $(arg l_connection_mode)
+			-ladd $(arg l_address)
+			-lp $(arg l_port)
+			-ll $(arg l_simulation)
+			-lx $(arg l_experiment_name)"
+		output="screen"/>
+
+<!-- Tecan_XLP_Details -->
+    
+    <arg
+		name="t_device_name"
+		default="tecan_xlp6000"/>
+	<arg
+		name="t_connection_mode"
+		default="serial"/>
+	<arg
+		name="t_address"
+		default="None"/>
+	<arg
+		name="t_port"
+		default="COM4"/>
+	<arg
+		name="t_switch_address"
+		default="0"/>
+	<arg
+		name="t_syringe_size"
+		default="25.0"/>
+	<arg
+		name="t_simulation"
+		default="False"/>
+	<node
+		name="tecan_xlp6000"
+		pkg="roslabware_drivers"
+		type="tecan_xlp6000"
+		args="
+			-td $(arg t_device_name)
+			-tc $(arg t_connection_mode)
+			-tadd $(arg t_address)
+			-tp $(arg t_port)
+			-tl $(arg t_simulation)
+			-tw $(arg t_switch_address)
+			-tz $(arg t_syringe_size)"
+		output="screen"/>
+
+</launch>
