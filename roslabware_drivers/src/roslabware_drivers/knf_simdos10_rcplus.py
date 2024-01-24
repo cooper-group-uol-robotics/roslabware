@@ -95,14 +95,14 @@ class RCPlusRos:
         """
         operation_complete = False
         self.knf.set_dispense_mode() # Set dispense in mL and time
-        time.sleep(0.5)
+        rospy.sleep(3)
         self.knf.set_dispense_volume(volume*1000) # Convert dispense mL to uL (pylabware driver takes uL)
-        time.sleep(0.5)
+        rospy.sleep(3)
         dispense_time = (volume/speed)*60 # Gives time to dispense in seconds
         self.knf.set_time(dispense_time)
-        time.sleep(0.5)
+        rospy.sleep(3)
         self.knf.start()
-        time.sleep(3)
+        rospy.sleep(3)
         while operation_complete is False:
             status = self.knf.get_status(1) 
             if 'FALSE Motor turns' in str(status):
