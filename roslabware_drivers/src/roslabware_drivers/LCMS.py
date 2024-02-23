@@ -123,9 +123,9 @@ class LcmsRos:
     def callback_commands(self, msg):
 
         message = msg.lcms_command
-        rospy.loginfo("Message received.")
         id = msg.seq
         if id > self._prev_id:
+            rospy.loginfo("Message received.")
             if message == msg.START_PREP:
                 if msg.lcms_num_samples is not None:
                     self.prep_analysis(id, msg.lcms_num_samples)

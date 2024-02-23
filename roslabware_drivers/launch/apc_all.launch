@@ -129,7 +129,7 @@
 		default="None"/>
 	<arg
 		name="knf_port"
-		default="COM8"/>
+		default="COM8 "/>
 	<arg
 		name="knf_switch_address"
 		default="00"/>
