@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-fp',
         '--f_port',
         action='store',
-        default='COM6',
+        default='COM14',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')

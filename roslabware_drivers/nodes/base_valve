@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '-bvp',
         '--bv_port',
         action='store',
-        default='COM7',
+        default='COM5',
         nargs='?',
         const=1,
         help='Serial or TCP/IP port')

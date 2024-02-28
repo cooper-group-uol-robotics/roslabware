@@ -73,17 +73,19 @@ class BaseValveRos:
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
 
-    def _open_valve_s(self, id):
-        self.base_valve.write((bytes("svopen", 'utf-8')))
-        rospy.loginfo("Open valve message sent.")
-        rospy.sleep(7) # TODO need a more robust method to know when valve has been opened rather than time.
+    def _update_steps(self, id, num_steps):
+        self.base_valve.write((bytes("update_steps", 'utf-8')))
+        rospy.sleep(2)
+        self.base_valve.write((bytes(f"{num_steps}", 'utf-8')))
+        rospy.loginfo("Update steps messages sent.")
+        rospy.sleep(2) 
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
 
-    def _close_valve_s(self, id):
-        self.base_valve.write((bytes("svclose", 'utf-8')))
-        rospy.loginfo("Close valve message sent.")
-        rospy.sleep(7) # TODO need a more robust method to know when valve has been opened rather than time.
+    def _open_close_valve(self, id):
+        self.base_valve.write((bytes("vopenclose", 'utf-8')))
+        rospy.loginfo("Open valve message sent.")
+        rospy.sleep(20) # TODO need a more robust method to know when valve has been opened rather than time.
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
     
@@ -92,19 +94,19 @@ class BaseValveRos:
 
         command = msg.valve_command
         id = msg.seq
-        if command != self._prev_msg:
+        if id > self._prev_id:
             if command == msg.OPEN:
                 rospy.loginfo("Open message received.")
                 self._open_valve(id)
             elif command == msg.CLOSE:
                 rospy.loginfo("Close message received.")
                 self._close_valve(id)
-            elif command == msg.OPEN_S:
+            elif command == msg.OPEN_CLOSE:
                 rospy.loginfo("Small open message received.")
-                self._open_valve_s(id)
-            elif command == msg.CLOSE_S:
-                rospy.loginfo("Small close message received.")
-                self._close_valve_s(id)
+                self._open_close_valve(id)
+            elif command == msg.UPDATE:
+                rospy.loginfo("Update steps message received.")
+                self._update_steps(id, msg.num_steps)
             else:
                 rospy.loginfo("Invalid command.")
             self._prev_msg = command

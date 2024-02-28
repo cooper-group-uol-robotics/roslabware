@@ -28,7 +28,7 @@ class FiltrationRos:
         simulation: bool,
     ):
 
-        self.filtration_system = FiltrationSystem(device_name="filtration_system", port="COM6", connection_mode="serial")
+        self.filtration_system = FiltrationSystem(device_name="filtration_system", port="COM14", connection_mode="serial")
 
         self.filtration_system.connect()
         rospy.sleep(2)
