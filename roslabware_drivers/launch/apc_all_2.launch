@@ -28,39 +28,6 @@
 			-bs $(arg b_simulation)"
 		output="screen"/>
 
- <!-- KNF_Pump_Details -->
-    
-    <arg 
-		name="knf_device_name"
-		default="knf_simdos10_rcplus"/>
-	<arg
-		name="knf_connection_mode"
-		default="serial"/>
-	<arg
-		name="knf_address"
-		default="None"/>
-	<arg
-		name="knf_port"
-		default="COM8"/>
-	<arg
-		name="knf_switch_address"
-		default="00"/>
-	<arg
-		name="knf_simulation"
-		default="False"/>
-	<node 
-		name="knf_simdos10_rcplus"
-		pkg="roslabware_drivers"
-		type="knf_simdos10_rcplus"
-		args="
-			-knfd $(arg knf_device_name)
-			-knfc $(arg knf_connection_mode)
-			-knfadd $(arg knf_address)
-			-knfp $(arg knf_port)
-			-knfswa $(arg knf_switch_address)
-			-knfl $(arg knf_simulation)"
-		output="screen"/>
-
 <!-- OptiMax_Details -->
     
     <arg
