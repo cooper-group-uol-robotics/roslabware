@@ -59,17 +59,13 @@ class BaseValveRos:
         # Sleeping rate.
         self.rate = rospy.Rate(1)
 
-    def _open_valve(self, id):
+    def _open_close_long(self, id):
         self.base_valve.write((bytes("vopen", 'utf-8')))
         rospy.loginfo("Open valve message sent.")
-        rospy.sleep(9) # TODO need a more robust method to know when valve has been opened rather than time.
-        for i in range(10):
-            self._task_complete_pub.publish(seq=id, complete=True)
-
-    def _close_valve(self, id):
+        rospy.sleep(90) # Open valve for a long time, so all liquid will drain.
         self.base_valve.write((bytes("vclose", 'utf-8')))
         rospy.loginfo("Close valve message sent.")
-        rospy.sleep(9) # TODO need a more robust method to know when valve has been opened rather than time.
+        rospy.sleep(15)
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
 
@@ -82,7 +78,7 @@ class BaseValveRos:
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
 
-    def _open_close_valve(self, id):
+    def _open_close_steps(self, id):
         self.base_valve.write((bytes("vopenclose", 'utf-8')))
         rospy.loginfo("Open valve message sent.")
         rospy.sleep(20) # TODO need a more robust method to know when valve has been opened rather than time.
@@ -95,15 +91,12 @@ class BaseValveRos:
         command = msg.valve_command
         id = msg.seq
         if id > self._prev_id:
-            if command == msg.OPEN:
+            if command == msg.OPEN_CLOSE_LONG:
                 rospy.loginfo("Open message received.")
-                self._open_valve(id)
-            elif command == msg.CLOSE:
-                rospy.loginfo("Close message received.")
-                self._close_valve(id)
-            elif command == msg.OPEN_CLOSE:
-                rospy.loginfo("Small open message received.")
-                self._open_close_valve(id)
+                self._open_close_long(id)
+            elif command == msg.OPEN_CLOSE_STEPS:
+                rospy.loginfo("Custom open close message received.")
+                self._open_close_steps(id)
             elif command == msg.UPDATE:
                 rospy.loginfo("Update steps message received.")
                 self._update_steps(id, msg.num_steps)
