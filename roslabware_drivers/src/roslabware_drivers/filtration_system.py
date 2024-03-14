@@ -70,17 +70,21 @@ class FiltrationRos:
         while not complete:
             complete = self.filtration_system.check_status()
             time.sleep(1)
-        self._task_complete_pub.publish(seq=id, complete=True)
+        rospy.loginfo("Main filtration complete.")
+        for i in range(10):
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def dry(self, id):
         rospy.loginfo("Drying.")
         self.filtration_system.dry()
-        rospy.sleep(3)
+        rospy.sleep(10)
         complete = False
         while not complete:
             complete = self.filtration_system.check_status()
             time.sleep(1)
-        self._task_complete_pub.publish(seq=id, complete=True)
+        rospy.loginfo("Drying complete.")
+        for i in range(10):
+            self._task_complete_pub.publish(seq=id, complete=True)
     
     def timed_drain(self, id):
         rospy.loginfo("Running timed drain.")
@@ -90,7 +94,9 @@ class FiltrationRos:
         while not complete:
             complete = self.filtration_system.check_status()
             time.sleep(1)
-        self._task_complete_pub.publish(seq=id, complete=True)
+        rospy.loginfo("Timed drain complete.")
+        for i in range(10):
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def drain(self, id):
         rospy.loginfo("Draining.")
@@ -100,7 +106,8 @@ class FiltrationRos:
         while not complete:
             complete = self.filtration_system.check_status()
             time.sleep(1)
-        self._task_complete_pub.publish(seq=id, complete=True)
+        for i in range(10):
+            self._task_complete_pub.publish(seq=id, complete=True)
 
     def vacuum(self, id):
         rospy.loginfo("Vacuuming.")
@@ -111,7 +118,8 @@ class FiltrationRos:
         while not complete:
             complete = self.filtration_system.check_status()
             time.sleep(1)
-        self._task_complete_pub.publish(seq=id, complete=True)
+        for i in range(10):
+            self._task_complete_pub.publish(seq=id, complete=True)
     
     def stop(self, id):
         rospy.loginfo("Stopping all process.")
@@ -121,7 +129,8 @@ class FiltrationRos:
         while not complete:
             complete = self.filtration_system.check_status()
             time.sleep(1)
-        self._task_complete_pub.publish(seq=id, complete=True)
+        for i in range(10):
+            self._task_complete_pub.publish(seq=id, complete=True)
     
     # Callback for subscriber.
     def callback_commands(self, msg):

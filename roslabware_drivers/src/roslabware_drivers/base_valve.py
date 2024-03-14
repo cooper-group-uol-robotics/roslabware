@@ -30,6 +30,7 @@ class BaseValveRos:
         self.base_valve  = serial.Serial(port=port, baudrate=9600, timeout=None)
 
         self._prev_msg = None
+        self._prev_id = -1
 
         if simulation == "True":
             self.base_valve.simulation = True
@@ -62,23 +63,19 @@ class BaseValveRos:
     def _open_close_long(self, id):
         self.base_valve.write((bytes("vopen", 'utf-8')))
         rospy.loginfo("Open valve message sent.")
-        rospy.sleep(90) # Open valve for a long time, so all liquid will drain.
+        rospy.sleep(60) # Open valve for a long time, so all liquid will drain.
         self.base_valve.write((bytes("vclose", 'utf-8')))
         rospy.loginfo("Close valve message sent.")
         rospy.sleep(15)
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
 
-    def _update_steps(self, id, num_steps):
+    def _open_close_steps(self, id, num_steps):
         self.base_valve.write((bytes("update_steps", 'utf-8')))
-        rospy.sleep(2)
+        rospy.sleep(3)
         self.base_valve.write((bytes(f"{num_steps}", 'utf-8')))
         rospy.loginfo("Update steps messages sent.")
-        rospy.sleep(2) 
-        for i in range(10):
-            self._task_complete_pub.publish(seq=id, complete=True)
-
-    def _open_close_steps(self, id):
+        rospy.sleep(3) 
         self.base_valve.write((bytes("vopenclose", 'utf-8')))
         rospy.loginfo("Open valve message sent.")
         rospy.sleep(20) # TODO need a more robust method to know when valve has been opened rather than time.
@@ -96,10 +93,8 @@ class BaseValveRos:
                 self._open_close_long(id)
             elif command == msg.OPEN_CLOSE_STEPS:
                 rospy.loginfo("Custom open close message received.")
-                self._open_close_steps(id)
-            elif command == msg.UPDATE:
-                rospy.loginfo("Update steps message received.")
-                self._update_steps(id, msg.num_steps)
+                self._open_close_steps(id, msg.num_steps)
             else:
                 rospy.loginfo("Invalid command.")
+            self._prev_id = id
             self._prev_msg = command
