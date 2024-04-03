@@ -68,7 +68,7 @@ class PCB2500Ros:
         )
 
         # Initialize rate object for consistent timed looping
-        self.rate = rospy.Rate(10)
+        self.rate = rospy.Rate(1)
 
     def tare_balance(self, id):
         rospy.loginfo("Zeroing balance.")

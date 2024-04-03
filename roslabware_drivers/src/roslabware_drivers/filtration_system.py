@@ -28,10 +28,7 @@ class FiltrationRos:
         simulation: bool,
     ):
 
-        self.filtration_system = FiltrationSystem(device_name="filtration_system", port="COM14", connection_mode="serial")
-
-        self.filtration_system.connect()
-        rospy.sleep(2)
+        self.filtration_system = serial.Serial(port=port, baudrate=9600, timeout=None)
 
         self._prev_id = -1
 
@@ -64,71 +61,81 @@ class FiltrationRos:
 
     def main_filtration(self, id):
         rospy.loginfo("Running main filtration method.")
-        self.filtration_system.main_filtration()
+        rospy.sleep(2)
+        self.filtration_system.write((bytes("vac_valve_open", 'utf-8')))
         rospy.sleep(3)
-        complete = False
-        while not complete:
-            complete = self.filtration_system.check_status()
-            time.sleep(1)
+        self.filtration_system.write((bytes("vac_on", 'utf-8')))
+        rospy.sleep(15)
+        self.filtration_system.write((bytes("vac_off", 'utf-8')))
+        rospy.sleep(1)
+        self.filtration_system.write((bytes("vac_valve_close", 'utf-8')))
+        rospy.sleep(2)
+        self.filtration_system.write((bytes("drain_on", 'utf-8')))
+        rospy.sleep(15)
+        self.filtration_system.write((bytes("drain_off", 'utf-8')))
+        rospy.sleep(2)
         rospy.loginfo("Main filtration complete.")
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
 
     def dry(self, id):
         rospy.loginfo("Drying.")
-        self.filtration_system.dry()
+        rospy.sleep(2)
+        self.filtration_system.write((bytes("vac_valve_open", 'utf-8')))
+        rospy.sleep(3)
+        self.filtration_system.write((bytes("vac_on", 'utf-8')))
+        rospy.sleep(200)
+        self.filtration_system.write((bytes("vac_off", 'utf-8')))
+        rospy.sleep(7)
+        self.filtration_system.write((bytes("vac_valve_close", 'utf-8')))
+        rospy.sleep(3)
+        self.filtration_system.write((bytes("drain_on", 'utf-8')))
         rospy.sleep(10)
-        complete = False
-        while not complete:
-            complete = self.filtration_system.check_status()
-            time.sleep(1)
+        self.filtration_system.write((bytes("drain_off", 'utf-8')))
+        rospy.sleep(3)
         rospy.loginfo("Drying complete.")
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
     
     def timed_drain(self, id):
         rospy.loginfo("Running timed drain.")
-        self.filtration_system.timed_drain()
+        self.filtration_system.write((bytes("drain_on", 'utf-8')))
+        rospy.sleep(20)
+        self.filtration_system.write((bytes("drain_off", 'utf-8')))
         rospy.sleep(3)
-        complete = False
-        while not complete:
-            complete = self.filtration_system.check_status()
-            time.sleep(1)
         rospy.loginfo("Timed drain complete.")
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
 
     def drain(self, id):
-        rospy.loginfo("Draining.")
-        self.filtration_system.drain_on()
-        rospy.sleep(3)
-        complete = False
-        while not complete:
-            complete = self.filtration_system.check_status()
-            time.sleep(1)
-        for i in range(10):
-            self._task_complete_pub.publish(seq=id, complete=True)
+        pass
+        # rospy.loginfo("Draining.")
+        # self.filtration_system.drain_on()
+        # rospy.sleep(3)
+        # complete = False
+        # while not complete:
+        #     complete = self.filtration_system.check_status()
+        #     time.sleep(1)
+        # for i in range(10):
+        #     self._task_complete_pub.publish(seq=id, complete=True)
 
     def vacuum(self, id):
-        rospy.loginfo("Vacuuming.")
-        self.filtration_system.vac_pump_on()
-        self.filtration_system.vac_valve_open()
-        rospy.sleep(3)
-        complete = False
-        while not complete:
-            complete = self.filtration_system.check_status()
-            time.sleep(1)
-        for i in range(10):
-            self._task_complete_pub.publish(seq=id, complete=True)
+        pass
+        # rospy.loginfo("Vacuuming.")
+        # self.filtration_system.vac_pump_on()
+        # self.filtration_system.vac_valve_open()
+        # rospy.sleep(3)
+        # complete = False
+        # while not complete:
+        #     complete = self.filtration_system.check_status()
+        #     time.sleep(1)
+        # for i in range(10):
+        #     self._task_complete_pub.publish(seq=id, complete=True)
     
     def stop(self, id):
         rospy.loginfo("Stopping all process.")
-        self.filtration_system.stop()
+        self.filtration_system.write((bytes("stop", 'utf-8')))
         rospy.sleep(3)
-        complete = False
-        while not complete:
-            complete = self.filtration_system.check_status()
-            time.sleep(1)
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
     

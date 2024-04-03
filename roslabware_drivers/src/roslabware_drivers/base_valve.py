@@ -29,7 +29,6 @@ class BaseValveRos:
 
         self.base_valve  = serial.Serial(port=port, baudrate=9600, timeout=None)
 
-        self._prev_msg = None
         self._prev_id = -1
 
         if simulation == "True":
@@ -97,4 +96,4 @@ class BaseValveRos:
             else:
                 rospy.loginfo("Invalid command.")
             self._prev_id = id
-            self._prev_msg = command
+
