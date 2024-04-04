@@ -12,7 +12,7 @@
 		default="None"/>
 	<arg
 		name="b_port"
-		default="COM15"/>
+		default="COM8"/>
 	<arg
 		name="b_simulation"
 		default = 'False'/>
