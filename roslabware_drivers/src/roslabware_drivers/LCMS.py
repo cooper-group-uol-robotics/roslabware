@@ -94,6 +94,7 @@ class LcmsRos:
     
     def load_batch(self, id):
         _batch_load = self.lcms.autosampler_load()
+        rospy.sleep(70)
         if _batch_load:
             rospy.loginfo("Batch loaded into LCMS.")
         else:
@@ -112,6 +113,7 @@ class LcmsRos:
 
     def unload_batch(self, id):
         _batch_unload = self.lcms.autosampler_unload()
+        rospy.sleep(70)
         if _batch_unload:
             rospy.loginfo("Batch unloaded from LCMS.")
         else:

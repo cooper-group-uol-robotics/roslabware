@@ -73,7 +73,7 @@
 		default="8000"/>
 	<arg
 		name="l_experiment_name"
-		default="test"/>
+		default="exp"/>
 	<arg
 		name="l_simulation"
 		default="False"/>
