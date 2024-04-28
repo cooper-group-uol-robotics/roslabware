@@ -71,15 +71,6 @@ class LcmsRos:
         # Sleeping rate
         self.rate = rospy.Rate(2)
 
-        # Get data
-        while not rospy.is_shutdown():
-            if self.result_dict is not None:
-                lcmsmsg = LcmsReading()
-                lcmsmsg.chemicals = self.result_dict[1]['chemicals']
-                lcmsmsg.concentrations = self.result_dict[1]['concentrations']
-                lcmsmsg.y_values = self.result_dict[1]['y_values']
-                self.pub.publish(lcmsmsg)
-            self.rate.sleep()
 
     def prep_analysis(self, id, num_samples=1):
         self.result_dict = None
@@ -104,8 +95,15 @@ class LcmsRos:
 
     def start_analysis(self, id):
         self.result_dict = self.lcms.get_lcms_results()
-        if self.result_dict:
-            rospy.loginfo("Analysis done and results received.")
+        rospy.sleep(1)
+        if self.result_dict is not None:
+            for i in range(5):
+                lcmsmsg = LcmsReading()
+                lcmsmsg.chemicals = self.result_dict[1]['chemicals']
+                lcmsmsg.concentrations = self.result_dict[1]['concentrations']
+                lcmsmsg.y_values = self.result_dict[1]['y_values']
+                self.pub.publish(lcmsmsg)
+            rospy.loginfo("Analysis done and results published.")
         else:
             rospy.loginfo("Results not received.")
         rospy.sleep(10)
