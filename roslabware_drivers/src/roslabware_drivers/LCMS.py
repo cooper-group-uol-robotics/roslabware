@@ -108,6 +108,7 @@ class LcmsRos:
             rospy.loginfo("Analysis done and results received.")
         else:
             rospy.loginfo("Results not received.")
+        rospy.sleep(10)
         for i in range(10):
             self._task_complete_pub.publish(seq=id, complete=True)
 
