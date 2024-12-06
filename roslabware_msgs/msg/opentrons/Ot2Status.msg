@@ -1,4 +1,10 @@
-int32 BUSY = 0
+int32 RUNNING = 0
 int32 IDLE = 1
+int32 FINISHING = 2
+int32 SUCCEEDED = 3
+int32 FAILED = 4
+int32 PAUSED = 5
+int32 STOPPING = 6
+
 
 int32 ot2_status

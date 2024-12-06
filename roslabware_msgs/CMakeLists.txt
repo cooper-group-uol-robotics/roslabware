@@ -49,11 +49,6 @@ add_message_files(
 
 add_message_files(
   DIRECTORY
-   msg/knf_simdos10_rcplus
- )
-
-add_message_files(
-  DIRECTORY
    msg/opentrons
  )
 

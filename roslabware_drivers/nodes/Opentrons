@@ -4,7 +4,7 @@
 import argparse
 
 import rospy
-from roslabware_drivers.LCMS import LcmsRos
+from roslabware_drivers.OT2 import OT2Ros
 
 # Object oriented initialization for ROS
 if __name__ == "__main__":
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         '-add',
         '--address',
         action='store',
-        default="172.31.1.18",
+        default="169.254.227.210",
         nargs='?',
         const=1,
         help='IP Address.')
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     rospy.init_node("OT2 Driver", anonymous=True)
 
     # Create instance of ROS Wrapper
-    lcms_ros = LcmsRos(
+    lcms_ros = OT2Ros(
             device_name=args.device_name,
             connection_mode=args.connection_mode,
             address=args.address,

@@ -3,7 +3,7 @@ import datetime
 from typing import Optional, Union
 
 import rospy
-from labmatic import LCMS
+from OT2_client import OT2Client
 
 # Core
 from roslabware_msgs.msg import (
@@ -22,21 +22,26 @@ class OT2Ros:
         self,
         device_name: str = None,
         connection_mode: str = "tcpip",
-        address: Optional[str] = "172.31.1.18", # IP address
+        address: Optional[str] = "169.254.227.210", # IP address
         port: Union[str, int] = 8000, # Port
         simulation: bool = False,
         experiment_name: str = "test"
     ):
 
         # Create device object
-        self.ot2 = OT2Client( 
-            address= address
+        self.robot = OT2Client( 
+            ip= address, device_name=device_name
         )
 
-        
+        rospy.loginfo(f"roslabware pinging the Device : {device_name}")
 
-        if not self.lcms.is_connected():
-            rospy.loginfo("LCMS server - not connected.")
+        
+        # rospy.loginfo(f"Device: {device_name} - connected.")
+
+        if self.robot.ot2_connected:
+            rospy.loginfo(f"Device: {device_name} - connected.")
+        else:
+            rospy.loginfo(f"Device: {device_name} - not connected.")
 
 
         
@@ -65,6 +70,7 @@ class OT2Ros:
 
         # Get data
         while not rospy.is_shutdown():
+            # print(f"robot status: {self.robot.ot2.get_robot_status}")
             # result, concentration = self.get_results()
             ot2msg = Ot2Status()
             #TODO ask Hatem about how to send this dict over via ROS messages...
@@ -76,34 +82,44 @@ class OT2Ros:
     #     return True, 0.52
 
     def robot_status(self):
-        return ot2_status.BUSY
-
+        if self.robot.ot2.get_robot_status == "RUNNING":
+            status = Ot2Status.RUNNING
+        elif self.robot.ot2.get_robot_status == "IDLE":
+            status = Ot2Status.IDLE
+        elif self.robot.ot2.get_robot_status == "FINISHING":
+            status = Ot2Status.FINISHING
+        elif self.robot.ot2.get_robot_status == "SUCCEEDED":
+            status = Ot2Status.SUCCEEDED
+        elif self.robot.ot2.get_robot_status == "FAILED":
+            status = Ot2Status.FAILED
+        elif self.robot.ot2.get_robot_status == "PAUSED":
+            status = Ot2Status.PAUSED
+        elif self.robot.ot2.get_robot_status == "STOPPING":
+            status = Ot2Status.STOPPING
+        return 0
+    
     
     def light_on(self):
-        rospy.loginfo("Light-on command sent to OT2")
+        self.robot.ot2.change_lights_status(True)
 
-
-    def run_protocol(self):
+    def run_protocol(self, id):
+        self.robot.actionCallback("run_protocol", )
         rospy.loginfo("Protocol sent to OT2")
 
-
-
     def move_home(self):
-        rospy.loginfo("Homing command sentto OT2") 
-
-
-
+        rospy.loginfo("Homing command sent to OT2") 
 
     # Callback for subscriber.
     def callback_commands(self, msg):
 
-        message = msg.ot2_command
+        command = msg.ot2_command
 
-        if message == msg.RUN_PROTOCOL:
-            self.run_protocol()
-        elif message == msg.LIGHT_ON:
+        if command == msg.RUN_PROTOCOL:
+            id = msg.protocol_id
+            self.run_protocol(id)
+        elif command == msg.LIGHT_ON:
             self.light_on()
-        elif message == msg.HOME_POSITION:
+        elif command == msg.HOME_POSITION:
             self.move_home()
         else:
             rospy.loginfo("invalid command")

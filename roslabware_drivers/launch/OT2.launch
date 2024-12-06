@@ -1,13 +1,13 @@
 <launch>
 	<arg
 		name="device_name"
-		default="OT2"/>
+		default="OT2_Alpha"/>
 	<arg
 		name="connection_mode"
 		default="tcpip"/>
 	<arg
 		name="address"
-		default="172.31.1.18"/>
+		default="169.254.227.210"/>
 	<arg
 		name="port"
 		default="8000"/>
