@@ -23,27 +23,30 @@ class OT2Ros:
         device_name: str = None,
         connection_mode: str = "tcpip",
         address: Optional[str] = "169.254.227.210", # IP address
-        port: Union[str, int] = 8000, # Port
+        port: Union[str, int] = 31950, # Port
         simulation: bool = False,
         experiment_name: str = "test"
     ):
+        
+        rospy.loginfo(f"roslabware is trying to connect to {device_name}")
 
         # Create device object
         self.robot = OT2Client( 
-            ip= address, device_name=device_name
+            ip= address, device_name=device_name, 
         )
-
-        rospy.loginfo(f"roslabware pinging the Device : {device_name}")
-
-        
-        # rospy.loginfo(f"Device: {device_name} - connected.")
-
+    
         if self.robot.ot2_connected:
             rospy.loginfo(f"Device: {device_name} - connected.")
         else:
             rospy.loginfo(f"Device: {device_name} - not connected.")
 
+        self.robot.ot2.change_lights_status(True)
+        rospy.loginfo(f"Light On")
 
+        rospy.sleep(1)
+
+        self.robot.ot2.change_lights_status(False)
+        rospy.loginfo(f"Light Off")
         
         # Initialize ROS subscriber
         self.subs = rospy.Subscriber(

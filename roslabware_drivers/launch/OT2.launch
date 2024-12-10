@@ -10,7 +10,7 @@
 		default="169.254.227.210"/>
 	<arg
 		name="port"
-		default="8000"/>
+		default="31950"/>
 	<arg
 		name="experiment_name"
 		default="test"/>
