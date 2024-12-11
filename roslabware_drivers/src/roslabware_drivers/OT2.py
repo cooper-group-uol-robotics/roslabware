@@ -113,7 +113,8 @@ class OT2Ros:
         rospy.loginfo("Protocol sent to OT2")
 
     def move_home(self):
-        rospy.loginfo("Homing command sent to OT2") 
+        self.robot.actionCallback("run_protocol", )
+        rospy.loginfo("Homing protocol sent to OT2")
 
     # Callback for subscriber.
     def callback_commands(self, msg):
@@ -125,6 +126,8 @@ class OT2Ros:
             self.run_protocol(id)
         elif command == msg.LIGHT_ON:
             self.light_on()
+        elif command == msg.LIGHT_OFF:
+            self.light_off()
         elif command == msg.HOME_POSITION:
             self.move_home()
         else:
