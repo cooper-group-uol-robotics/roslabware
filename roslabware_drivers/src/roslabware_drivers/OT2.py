@@ -104,6 +104,9 @@ class OT2Ros:
     
     def light_on(self):
         self.robot.ot2.change_lights_status(True)
+    
+    def light_off(self):
+        self.robot.ot2.change_lights_status(False)
 
     def run_protocol(self, id):
         self.robot.actionCallback("run_protocol", )
