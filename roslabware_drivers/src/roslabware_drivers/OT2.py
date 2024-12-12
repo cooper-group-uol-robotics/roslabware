@@ -34,6 +34,17 @@ class OT2Ros:
         self.robot = OT2Client( 
             ip= address, device_name=device_name, 
         )
+
+        print(f"OT2_client_state: {self.robot.state}")
+        self.robot.stateCallback()
+
+        print(f"OT2_client_state: {self.robot.state}")
+
+        rospy.sleep(1)
+        print(f"OT2_state: {self.robot.robot_status}")
+    
+
+
     
         if self.robot.ot2_connected:
             rospy.loginfo(f"Device: {device_name} - connected.")
@@ -73,6 +84,7 @@ class OT2Ros:
 
         # Get data
         while not rospy.is_shutdown():
+            self.robot.stateCallback()
             # print(f"robot status: {self.robot.ot2.get_robot_status}")
             # result, concentration = self.get_results()
             ot2msg = Ot2Status()
@@ -80,6 +92,7 @@ class OT2Ros:
             ot2msg.ot2_status = self.robot_status
             self.pub.publish(ot2msg)
             self.rate.sleep()
+            print(f"OT2_state: {self.robot.robot_status}")
     
     # def get_results(self):
     #     return True, 0.52
@@ -99,7 +112,7 @@ class OT2Ros:
             status = Ot2Status.PAUSED
         elif self.robot.ot2.get_robot_status == "STOPPING":
             status = Ot2Status.STOPPING
-        return 0
+        return status
     
     
     def light_on(self):
@@ -109,7 +122,7 @@ class OT2Ros:
         self.robot.ot2.change_lights_status(False)
 
     def run_protocol(self, id):
-        self.robot.actionCallback("run_protocol", )
+        self.robot.actionCallback("run_protocol", id=id)
         rospy.loginfo("Protocol sent to OT2")
 
     def move_home(self):
