@@ -34,7 +34,7 @@
 
 ########################################################################
 
-#####ROS Message Test ########################
+#####ROS Message Test: OT2 ########################
 
 
 import rospy
@@ -43,6 +43,8 @@ import rospy
 from roslabware_msgs.msg import (
     Ot2Cmd,
     Ot2Status,
+    FiltrationCmd,
+    FiltrationStatus
 )
 
 
@@ -50,18 +52,44 @@ from roslabware_msgs.msg import (
 rospy.init_node('test_publisher', anonymous=True)
 
 # Create a publisher object
-pub = rospy.Publisher('Ot2_command', Ot2Cmd, queue_size=10)
+# pub = rospy.Publisher('Ot2_command', Ot2Cmd, queue_size=10)
+
+
 
 # Wait for a short time to ensure the publisher is registered
 rospy.sleep(1)
 
-# Create a message
-message = Ot2Cmd()
+
+########   OT2 Messages     ###############
+# message = Ot2Cmd()
+# # message.ot2_command = Ot2Cmd.LIGHT_ON
+# # message.ot2_command = Ot2Cmd.LIGHT_OFF
+# message.ot2_command = Ot2Cmd.RUN_PROTOCOL
+# message.protocol_id = 1
+
+
+####
+pub = rospy.Publisher('/filtration_command', FiltrationCmd, queue_size=10)
+
+rospy.sleep(1)
+
+########      Filtration Messages   ###############
+message = FiltrationCmd()
 # message.ot2_command = Ot2Cmd.LIGHT_ON
 # message.ot2_command = Ot2Cmd.LIGHT_OFF
-message.ot2_command = Ot2Cmd.RUN_PROTOCOL
-message.protocol_id = 1
+message.filtration_command = FiltrationCmd.CLOSE_VALVE
+message.seq = 21
+
 
 # Log and publish the message
 rospy.loginfo(f"Publishing: {message}")
 pub.publish(message)
+
+
+
+
+
+########################################################################
+
+#####ROS Message Test: Filtration ########################
+

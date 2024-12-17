@@ -36,7 +36,7 @@ class FiltrationRos:
         self.filtration_subs = rospy.Subscriber(
             name="/filtration_command",
             data_class=FiltrationCmd,
-            callback=self.sash_door_callback_commands,
+            callback=self.filtration_callback_commands,
         )
 
         # Initialize ros published for balance responses (weights)
@@ -51,44 +51,50 @@ class FiltrationRos:
             data_class=Bool,
             queue_size=10
         )
-        
 
         # Initialize rate object for consistent timed looping
         self.rate = rospy.Rate(1)
 
         rospy.loginfo("filtration valve driver started.")
 
+        rospy.sleep(2)
+
+        for i in range(10):
+            self.filtration_task_complete_pub.publish(bool(False))
+
     ###### Sash door methods #####
 
     def open_valve(self, id):
         self.valve.write((bytes("O", "utf-8")))
-        rospy.loginfo("Open valve message sent to device controller.")
-        rospy.sleep(70)
-        self.filtration_pub.publish(status="valve_opened")
+        rospy.sleep(0.2)
+        response = self.valve.readline().decode('utf-8').strip()
+        rospy.loginfo(f"Response from controller: {response}.")
+        self.filtration_pub.publish(seq=id, status=str(response))
         for i in range(10):
             self.filtration_task_complete_pub.publish(bool(True))
 
     def close_valve(self, id):
         self.valve.write((bytes("C", 'utf-8')))
-        rospy.loginfo("Close valve message sent to device controller.")
-        rospy.sleep(70)
-        self.filtration_pub.publish(status="valve_closed")
+        rospy.sleep(0.2)
+        response = self.valve.readline().decode('utf-8').strip()
+        rospy.loginfo(f"Response from controller: {response}.")
+        self.filtration_pub.publish(seq=id, status=str(response))
         for i in range(10):
             self.filtration_task_complete_pub.publish(bool(True))
 
-    def sash_door_callback_commands(self, msg:FiltrationCmd):
+    def filtration_callback_commands(self, msg:FiltrationCmd):
         self.filtration_task_complete_pub.publish(bool(False))
         message = msg.filtration_command
         id = msg.seq
-        rospy.loginfo("Sash door message received.")
+        rospy.loginfo("Filtration message received.")
         if message != self._filtration_prev_msg:
             if message == msg.OPEN_VALVE:
-                rospy.loginfo("Open sash message received.")
+                rospy.loginfo("Open valve message.")
                 self.open_valve(id)
             elif message == msg.CLOSE_VALVE:
-                rospy.loginfo("Close sash message received.")
+                rospy.loginfo("Close valve message.")
                 self.close_valve(id)
             else:
-                rospy.loginfo("Invalid command.")
+                rospy.loginfo("Invalid message.")
             self._filtration_prev_msg = message
 

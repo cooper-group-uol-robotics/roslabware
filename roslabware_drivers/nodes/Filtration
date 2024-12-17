@@ -60,11 +60,11 @@ if __name__ == "__main__":
 
     # Objectoriented initialization of ROS
     kern_ros = FiltrationRos(
-        device_name=args.bv_device_name,
-        connection_mode=args.bv_connection_mode,
-        address=args.bv_address,
-        port=args.bv_port,
-        simulation=args.bv_simulation)
+        device_name=args.fv_device_name,
+        connection_mode=args.fv_connection_mode,
+        address=args.fv_address,
+        port=args.fv_port,
+        simulation=args.fv_simulation)
 
     rospy.loginfo("Filtration valve driver started")
     rospy.spin()
