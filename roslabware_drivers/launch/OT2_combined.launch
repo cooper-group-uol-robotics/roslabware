@@ -1,0 +1,63 @@
+<launch>
+<!-- OT2_Details -->
+	<arg
+		name="device_name"
+		default="OT2_Alpha"/>
+	<arg
+		name="connection_mode"
+		default="tcpip"/>
+	<arg
+		name="address"
+		default="169.254.227.210"/>
+	<arg
+		name="port"
+		default="31950"/>
+	<arg
+		name="experiment_name"
+		default="test"/>
+	<arg
+		name="simulation"
+		default="False"/>
+	<node
+		name="OT2_"
+		pkg="roslabware_drivers"
+		type="Opentrons"
+		args="
+			-d $(arg device_name)
+			-c $(arg connection_mode)
+			-add $(arg address)
+			-p $(arg port)
+			-l $(arg simulation)
+			-x $(arg experiment_name)"
+		output="screen"/>
+
+<!-- Filtration_Details -->
+	<arg
+		name="Filtration_device_name"
+		default="Filtration_valve"/>
+	<arg
+		name="FV_connection_mode"
+		default="serial"/>
+	<arg
+		name="FV_address"
+		default="None"/>
+	<arg
+		name="FV_port"
+		default="COM7"/>
+	<arg
+		name="FV_simulation"
+		default="False"/>
+	<node
+		name="filtration_valve"
+		pkg="roslabware_drivers"
+		type="filtration_valve"
+		args="
+			-fvd $(arg bv_device_name)
+			-fvc $(arg bv_connection_mode)
+			-fvadd $(arg bv_address)
+			-fvp $(arg bv_port)
+			-fvl $(arg bv_simulation)"
+		output="screen"/>
+
+
+</launch>

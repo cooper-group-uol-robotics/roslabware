@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+
+# External
+import argparse
+import rospy
+
+from roslabware_drivers.OT2_Filtration import FiltrationRos
+
+if __name__ == "__main__":
+    # Get arguments needed
+    parser = argparse.ArgumentParser(
+        prog="Filtration valve ROS",
+        description='ROS node for the Filtration valve')
+    parser.add_argument(
+        '-fvd',
+        '--fv_device_name',
+        action='store',
+        default='filtration_valve',
+        nargs='?',
+        const=1,
+        help='Device name')
+    parser.add_argument(
+        '-fvc',
+        '--fv_connection_mode',
+        action='store',
+        default='serial',
+        nargs='?',
+        const=1,
+        help='Connection mode: "tcpip", "serial" or "http"')
+    parser.add_argument(
+        '-fvadd',
+        '--fv_address',
+        action='store',
+        default='None',
+        nargs='?',
+        const=1,
+        help='IP Address.')
+    parser.add_argument(
+        '-fvp',
+        '--fv_port',
+        action='store',
+        default='COM5',
+        nargs='?',
+        const=1,
+        help='Serial or TCP/IP port')
+
+    parser.add_argument(
+        '-fvl',
+        '--fv_simulation',
+        action='store',
+        nargs='?',
+        const=1,
+        default='False',
+        help='Simulation mode or not (bool)')
+
+    args, unknown = parser.parse_known_args()
+
+    # Initialize ROS node
+    rospy.init_node("Filtration Valve Driver", anonymous=True)
+
+    # Objectoriented initialization of ROS
+    kern_ros = FiltrationRos(
+        device_name=args.bv_device_name,
+        connection_mode=args.bv_connection_mode,
+        address=args.bv_address,
+        port=args.bv_port,
+        simulation=args.bv_simulation)
+
+    rospy.loginfo("Filtration valve driver started")
+    rospy.spin()

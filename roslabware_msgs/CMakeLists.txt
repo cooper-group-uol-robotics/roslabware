@@ -54,6 +54,11 @@ add_message_files(
 
 add_message_files(
   DIRECTORY
+   msg/ot2_filtration
+ )
+
+add_message_files(
+  DIRECTORY
    msg/tecan_xcalibur
  )
 

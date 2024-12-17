@@ -1,0 +1,28 @@
+<launch>
+	<arg
+		name="Filtration_device_name"
+		default="Filtration_valve"/>
+	<arg
+		name="FV_connection_mode"
+		default="serial"/>
+	<arg
+		name="FV_address"
+		default="None"/>
+	<arg
+		name="FV_port"
+		default="COM7"/>
+	<arg
+		name="FV_simulation"
+		default="False"/>
+	<node
+		name="filtration_valve"
+		pkg="roslabware_drivers"
+		type="filtration_valve"
+		args="
+			-fvd $(arg bv_device_name)
+			-fvc $(arg bv_connection_mode)
+			-fvadd $(arg bv_address)
+			-fvp $(arg bv_port)
+			-fvl $(arg bv_simulation)"
+		output="screen"/>
+</launch>
